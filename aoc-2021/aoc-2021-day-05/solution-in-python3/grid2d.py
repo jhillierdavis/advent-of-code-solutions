@@ -23,12 +23,12 @@ class Grid2D():
     def getSymbol(self, coord:point2d.Point2D) -> chr:
         if not self.checkContains(coord):
             raise(Exception("Point {coord} not within grid!"))
-        return self.array[coord.getY()][coord.getX()]
+        return self.array[coord.getX()][coord.getY()]
 
     def setSymbol(self, coord:point2d.Point2D, symbol:chr):
         if not self.checkContains(coord):
             raise(Exception("Point {coord} not within grid!"))
-        self.array[coord.getY()][coord.getX()] = symbol
+        self.array[coord.getX()][coord.getY()] = symbol
 
     def checkContains(self, coord: point2d.Point2D) -> bool:
         if coord.getX() < 0 or coord.getX() > self.getWidth():
@@ -39,10 +39,5 @@ class Grid2D():
 
         return True
 
-
-    def drawLine(self, line:line2d.Line2D):
-        # TODO
-        return
-    
     def __str__(self):
         return f"Grid2D(id={id(self)} , width: {self.getWidth()}, height: {self.getHeight()})"
