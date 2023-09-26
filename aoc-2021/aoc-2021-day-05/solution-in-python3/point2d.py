@@ -1,4 +1,4 @@
-
+from typing import Self
 
 class Point2D():
 
@@ -17,3 +17,6 @@ class Point2D():
     
     def __repr__(self) -> str:
         return str(self)
+    
+    def __eq__(self,other:Self) -> bool:
+        return self.getX() == other.getX() and self.getY() == other.getY()

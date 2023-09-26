@@ -28,3 +28,16 @@ def test_string_representation():
     assert "x: 1" in point_as_str
     assert "y: 2" in point_as_str
 
+def test_equality():
+    # Given: non-identical, but equal 
+    pointA = point2d.Point2D(1,2)
+    pointB = point2d.Point2D(1,2)
+    pointC = point2d.Point2D(2,2)
+
+    # Then: not identical as expected
+    assert pointA is not pointB 
+    assert pointA is not pointB 
+
+    # And: equality as expected
+    assert pointA == pointB
+    assert pointA != pointC

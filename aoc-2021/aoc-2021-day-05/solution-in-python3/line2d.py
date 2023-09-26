@@ -1,3 +1,5 @@
+from typing import Self
+
 import point2d
 
 class Line2D():
@@ -30,10 +32,28 @@ class Line2D():
                 coords.append(point2d.Point2D(self.begin.getX(), y))       
         elif self.isVerticalLine():
             minX = min(self.begin.getX(), self.end.getX())
-            maxX= max(self.begin.getX(), self.end.getX())
+            maxX = max(self.begin.getX(), self.end.getX())
             for x in range(minX, 1 + maxX):
                 coords.append(point2d.Point2D(x, self.begin.getY()))
+        else: # Diagonal
+            diffx = 1
+            diffy = 1
+            if (self.begin.getX() > self.end.getX()):
+                diffx = -1
+            if (self.begin.getY() > self.end.getY()):                
+                diffy = -1
+
+            minX = min(self.begin.getX(), self.end.getX())
+            maxX = max(self.begin.getX(), self.end.getX())
+            size = maxX - minX
+            #minY = min(self.begin.getY(), self.end.getY())
+            #maxY = max(self.begin.getY(), self.end.getY())
+            for i in range(1+size):
+                coords.append(point2d.Point2D(self.begin.getX() + (i*diffx), self.begin.getY() + (i*diffy)))
         return coords
         
     def __str__(self):
         return f"Line2D(id={id(self)} , begin: {self.getBeginPoint()}, end: {self.getEndPoint()})"
+    
+    def __eq__(self,other:Self) -> bool:
+        return self.getBeginPoint() == other.getBeginPoint() and self.getEndPoint() == other.getEndPoint()    

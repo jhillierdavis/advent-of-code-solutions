@@ -18,6 +18,21 @@ def displayGrid(grid):
             print(f"{sym}",end="")
         print()
 
+def markLinesOnGrid(grid, lines):
+    for line in lines:
+        for point in line.getAllPoints():
+            setGridValue(grid, point)
+
+
+def countGridOverlapPoints(grid):
+    count = 0
+    for h in range(grid.getHeight()):
+        for w in range(grid.getWidth()):
+            sym = grid.getSymbol(point2d.Point2D(w,h))
+            if type(sym) is int and sym > 1:
+                count = 1 + count # increment
+    return count
+
 def count_points_of_line_overlap_from_file(filename):
     inputLines = utils.get_file_lines(filename)
 
@@ -36,17 +51,30 @@ def count_points_of_line_overlap_from_file(filename):
     #assert len(lines) == 6
 
     grid = grid2d.Grid2D(maxX+1,maxY+1)
-    for line in lines:
-        for point in line.getAllPoints():
-            setGridValue(grid, point)
 
+    markLinesOnGrid(grid, lines)
 
-    count = 0
-    for h in range(grid.getHeight()):
-        for w in range(grid.getWidth()):
-            sym = grid.getSymbol(point2d.Point2D(w,h))
-            if type(sym) is int and sym > 1:
-                count = 1 + count # increment
+    count = countGridOverlapPoints(grid)
+#    displayGrid(grid)
+    return count
 
-    displayGrid(grid)
+def count_points_of_line_overlap_including_diagonals_from_file(filename):    
+    inputLines = utils.get_file_lines(filename)
+
+    lines = []
+    maxX = 0
+    maxY = 0
+    for str in inputLines:
+        line = parser.parseInputStringToLine2D(str)        
+        lines.append(line)
+        maxX = max(maxX, max(line.begin.getX(), line.end.getX()))
+        maxY = max(maxY, max(line.begin.getY(), line.end.getY()))                       
+        print(f"DEBUG: Adding line={line}")
+
+    grid = grid2d.Grid2D(maxX+1,maxY+1)
+
+    markLinesOnGrid(grid, lines)
+
+    count = countGridOverlapPoints(grid)
+#    displayGrid(grid)
     return count

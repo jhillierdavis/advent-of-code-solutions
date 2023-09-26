@@ -76,9 +76,9 @@ def test_getAllPoints_for_horizontal_line():
     coords = line.getAllPoints()
 
     # Then:
-    #assert begin in coords
-    #assert end in coords
-    #assert point2d.Point2D(2,5) in coords
+    assert begin in coords
+    assert end in coords
+    assert point2d.Point2D(1,3) in coords
     print(f"DEBUG: coords={coords}")
     assert len(coords) == 6
 
@@ -92,8 +92,40 @@ def test_getAllPoints_for_vertical_line():
     coords = line.getAllPoints()
 
     # Then:
-    #assert begin in coords
-    #assert end in coords
-    #assert point2d.Point2D(2,5) in coords
+    assert begin in coords
+    assert end in coords
+    assert point2d.Point2D(2,5) in coords
     print(f"DEBUG: coords={coords}")
     assert len(coords) == 3
+
+def test_getAllPoints_for_diagonal_line():
+    # Given: 2-D points that begin & end a line
+    begin = point2d.Point2D(1,1)
+    end = point2d.Point2D(3,3)
+    line = line2d.Line2D(begin, end)
+
+    # When:
+    coords = line.getAllPoints()
+
+    # Then:
+    assert begin in coords
+    assert end in coords
+    assert point2d.Point2D(2,2) in coords
+    print(f"DEBUG: coords={coords}")
+    assert len(coords) == 3
+
+
+
+def test_equality():
+    # Given: non-identical, but equal 
+    orig = line2d.Line2D(point2d.Point2D(1,0), point2d.Point2D(2,3))
+    clone = line2d.Line2D(point2d.Point2D(1,0), point2d.Point2D(2,3))
+    diff = line2d.Line2D(point2d.Point2D(0,1), point2d.Point2D(3,4))
+
+    # Then: not identical as expected
+    assert orig is not clone
+    assert orig is not diff 
+
+    # And: equality as expected
+    assert orig == clone
+    assert orig != diff
