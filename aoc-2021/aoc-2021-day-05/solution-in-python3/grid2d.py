@@ -1,5 +1,4 @@
 import point2d
-import line2d
 
 class Grid2D():
 
