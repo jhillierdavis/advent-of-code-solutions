@@ -13,4 +13,4 @@ def test_part2_solution():
     assert solution.decipher_total_from_file(example_file) == 61229 
 
     # Then: Solve with full (personalised) data
-    assert solution.decipher_total_from_file(full_file) == 1020159    
+    assert solution.decipher_total_from_file(full_file) == 1020159
