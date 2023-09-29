@@ -1,4 +1,4 @@
-import aoc_2021_day_08 as solution
+import aoc_2021_day_08_part1 as solution
 
 # Puzzle data
 example_file = 'puzzle-input-sample.txt'
