@@ -1,4 +1,4 @@
-from typing import Self
+#from typing import Self # Python 3.11+
 
 class Point2D():
 
@@ -18,6 +18,6 @@ class Point2D():
     def __repr__(self) -> str:
         return str(self)
     
-    def __eq__(self,other:Self) -> bool:
+    def __eq__(self,other) -> bool:
         return self.getX() == other.getX() and self.getY() == other.getY()
 
