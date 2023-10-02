@@ -20,4 +20,7 @@ class Point2D():
     
     def __eq__(self,other) -> bool:
         return self.getX() == other.getX() and self.getY() == other.getY()
+    
+    def __hash__(self):
+        return hash(self.getX()) + hash(self.getY())
 
