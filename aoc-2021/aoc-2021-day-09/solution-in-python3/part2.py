@@ -19,7 +19,7 @@ def get_basin_points(heatmap:grid2d.Grid2D, point:point2d.Point2D, existing_basi
     
     existing_basin_points.add(point)
 
-    neighbours = common.get_valid_compass_point_neighbours(heatmap, point)
+    neighbours = heatmap.getCardinalPointNeighbours(point)
 
     for neighbour in neighbours:
         if neighbour not in existing_basin_points:
@@ -31,6 +31,19 @@ def get_basin_points(heatmap:grid2d.Grid2D, point:point2d.Point2D, existing_basi
                 existing_basin_points.add(neighbour)        
 
     return existing_basin_points
+
+
+def calculate_basin_score(basin_sizes:list) -> int:
+    sorted_basin_sizes = sorted(basin_sizes, reverse=True)
+
+    score = 1
+    i = 0
+    for size in sorted_basin_sizes:
+        score *= size
+        i += 1
+        if i >= 3:
+            break
+    return score    
 
 def get_largest_basins_score(filename):
     lines = fileutils.get_file_lines(filename)
@@ -48,14 +61,4 @@ def get_largest_basins_score(filename):
         #print(f"DEBUG: lowest_point={lowest_point} basin_size={basin_size}")
         basin_sizes.append(basin_size)
 
-    sorted_basin_sizes = sorted(basin_sizes, reverse=True)
-    #print(f"DEBUG: sorted_basin_sizes={sorted_basin_sizes}")
-
-    score = 1
-    i = 0
-    for size in sorted_basin_sizes:
-        score *= size
-        i += 1
-        if i >= 3:
-            break
-    return score
+    return calculate_basin_score(basin_sizes)
