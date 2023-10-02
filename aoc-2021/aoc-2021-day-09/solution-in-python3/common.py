@@ -1,7 +1,7 @@
 import grid2d
 import point2d
 
-def isPointOnGrid(heatmap:grid2d.Grid2D, point:point2d.Point2D) -> bool:
+def is_point_on_grid(heatmap:grid2d.Grid2D, point:point2d.Point2D) -> bool:
     if point.getX() < 0:
         return False
     
@@ -16,50 +16,50 @@ def isPointOnGrid(heatmap:grid2d.Grid2D, point:point2d.Point2D) -> bool:
     
     return True
 
-def getValidConcentricNeighbours(heatmap:grid2d.Grid2D, point:point2d.Point2D) -> list:
-    neightbours =  getValidCompassPointNeighbours(heatmap, point)
+def get_valid_concentric_neighbours(heatmap:grid2d.Grid2D, point:point2d.Point2D) -> list:
+    neightbours =  get_valid_compass_point_neighbours(heatmap, point)
 
     x = point.getX()
     y = point.getY()
 
     diagonal_left_bottom = point2d.Point2D(x-1, y-1)
-    if isPointOnGrid(heatmap, diagonal_left_bottom):
+    if is_point_on_grid(heatmap, diagonal_left_bottom):
         neightbours.append(diagonal_left_bottom)
 
     diagonal_right_bottom = point2d.Point2D(x+1, y-1)
-    if isPointOnGrid(heatmap, diagonal_right_bottom):
+    if is_point_on_grid(heatmap, diagonal_right_bottom):
         neightbours.append(diagonal_right_bottom)
 
     diagonal_left_top = point2d.Point2D(x-1, y+1)
-    if isPointOnGrid(heatmap, diagonal_left_top):
+    if is_point_on_grid(heatmap, diagonal_left_top):
         neightbours.append(diagonal_left_top)
 
     diagonal_right_top = point2d.Point2D(x+1, y+1)
-    if isPointOnGrid(heatmap, diagonal_right_top):
+    if is_point_on_grid(heatmap, diagonal_right_top):
         neightbours.append(diagonal_right_top)
 
     return neightbours
 
 
-def getValidCompassPointNeighbours(heatmap:grid2d.Grid2D, point:point2d.Point2D) -> list:
+def get_valid_compass_point_neighbours(heatmap:grid2d.Grid2D, point:point2d.Point2D) -> list:
     neightbours = []
 
     x = point.getX()
     y = point.getY()
     left = point2d.Point2D(x-1, y)
-    if isPointOnGrid(heatmap, left):
+    if is_point_on_grid(heatmap, left):
         neightbours.append(left)
 
     right = point2d.Point2D(x+1, y)           
-    if isPointOnGrid(heatmap, right):
+    if is_point_on_grid(heatmap, right):
         neightbours.append(right)
 
     up = point2d.Point2D(x, y-1)
-    if isPointOnGrid(heatmap, up):
+    if is_point_on_grid(heatmap, up):
         neightbours.append(up)
 
     down = point2d.Point2D(x, y+1)           
-    if isPointOnGrid(heatmap, down):
+    if is_point_on_grid(heatmap, down):
         neightbours.append(down)
 
     return neightbours   
@@ -82,7 +82,7 @@ def populate_heatmap_from_lines(input_lines):
 
 
 def is_lowest_point(heatmap:grid2d.Grid2D, point:point2d.Point2D) -> int:
-    neighbours = getValidCompassPointNeighbours(heatmap, point)
+    neighbours = get_valid_compass_point_neighbours(heatmap, point)
 
     current_value = int(heatmap.getSymbol(point))
 

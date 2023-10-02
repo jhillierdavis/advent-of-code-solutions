@@ -10,6 +10,7 @@ def is_basin_value(heatmap:grid2d.Grid2D, point) -> bool:
     return True
 
 def get_basin_points(heatmap:grid2d.Grid2D, point:point2d.Point2D, existing_basin_points:set=None):
+    # NB: Avoid initialising an empty set as a default argument to the method, since determined only once (so will not be isolated between invocations!)
     if None == existing_basin_points:
         existing_basin_points = set()
 
@@ -18,7 +19,7 @@ def get_basin_points(heatmap:grid2d.Grid2D, point:point2d.Point2D, existing_basi
     
     existing_basin_points.add(point)
 
-    neighbours = common.getValidCompassPointNeighbours(heatmap, point)
+    neighbours = common.get_valid_compass_point_neighbours(heatmap, point)
 
     for neighbour in neighbours:
         if neighbour not in existing_basin_points:
@@ -38,17 +39,17 @@ def get_largest_basins_score(filename):
     lowest_points = common.get_lowest_points(heatmap)
     #lowest_points = [ point2d.Point2D(9,0) ]
 
-    print(f"DEBUG: lowest_points={lowest_points}")
+    #print(f"DEBUG: lowest_points={lowest_points}")
 
     basin_sizes = []
     for lowest_point in lowest_points:
         basin_points = get_basin_points(heatmap, lowest_point)
         basin_size = len(basin_points)
-        print(f"DEBUG: lowest_point={lowest_point} basin_size={basin_size}")
+        #print(f"DEBUG: lowest_point={lowest_point} basin_size={basin_size}")
         basin_sizes.append(basin_size)
 
     sorted_basin_sizes = sorted(basin_sizes, reverse=True)
-    print(f"DEBUG: sorted_basin_sizes={sorted_basin_sizes}")
+    #print(f"DEBUG: sorted_basin_sizes={sorted_basin_sizes}")
 
     score = 1
     i = 0

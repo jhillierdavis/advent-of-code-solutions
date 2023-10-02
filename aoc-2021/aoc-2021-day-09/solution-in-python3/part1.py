@@ -1,10 +1,5 @@
-import grid2d
-import point2d
-
 import fileutils
-
 import grid2d
-import point2d
 import fileutils
 import common
 
@@ -17,7 +12,6 @@ def sum_lowest_points(heatmap:grid2d.Grid2D) -> int:
         value = heatmap.getSymbol(lowpoint)
         sum += int(value) + 1
     return sum
-
 
 
 def sum_low_points_from_file(filename) -> int:
