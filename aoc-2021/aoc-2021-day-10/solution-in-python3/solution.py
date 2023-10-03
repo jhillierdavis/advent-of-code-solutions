@@ -77,6 +77,7 @@ def get_corruption_chunk_score_from_file(filename):
         sum += get_error_score(l)
     return sum
 
+
 def get_incomplete_autocomplete_score(chunk:str) -> int:
     if is_legal_chunk(chunk) or is_corrupted_chunk(chunk):
         return 0
