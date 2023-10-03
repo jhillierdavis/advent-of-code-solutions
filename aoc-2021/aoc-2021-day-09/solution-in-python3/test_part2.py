@@ -29,6 +29,7 @@ def test_get_basin_size(low_point, expected):
     # Then: the expected number of basin points are identified
     assert len(basin_points) == expected
 
+
 @pytest.mark.parametrize(
     "filename,expected",
     [
