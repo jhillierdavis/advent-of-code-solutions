@@ -8,7 +8,7 @@ def test_initialise_stack():
  
 
 def test_stack_methods():
-    # Given: a stack instance
+    # Given: a stack (LIFO structure) instance
     stack = datastructures.Stack()
 
     # When: stack populated
@@ -32,6 +32,14 @@ def test_stack_methods():
     assert stack.getSize() == 2
     assert stack.pop() == 'Beta'
     assert stack.getSize() == 1
+
+    # When: another item added
+    stack.push("Omega")
+    assert stack.getSize() == 2
+    assert str(stack) == "Omega->Alpha"
+    assert stack.pop() == 'Omega'
+    
+    # And: remaining items as expected
     assert str(stack) == "Alpha"
     assert stack.pop() == 'Alpha'
     assert stack.getSize() == 0

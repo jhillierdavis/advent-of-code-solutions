@@ -15,12 +15,12 @@ class Stack():
  
     # String representation of the stack
     def __str__(self) -> str:
-        cur = self.head.next
-        out:str = ""
-        while cur:
-            out += str(cur.value) + "->"
-            cur = cur.next
-        return out[:-2] # Omit the last arrow
+        current = self.head.next
+        output:str = ""
+        while current:
+            output += str(current.value) + "->"
+            current = current.next
+        return  output[:-2] # Omit the last arrow (->)
  
     # Get the current size of the stack
     def getSize(self) -> int:
