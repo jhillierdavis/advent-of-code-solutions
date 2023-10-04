@@ -1,6 +1,18 @@
 import pytest
 
 import solution
+import grid2d
+
+def test_small_example():
+    lines = ["11111","19991","19191","19991","11111"]
+    grid = grid2d.lines_to_grid(lines)
+    assert lines == grid2d.grid_to_lines(grid)
+
+    solution.step(grid)
+
+    expected = ["34543","40004","50005","40004","34543"]
+    assert grid2d.grid_to_lines(grid) == expected
+
 
 @pytest.mark.parametrize(
     "filename,steps,expected",
