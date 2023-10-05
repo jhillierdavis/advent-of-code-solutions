@@ -8,7 +8,7 @@ import solution
         pytest.param("puzzle-input-example-1.txt", 10),
         pytest.param("puzzle-input-example-2.txt", 19),
         pytest.param("puzzle-input-example-3.txt", 226),
-        # pytest.param("puzzle-input-full.txt", -1), # Unknown currently
+        pytest.param("puzzle-input-full.txt", 4720), 
     ],    
 )
 def test_part1_solution(filename, expected):
