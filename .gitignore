@@ -134,3 +134,6 @@ dmypy.json
 # Drawio
 *.drawio.bkp
 *.drawio.dtmp
+
+# Symbolic links
+aoc-2021/aoc-2021-day-12/solution-in-python3/helpers
