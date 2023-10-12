@@ -3,8 +3,14 @@
 class Point2D():
 
     def __init__(self, x:int, y:int):
-          self.x = x
-          self.y = y
+        if not isinstance(x, int):
+            raise TypeError("Non integer value provided for x")
+
+        if not isinstance(y, int):
+            raise TypeError("Non integer value provided for y")
+
+        self.x = x
+        self.y = y
     
     def getX(self) -> int:
         return self.x

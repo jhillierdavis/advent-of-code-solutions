@@ -1,6 +1,7 @@
 import pytest # for parameterised tests etc.
 
 from helpers.grid import Grid2D
+from helpers.grid import display_grid
 from helpers.point import Point2D
 
 def test_grid_creation():
@@ -20,13 +21,13 @@ def test_grid_creation_invalid_params():
 def test_grid_accessors():
     grid = Grid2D(3,2)
 
-    assert grid.getWidth() == 3
-    assert grid.getHeight() == 2
+    assert grid.get_width() == 3
+    assert grid.get_height() == 2
 
 def test_grid_coord_symbol_default():
     grid = Grid2D(3,2)
 
-    assert grid.getSymbol(Point2D(1,1)) == '.'  
+    assert grid.get_symbol(Point2D(1,1)) == '.'  
 
 @pytest.mark.parametrize(
     "point,expected",
@@ -64,16 +65,16 @@ def test_cardinal_point_neighbours():
     g = Grid2D(3,3)
 
     # Then:
-    assert len(g.getCardinalPointNeighbours(Point2D(0,0))) == 2
-    assert len(g.getCardinalPointNeighbours(Point2D(1,1))) == 4
+    assert len(g.get_cardinal_point_neighbours(Point2D(0,0))) == 2
+    assert len(g.get_cardinal_point_neighbours(Point2D(1,1))) == 4
 
 def test_surrounding_neighbours():
     # Given: a 2-D grid of (x,y) coord points
     g = Grid2D(3,3)
 
     # Then:
-    assert len(g.getSurroundingNeighbours(Point2D(0,0))) == 3
-    assert len(g.getSurroundingNeighbours(Point2D(1,1))) == 8
+    assert len(g.get_surrounding_neighbours(Point2D(0,0))) == 3
+    assert len(g.get_surrounding_neighbours(Point2D(1,1))) == 8
 
 
 def test_string_representation():
@@ -88,3 +89,111 @@ def test_string_representation():
     assert "Grid2D(id=" in as_str
     assert "width: 3" in as_str
     assert "height: 2" in as_str      
+
+def create_populated_test_grid():
+    g = Grid2D(3,4)
+
+    # Populate grid
+    i = 0
+    for x in range(g.get_width()):
+        for y in range(g.get_height()):            
+            p = Point2D(x,y)
+            g.set_symbol(p, i)
+            i += 1
+
+    return g
+
+
+def test_get_subgrid_from_orgin():
+    # Given: a test grid
+    g = create_populated_test_grid()
+
+    # When: subgrid created
+    sg = g.get_subgrid_from_origin(g.get_width() - 1 , g.get_height() - 1)
+
+    # Then:
+    assert sg.get_width() == 2
+    assert sg.get_height() == 3
+    assert sg.get_symbol(Point2D(0,0)) == 0
+    assert sg.get_symbol(Point2D(1,2)) == 6
+
+
+def test_get_subgrid_inclusive():
+    # Given: a test grid
+    g = create_populated_test_grid()
+
+    # When: subgrid created
+    sg = g.get_subgrid_inclusive(Point2D(1,1), Point2D(2,3))
+    #print(f"DEBUG: sg = {sg}")
+
+    # Then:
+    assert sg.get_width() == 2
+    assert sg.get_height() == 3
+    assert sg.get_symbol(Point2D(0,0)) == 5
+    assert sg.get_symbol(Point2D(1,2)) == 11
+
+
+def test_get_inverted_vertically():  
+    # Given: a test grid
+    g = create_populated_test_grid()
+
+    # When
+    ig = g.get_inverted_vertically()
+
+    #print(f"DEBUG: {g}")
+    #display_grid(g)
+    #print(f"DEBUG: {ig}")
+    #display_grid(ig)
+
+    # Then:
+    assert g.get_symbol(Point2D(0,0)) == 0
+    assert ig.get_symbol(Point2D(0,0)) == 3
+    assert g.get_symbol(Point2D(2,3)) == 11
+    assert ig.get_symbol(Point2D(2,3)) == 8
+
+
+def test_get_inverted_horizontally():  
+    # Given: a test grid
+    g = create_populated_test_grid()
+
+    # When
+    ig = g.get_inverted_horizontally()
+
+    # Then:
+    assert g.get_symbol(Point2D(0,0)) == 0
+    assert ig.get_symbol(Point2D(0,0)) == 8
+    assert g.get_symbol(Point2D(2,3)) == 11
+    assert ig.get_symbol(Point2D(2,3)) == 3
+
+def test_count():
+    # Given: a grid instance
+    g = Grid2D(3,4)
+
+    # Then: populated with symbols
+    g.set_symbol(Point2D(0,0), '#')
+    g.set_symbol(Point2D(1,0), '#')
+    g.set_symbol(Point2D(0,1), '#')
+
+    assert g.count_symbol("#") == 3
+
+def test_merge():
+    # Given: two grid instances
+    hg = Grid2D(3,3)
+    vg = Grid2D(3,3)
+
+    # And: populated with symbols
+    vg.set_symbol(Point2D(1,0), '#')
+    vg.set_symbol(Point2D(1,1), '#')
+    vg.set_symbol(Point2D(1,2), '#')
+    hg.set_symbol(Point2D(0,1), '#')
+    hg.set_symbol(Point2D(1,1), '#')
+    hg.set_symbol(Point2D(2,1), '#')
+
+    # Then:
+    assert hg.count_symbol('#') == 3
+
+    # When:
+    hg.merge_symbol(vg, '#')
+    assert hg.count_symbol('#') == 5
+
+

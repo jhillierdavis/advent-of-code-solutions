@@ -1,12 +1,29 @@
+import pytest
+
 from helpers.point import Point2D
 
-def test_point2d_creation():
+@pytest.mark.parametrize(
+    "x,y",
+    [
+        pytest.param('a', 0),
+        pytest.param(1, 'b'),
+        pytest.param('x', 'y'),
+    ],    
+)
+def test_point2d_invalid_creation(x,y):
+    with pytest.raises(TypeError):
+        p = Point2D(x,y)
+
+
+def test_point2d_valid_creation():
     # Given: a 2-D point
     p = Point2D(1,2)
 
     # Then: check an instance is created
     assert p is not None
     assert type(p) is Point2D
+    assert p.getX() == 1
+    assert p.getY() == 2
 
 def test_point2d_accessors():
     # Given: a 2-D point
