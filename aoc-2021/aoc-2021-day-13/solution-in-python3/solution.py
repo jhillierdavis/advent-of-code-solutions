@@ -34,6 +34,27 @@ def get_fold_input(filename):
     return fold.split("=")
 
 
+def fold_grid_vertically(grid, fold_y):
+    # Upper grid
+    ug = grid.get_subgrid_from_origin(grid.get_width(), fold_y -1)
+
+    # Lower grid
+    lg = grid.get_subgrid_inclusive(point.Point2D(0, fold_y), point.Point2D(grid.get_width() - 1, grid.get_height() - 1))
+    ilg = lg.get_inverted_vertically()
+
+    return ug.merge_symbol(ilg, '#')
+
+def fold_grid_horizontally(grid, fold_x):
+    # Left grid
+    lg = grid.get_subgrid_from_origin(fold_x, grid.get_height())
+
+    # Right grid
+    rg = grid.get_subgrid_inclusive(point.Point2D(fold_x, 0), point.Point2D(grid.get_width() - 1, grid.get_height() - 1))
+    irg = rg.get_inverted_horizontally()
+
+    return lg.merge_symbol(irg, '#')        
+
+
 def process_first_fold_from_filename(filename):
     g = create_grid_from_file(filename)
 
@@ -43,29 +64,13 @@ def process_first_fold_from_filename(filename):
     if fold[0] == 'y': # fold vertically       
         fold_y = int(fold[1])
 
-        #print(f"DEBUG: fold_y: {fold_y}")
-
-        # Upper grid
-        ug = g.get_subgrid_from_origin(g.get_width(), fold_y -1)
-
-        # Lower grid
-        lg = g.get_subgrid_inclusive(point.Point2D(0, fold_y), point.Point2D(g.get_width() - 1, g.get_height() - 1))
-        ilg = lg.get_inverted_vertically()
-        
-        g = ug.merge_symbol(ilg, '#')
-        
+        g = fold_grid_vertically(g, fold_y)        
 
     elif fold[0] == 'x': # fold horizontally   
         fold_x = int(fold[1])
 
-        # Left grid
-        lg = g.get_subgrid_from_origin(fold_x, g.get_height())
+        g = fold_grid_horizontally(g, fold_x)
 
-        # Right grid
-        rg = g.get_subgrid_inclusive(point.Point2D(fold_x, 0), point.Point2D(g.get_width() - 1, g.get_height() - 1))
-        irg = rg.get_inverted_horizontally()
-
-        g = lg.merge_symbol(irg, '#')        
     else:
         print(f"DEBUG: fold[0]={fold[0]} ")
         raise Exception(f"Unhandled instruction: {fold[0]}")
