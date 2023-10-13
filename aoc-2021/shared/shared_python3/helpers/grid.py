@@ -12,7 +12,7 @@ def lines_to_grid(input_lines):
     for line in input_lines:
         for x in range(width):
             p = point.Point2D(x, y)
-            grid.setSymbol(p, line[x])
+            grid.set_symbol(p, line[x])
         y += 1
 
     return grid
@@ -23,7 +23,7 @@ def grid_to_lines(grid):
     for h in range(grid.get_height()):
         line = ""
         for w in range(grid.get_width()):
-            value = grid.getSymbol(point.Point2D(w,h))
+            value = grid.get_symbol(point.Point2D(w,h))
             line += str(value)
         lines.append(line)
     return lines

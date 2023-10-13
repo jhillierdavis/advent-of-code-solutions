@@ -27,16 +27,19 @@ def create_grid_from_file(filename):
     return g
 
 
-def get_fold_input(filename):
+def get_fold_instruction(fold_str):
+    fold = fold_str.split("fold along ",1)[1]
+    return fold.split("=")
+
+def get_first_fold_input(filename):
     folds = fileutils.get_lines_after_empty_from_file(filename)
     #print(f"DEBUG: folds: {folds}")
-    fold = folds[0].split("fold along ",1)[1]
-    return fold.split("=")
+    return get_fold_instruction(folds[0])
 
 
 def fold_grid_vertically(grid, fold_y):
     # Upper grid
-    ug = grid.get_subgrid_from_origin(grid.get_width(), fold_y -1)
+    ug = grid.get_subgrid_from_origin(grid.get_width(), fold_y)
 
     # Lower grid
     lg = grid.get_subgrid_inclusive(point.Point2D(0, fold_y), point.Point2D(grid.get_width() - 1, grid.get_height() - 1))
@@ -58,7 +61,7 @@ def fold_grid_horizontally(grid, fold_x):
 def process_first_fold_from_filename(filename):
     g = create_grid_from_file(filename)
 
-    fold = get_fold_input(filename)
+    fold = get_first_fold_input(filename)
 
     
     if fold[0] == 'y': # fold vertically       
@@ -76,4 +79,28 @@ def process_first_fold_from_filename(filename):
         raise Exception(f"Unhandled instruction: {fold[0]}")
 
     return g.count_symbol('#')   
-        
+
+
+def process_all_folds_from_filename(filename):
+    g = create_grid_from_file(filename)
+
+    folds = fileutils.get_lines_after_empty_from_file(filename)
+
+    for item in folds:
+        fold = get_fold_instruction(item)
+
+        if fold[0] == 'y': # fold vertically       
+            fold_y = int(fold[1])
+
+            g = fold_grid_vertically(g, fold_y)        
+
+        elif fold[0] == 'x': # fold horizontally   
+            fold_x = int(fold[1])
+
+            g = fold_grid_horizontally(g, fold_x)
+
+        else:
+            print(f"DEBUG: fold[0]={fold[0]} ")
+            raise Exception(f"Unhandled instruction: {fold[0]}")
+
+    return g  
