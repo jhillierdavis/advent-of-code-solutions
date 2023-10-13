@@ -15,15 +15,33 @@ def test_part1_solution(filename, expected):
     assert solution.process_first_fold_from_filename(filename) == expected
 
 
+
 @pytest.mark.parametrize(
-    "filename",
+    "filename, expected",
     [
-        pytest.param("puzzle-input-example.txt"),
-        pytest.param("puzzle-input-full.txt"), 
-    ],    
+        pytest.param("puzzle-input-example.txt", 
+[
+"#####",        
+"#...#",
+"#...#",
+"#...#",
+"#####",
+".....",
+"....."
+]
+),
+        pytest.param("puzzle-input-full.txt", [
+"####..##...##..#..#.###..####.#..#.####.",           
+"#....#..#.#..#.#..#.#..#....#.#..#.#....",
+"###..#..#.#....#..#.#..#...#..####.###..",
+"#....####.#.##.#..#.###...#...#..#.#....",
+"#....#..#.#..#.#..#.#.#..#....#..#.#....",
+"#....#..#..###..##..#..#.####.#..#.####."
+]), 
+    ]    
 )
-def test_part1_solution(filename):
+def test_part2_solution(filename, expected):
     g = solution.process_all_folds_from_filename(filename) 
-    print(f"{g}")
+    g_lines = hg.grid_to_lines(g)
     hg.display_grid(g)
-    pytest.fail() # TODO
+    assert g_lines == expected
