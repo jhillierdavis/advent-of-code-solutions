@@ -1,24 +1,13 @@
-from collections import defaultdict
+from collections import defaultdict, Counter
 
 # Local
+import common
 from helpers import fileutils 
 
-def get_pair_insertion_rules(filename):
-    lines = fileutils.get_lines_after_empty_from_file(filename)
 
-    map_pair_to_rule = {}
-    for l in lines:
-        key_value = l.split(" -> ")
-        key = key_value[0]
-        value = key_value[1]
-        map_pair_to_rule[key] = value
-    return map_pair_to_rule
-
-def get_insertion_char(mapping, before, after):
-    return mapping[before + after]
 
 def polymer_fragment(mapping, before, after, depth):
-    insertion = get_insertion_char(mapping, before, after)
+    insertion = common.get_insertion_char(mapping, before, after)
 
     if depth <= 1:
         #print(f"DEBUG: depth={depth} before={before} after={after} insertion={insertion}")
@@ -53,7 +42,7 @@ def polymer_transformation(polymer, mapping_rules, steps):
 def process_steps(filename, steps:int) -> str:
     initial_polymer_template = fileutils.get_lines_before_empty_from_file(filename)[0]
 
-    map_pair_to_rule = get_pair_insertion_rules(filename)
+    map_pair_to_rule = common.get_pair_insertion_rules(filename)
     #print(f"DEBUG: {map_pair_to_rule}")
 
     polymer = polymer_transformation(initial_polymer_template, map_pair_to_rule, steps)
@@ -70,31 +59,26 @@ def update_map_of_counts(dict_to_update, dict_to_use):
 
 
 def polymer_fragment_counter(mapping, before, after, depth, cache):
-    key = before + after + str(depth)
+    # Lookup in cache (& return if present)
+    key = before + after + str(depth) # Cache key
     if  key in cache:
         return cache[key]
 
 
-    map_counter = defaultdict(int)
-    insertion = get_insertion_char(mapping, before, after)
+    counter = Counter() # Use Python3's counter (dictionary subclass)
+    insertion = common.get_insertion_char(mapping, before, after)
 
     if depth <= 1:
         #print(f"DEBUG: depth={depth} before={before} after={after} insertion={insertion}")
-        
-        map_counter[insertion] += 1
-        map_counter[after] += 1
-        
+        counter.update(insertion + after)        
     else:
-
-        mc1 = polymer_fragment_counter(mapping, before, insertion, depth - 1, cache)
-        update_map_of_counts(map_counter, mc1)
-
-        mc2 = polymer_fragment_counter(mapping, insertion, after, depth - 1, cache)
-        update_map_of_counts(map_counter, mc2)
+        c1 = polymer_fragment_counter(mapping, before, insertion, depth - 1, cache)
+        c2 = polymer_fragment_counter(mapping, insertion, after, depth - 1, cache)
+        counter = c1 + c2
 
 
-    cache[key] = map_counter
-    return map_counter
+    cache[key] = counter
+    return counter
 
 
     
@@ -106,7 +90,8 @@ def polymer_transformation_counter(polymer, mapping_rules, steps):
         return polymer
 
     cache = defaultdict(int)
-    map_counter = defaultdict(int)
+    #map_counter = defaultdict(int)
+    counter = Counter()
 
     last = None
     current = None
@@ -116,30 +101,20 @@ def polymer_transformation_counter(polymer, mapping_rules, steps):
             continue
 
         current = polymer[i]
-        map_fragment_counter = polymer_fragment_counter(mapping_rules, last, current, steps, cache)
-        update_map_of_counts(map_counter, map_fragment_counter)
+        fragment_counter = polymer_fragment_counter(mapping_rules, last, current, steps, cache)
+        counter += fragment_counter
 
         last = current       
 
-    return map_counter
+    return counter
 
 
 
 def determine_score(filename, steps) -> int:
     initial_polymer_template = fileutils.get_lines_before_empty_from_file(filename)[0]
 
-    map_pair_to_rule = get_pair_insertion_rules(filename)
+    map_pair_to_rule = common.get_pair_insertion_rules(filename)
 
-    map_counts = polymer_transformation_counter(initial_polymer_template, map_pair_to_rule, steps)
+    counter = polymer_transformation_counter(initial_polymer_template, map_pair_to_rule, steps)
 
-    min = None
-    max = None
-
-    for value in map_counts.values():
-        if min == None or value < min:
-            min = value
-
-        if max == None or value > max:
-            max = value
-
-    return max - min
+    return max(counter.values()) - min(counter.values())
