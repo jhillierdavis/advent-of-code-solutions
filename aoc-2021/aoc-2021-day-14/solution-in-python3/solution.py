@@ -50,8 +50,8 @@ def process_steps(filename:str, steps:int) -> str:
     return polymer
 
 
-def determine_score(filename) -> int:
-    polymer = process_steps(filename, 10)
+def determine_score(filename, steps) -> int:
+    polymer = process_steps(filename, steps)
 
 
 
