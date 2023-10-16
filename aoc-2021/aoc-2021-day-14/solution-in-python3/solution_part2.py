@@ -6,7 +6,7 @@ from helpers import fileutils
 
 
 
-def polymer_fragment(mapping, before, after, depth):
+def polymer_fragment(mapping:dict, before:str, after:str, depth:int) -> int:
     insertion = common.get_insertion_char(mapping, before, after)
 
     if depth <= 1:
@@ -17,7 +17,7 @@ def polymer_fragment(mapping, before, after, depth):
     return polymer_fragment(mapping, before, insertion, depth - 1) + polymer_fragment(mapping, insertion, after, depth - 1)
 
 
-def polymer_transformation(polymer, mapping_rules, steps):
+def polymer_transformation(polymer:str, mapping_rules:dict, steps:int) -> str:
     if steps <= 0:
         return polymer
 
@@ -33,7 +33,6 @@ def polymer_transformation(polymer, mapping_rules, steps):
 
         current = polymer[i]
         result += polymer_fragment(mapping_rules, last, current, steps)
-
         last = current       
 
     return result
@@ -52,13 +51,7 @@ def process_steps(filename, steps:int) -> str:
 
 
 
-def update_map_of_counts(dict_to_update, dict_to_use):
-    for k in dict_to_use.keys():
-        dict_to_update[k] += dict_to_use[k]
-    return dict_to_update
-
-
-def polymer_fragment_counter(mapping, before, after, depth, cache):
+def polymer_fragment_counter(mapping:dict, before:str, after:str, depth:int, cache:dict) -> Counter:
     # Lookup in cache (& return if present)
     key = before + after + str(depth) # Cache key
     if  key in cache:
@@ -81,17 +74,12 @@ def polymer_fragment_counter(mapping, before, after, depth, cache):
     return counter
 
 
-    
-
-
-
-def polymer_transformation_counter(polymer, mapping_rules, steps):
+def polymer_transformation_counter(polymer:str, mapping_rules:dict, steps:int) -> Counter:
     if steps <= 0:
         return polymer
 
-    cache = defaultdict(int)
-    #map_counter = defaultdict(int)
-    counter = Counter()
+    cache = defaultdict(int) # Use a dictorary as a cache for performance
+    counter = Counter() # Count letter occurances
 
     last = None
     current = None
@@ -110,11 +98,11 @@ def polymer_transformation_counter(polymer, mapping_rules, steps):
 
 
 
-def determine_score(filename, steps) -> int:
+def determine_score(filename:str, steps:int) -> int:
     initial_polymer_template = fileutils.get_lines_before_empty_from_file(filename)[0]
 
-    map_pair_to_rule = common.get_pair_insertion_rules(filename)
+    map_pair_to_insertion_rules = common.get_pair_insertion_rules(filename)
 
-    counter = polymer_transformation_counter(initial_polymer_template, map_pair_to_rule, steps)
+    counter = polymer_transformation_counter(initial_polymer_template, map_pair_to_insertion_rules, steps)
 
     return max(counter.values()) - min(counter.values())
