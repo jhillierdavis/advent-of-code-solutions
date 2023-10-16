@@ -45,8 +45,10 @@ def test_part1_solution(filename, expected):
     ],    
 )
 def test_part2_solution(filename, steps, expected):
-    # Too slow!
+    # Too slow! (since attempts to build up the entire output string, which gets too large)
     #assert slow_initial_solution.determine_score(filename, steps) == expected
     #assert slow_recursive_solution.determine_score(filename, steps) == expected
 
+    # Approach that does not build up the entire output string, 
+    # but instead just counts the insertion chars (+ the initial char)
     assert performant_solution.determine_score(filename, steps) == expected
