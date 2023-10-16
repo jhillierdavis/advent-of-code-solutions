@@ -1,7 +1,7 @@
 import pytest
 
 # Local
-import solution
+import slow_initial_solution, slow_recursive_solution, performant_solution
 
 @pytest.mark.parametrize(
     "filename,steps,expected",
@@ -15,7 +15,11 @@ import solution
     ],    
 )
 def test_polymer_propagation_steps(filename, steps, expected):
-    assert solution.process_steps(filename, steps) == expected
+    # 1st attempt
+    assert slow_initial_solution.process_steps(filename, steps) == expected
+
+    # 2nd attempt using recrusive solution
+    assert slow_recursive_solution.process_steps(filename, steps) == expected
 
 @pytest.mark.parametrize(
     "filename,expected",
@@ -25,29 +29,24 @@ def test_polymer_propagation_steps(filename, steps, expected):
     ],    
 )
 def test_part1_solution(filename, expected):
-    assert solution.determine_score(filename, 10) == expected
+    assert slow_initial_solution.determine_score(filename, 10) == expected
+    assert slow_recursive_solution.determine_score(filename, 10) == expected
+    assert performant_solution.determine_score(filename, 10) == expected
 
-"""
-@pytest.mark.parametrize(
-    "filename,expected",
-    [
-        pytest.param("puzzle-input-example.txt", 1588),
-        #pytest.param("puzzle-input-full.txt", 2170), 
-    ],    
-)
-def test_part2_solution(filename, expected):
-    assert solution.determine_score(filename, 40) == expected    
-"""    
 
-"""
 @pytest.mark.parametrize(
     "filename,steps,expected",
     [
-        #pytest.param("puzzle-input-example.txt", 24, 50331649),
-        pytest.param("puzzle-input-example.txt", 25, 100663297),
+        pytest.param("puzzle-input-example.txt", 10, 1588),
+        pytest.param("puzzle-input-example.txt", 25, 64726890),
+        pytest.param("puzzle-input-example.txt", 30, 2108829309),
+        pytest.param("puzzle-input-example.txt", 40, 2188189693529),
+        pytest.param("puzzle-input-full.txt", 40, 2422444761283),                                                   
     ],    
 )
-def test_polymer_propagation_long_steps(filename, steps, expected):
-    result = solution.process_steps(filename, steps)
-    assert len(result) == expected
-"""    
+def test_part2_solution(filename, steps, expected):
+    # Too slow!
+    #assert slow_initial_solution.determine_score(filename, steps) == expected
+    #assert slow_recursive_solution.determine_score(filename, steps) == expected
+
+    assert performant_solution.determine_score(filename, steps) == expected
