@@ -136,6 +136,4 @@ dmypy.json
 *.drawio.dtmp
 
 # Symbolic links
-aoc-2021/aoc-2021-day-12/solution-in-python3/helpers
-aoc-2021/aoc-2021-day-13/solution-in-python3/helpers
-aoc-2021/aoc-2021-day-14/solution-in-python3/helpers
+aoc-2021/aoc-2021-day-*/solution-in-python3/helpers
