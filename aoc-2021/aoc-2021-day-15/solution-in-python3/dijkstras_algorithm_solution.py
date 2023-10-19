@@ -10,7 +10,7 @@ from helpers import fileutils, grid, point
 
 def create_low_risk_path_grid(chiton_grid):
 
-    pq = [(0, 0, 0)] # Priority queue list, holding entries with total risk cost per point (x,y)
+    pq = [(0, point.Point2D(0, 0))] # Priority queue list, holding entries with total risk cost per point (x,y)
     heapq.heapify(pq)
     visited = set()
 
@@ -19,8 +19,7 @@ def create_low_risk_path_grid(chiton_grid):
 
     while len(pq) > 0:
         # Get next lowest total risk cost point (x,y)
-        c, x, y = heapq.heappop(pq)
-        p = point.Point2D(x,y)
+        c, p = heapq.heappop(pq)        
 
         # Avoid revisits
         if p in visited:
@@ -36,7 +35,7 @@ def create_low_risk_path_grid(chiton_grid):
         neighbouring_points = chiton_grid.get_cardinal_point_neighbours(p)
         for np in neighbouring_points:
             total_risk_value = int(chiton_grid.get_symbol(np)) + c
-            heapq.heappush(pq, (total_risk_value, np.get_x(), np.get_y()))
+            heapq.heappush(pq, (total_risk_value, np))
 
     return low_risk_path_grid
 
