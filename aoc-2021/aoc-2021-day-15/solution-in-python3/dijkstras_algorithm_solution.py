@@ -12,7 +12,7 @@ def create_low_risk_path_grid(chiton_grid):
     stop_point = point.Point2D(chiton_grid.get_width() -1, chiton_grid.get_height() -1)
 
     pq = [(0, start_point)] # Priority queue list, holding entries with total risk cost per point (x,y)
-    heapq.heapify(pq)
+    #heap = heapq.heapify(pq) # Transform a populated list into a heap 
     visited = set()
 
     low_risk_path_grid = grid.Grid2D(chiton_grid.get_width(), chiton_grid.get_height())
