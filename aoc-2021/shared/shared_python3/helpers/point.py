@@ -27,6 +27,12 @@ class Point2D():
     def __eq__(self,other) -> bool:
         return self.get_x() == other.get_x() and self.get_y() == other.get_y()
     
+    def __lt__(self, other) -> bool:
+        return self.get_x() < other.get_x() or self.get_y() < other.get_y()
+
+    def __le__(self, other) -> bool:
+        return self.get_x() <= other.get_x() or self.get_y() <= other.get_y()
+
     def __hash__(self):
         return hash(self.get_x()) + hash(self.get_y())
 
