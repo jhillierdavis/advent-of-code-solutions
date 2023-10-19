@@ -18,13 +18,13 @@ def lines_to_grid(input_lines):
     return grid
 
 
-def grid_to_lines(grid):
+def grid_to_lines(grid, separator:str=""):
     lines = []
     for h in range(grid.get_height()):
         line = ""
         for w in range(grid.get_width()):
             value = grid.get_symbol(point.Point2D(w,h))
-            line += str(value) + " "
+            line += str(value) + separator
         lines.append(line)
     return lines
             
