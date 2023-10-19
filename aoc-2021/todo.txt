@@ -1,8 +1,9 @@
 ToDo next
 ---------
 
-* aoc-2021-day-05 -> Fix broken unit tests
 * aoc-2021-day-15 -> Solve part 2
 
 Done recently
 -------------
+
+* aoc-2021-day-05 -> Fix broken unit tests -> Removed use of 'typing' module since not available before Python version 3.11: ImportError: cannot import name 'Self' from 'typing'

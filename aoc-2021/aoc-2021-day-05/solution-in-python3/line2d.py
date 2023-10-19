@@ -1,4 +1,4 @@
-from typing import Self
+# from typing import Self # Not available before Python version 3.11: ImportError: cannot import name 'Self' from 'typing'
 
 import point2d
 
@@ -55,5 +55,5 @@ class Line2D():
     def __str__(self):
         return f"Line2D(id={id(self)} , begin: {self.getBeginPoint()}, end: {self.getEndPoint()})"
     
-    def __eq__(self,other:Self) -> bool:
+    def __eq__(self,other) -> bool:
         return self.getBeginPoint() == other.getBeginPoint() and self.getEndPoint() == other.getEndPoint()    
