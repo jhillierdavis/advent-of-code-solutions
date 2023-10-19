@@ -1,21 +1,22 @@
-# TODO
-# Ref.s:
-# https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm 
-
-# Use Heap queue algorithm in Python3: https://docs.python.org/3/library/heapq.html
+# Solution implementation using Dijkstra's_algorithm (see https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm )
+#
+# NB: Use Heap queue algorithm in Python3: https://docs.python.org/3/library/heapq.html
 
 import heapq
 
+# Local
 from helpers import fileutils, grid, point
 
 def create_low_risk_path_grid(chiton_grid):
+    start_point = point.Point2D(0, 0)
+    stop_point = point.Point2D(chiton_grid.get_width() -1, chiton_grid.get_height() -1)
 
-    pq = [(0, point.Point2D(0, 0))] # Priority queue list, holding entries with total risk cost per point (x,y)
+    pq = [(0, start_point)] # Priority queue list, holding entries with total risk cost per point (x,y)
     heapq.heapify(pq)
     visited = set()
 
     low_risk_path_grid = grid.Grid2D(chiton_grid.get_width(), chiton_grid.get_height())
-    low_risk_path_grid.set_symbol(point.Point2D(0,0), 0)
+    low_risk_path_grid.set_symbol(start_point, 0)
 
     while len(pq) > 0:
         # Get next lowest total risk cost point (x,y)
@@ -26,12 +27,14 @@ def create_low_risk_path_grid(chiton_grid):
             continue # Ignore already visitied points (x,y) on grid
         visited.add(p)
 
+        # Track total risk score on (another same size) grid
         low_risk_path_grid.set_symbol(p, c)
 
         # Stop when reach target destination point
-        if p.get_x() == chiton_grid.get_width() -1 and p.get_y() == chiton_grid.get_height() -1:
+        if p == stop_point:
             break
 
+        # Process cardial point (north, south, east, west) immediate neighbours, adding combined risk
         neighbouring_points = chiton_grid.get_cardinal_point_neighbours(p)
         for np in neighbouring_points:
             total_risk_value = int(chiton_grid.get_symbol(np)) + c

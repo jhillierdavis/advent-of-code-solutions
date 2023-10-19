@@ -58,3 +58,22 @@ def test_equality():
     # And: equality as expected
     assert pa == pb
     assert pa != pc
+
+import heapq
+
+def test_with_heapq():
+    h = []
+    heapq.heappush(h, (5, Point2D(0, 1)))
+    heapq.heappush(h, (1, Point2D(2,1)))
+    heapq.heappush(h, (3, Point2D(1,1)))
+    heapq.heappush(h, (3, Point2D(1,0)))
+    heapq.heappush(h, (4, Point2D(1,2)))
+
+    #print(f"DEBUG: h={h}") # Sorted list (min. value first)
+
+    assert heapq.heappop(h) == (1, Point2D(2,1))
+    assert heapq.heappop(h)[0] == 3
+    assert heapq.heappop(h)[0] == 3
+    assert heapq.heappop(h)[0] == 4
+    assert heapq.heappop(h)[0] == 5
+    assert len(h) == 0 
