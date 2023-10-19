@@ -27,6 +27,9 @@ class Point2D():
     def __eq__(self,other) -> bool:
         return self.get_x() == other.get_x() and self.get_y() == other.get_y()
     
+    def __hash__(self):
+        return hash(self.get_x()) + hash(self.get_y())
+    
     def __lt__(self, other) -> bool:
         # E.g. for Heapq: to handle "Handle duplicate point values -> TypeError: '<' not supported between instances of 'Point2D' and 'Point2D'"
         return self.get_x() < other.get_x() or self.get_y() < other.get_y()
@@ -35,6 +38,4 @@ class Point2D():
         # E.g. for Heapq: to handle "Handle duplicate point values -> TypeError: '<' not supported between instances of 'Point2D' and 'Point2D'"
         return self.get_x() <= other.get_x() or self.get_y() <= other.get_y()
 
-    def __hash__(self):
-        return hash(self.get_x()) + hash(self.get_y())
 
