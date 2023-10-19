@@ -197,3 +197,15 @@ def test_merge():
     assert hg.count_symbol('#') == 5
 
 
+def test_clone_and_equals():
+    # Given: a test grid
+    g = create_populated_test_grid()
+
+    # When: cloned
+    cloned = g.clone()
+
+    # Then: not identical
+    assert g is not cloned
+
+    # But: equal (same symbol values at each equivalent point)
+    assert g == cloned
