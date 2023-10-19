@@ -24,7 +24,7 @@ def grid_to_lines(grid):
         line = ""
         for w in range(grid.get_width()):
             value = grid.get_symbol(point.Point2D(w,h))
-            line += str(value)
+            line += str(value) + " "
         lines.append(line)
     return lines
             
@@ -32,7 +32,7 @@ def grid_to_lines(grid):
 def display_grid(grid):
     lines = grid_to_lines(grid)
     for gl in lines:
-        print(f"Grid line: {gl}")
+        print(f"Grid line: {gl} ")
 
 
 class Grid2D():

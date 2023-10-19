@@ -1,7 +1,7 @@
 import pytest
 
 # Local
-import solution
+import solution, dijkstras_algorithm_solution
 
 @pytest.mark.parametrize(
     "filename,expected",
@@ -17,8 +17,9 @@ def test_calculate_initial_path_score(filename, expected):
     "filename,expected",
     [
         pytest.param("puzzle-input-example.txt", 40),
-        #pytest.param("puzzle-input-full.txt", 40),
+        pytest.param("puzzle-input-jhd-example.txt", 13),
+        pytest.param("puzzle-input-full.txt", 696), 
     ],    
 )
 def test_solution(filename, expected):
-    assert solution.calcuate_lowest_risk_score(filename) == expected
+    assert dijkstras_algorithm_solution.calcuate_lowest_risk_score(filename) == expected
