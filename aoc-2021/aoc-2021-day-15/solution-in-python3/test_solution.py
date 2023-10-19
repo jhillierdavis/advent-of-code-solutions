@@ -19,6 +19,7 @@ def test_calculate_initial_path_score(filename, expected):
         pytest.param("puzzle-input-example.txt", 40),
         pytest.param("puzzle-input-jhd-example.txt", 13),
         pytest.param("puzzle-input-full.txt", 696), 
+        pytest.param("puzzle-input-example-part2.txt", 315), # Part 2 larger grid (x5) 
     ],    
 )
 def test_solution(filename, expected):

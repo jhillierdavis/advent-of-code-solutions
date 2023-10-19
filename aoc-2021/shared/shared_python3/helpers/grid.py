@@ -29,8 +29,8 @@ def grid_to_lines(grid, separator:str=""):
     return lines
             
     
-def display_grid(grid):
-    lines = grid_to_lines(grid)
+def display_grid(grid, separator:str=""):
+    lines = grid_to_lines(grid, separator)
     for gl in lines:
         print(f"Grid line: {gl} ")
 

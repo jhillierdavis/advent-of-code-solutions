@@ -57,6 +57,6 @@ def calcuate_lowest_risk_score(filename):
     
     low_risk_path_grid = create_low_risk_path_grid(chiton_grid)
 
-    grid.display_grid(low_risk_path_grid)
+    grid.display_grid(low_risk_path_grid, " ")
 
     return get_grid_bottom_right_value(low_risk_path_grid)
