@@ -22,16 +22,16 @@ def test_point2d_valid_creation():
     # Then: check an instance is created
     assert p is not None
     assert type(p) is Point2D
-    assert p.getX() == 1
-    assert p.getY() == 2
+    assert p.get_x() == 1
+    assert p.get_y() == 2
 
 def test_point2d_accessors():
     # Given: a 2-D point
     p = Point2D(1,2)
 
     # Then: check that the X & Y co-ords are as provided
-    assert p.getX() == 1
-    assert p.getY() == 2
+    assert p.get_x() == 1
+    assert p.get_y() == 2
 
 def test_string_representation():
     # Given: a 2-D point

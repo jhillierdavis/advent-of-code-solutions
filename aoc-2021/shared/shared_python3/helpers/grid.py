@@ -57,18 +57,18 @@ class Grid2D():
     def get_symbol(self, coord:point.Point2D) -> chr:
         if not self.contains(coord):
             raise(ValueError(f"Point {coord} not within grid: {self}"))
-        return self.array[coord.getX()][coord.getY()]
+        return self.array[coord.get_x()][coord.get_y()]
 
     def set_symbol(self, coord:point.Point2D, symbol:chr):
         if not self.contains(coord):
             raise(ValueError(f"Point {coord} not within grid: {self}"))
-        self.array[coord.getX()][coord.getY()] = symbol
+        self.array[coord.get_x()][coord.get_y()] = symbol
 
     def contains(self, coord: point.Point2D) -> bool:
-        if coord.getX() < 0 or coord.getX() >= self.get_width():
+        if coord.get_x() < 0 or coord.get_x() >= self.get_width():
             return False
 
-        if coord.getY() < 0 or coord.getY() >= self.get_height():
+        if coord.get_y() < 0 or coord.get_y() >= self.get_height():
             return False
 
         return True
@@ -76,8 +76,8 @@ class Grid2D():
     def get_cardinal_point_neighbours(self, p:point.Point2D) -> set:
         neightbours = set()
 
-        x = p.getX()
-        y = p.getY()
+        x = p.get_x()
+        y = p.get_y()
 
         cardinal_points = [(x-1,y), (x+1,y), (x,y-1), (x,y+1)]
 
@@ -90,8 +90,8 @@ class Grid2D():
     def get_surrounding_neighbours(self, p:point.Point2D) -> set:
         neightbours = set()
 
-        x = p.getX()
-        y = p.getY()
+        x = p.get_x()
+        y = p.get_y()
 
         surrounding_points = [(x-1,y), (x+1,y), (x,y-1), (x,y+1),(x-1,y-1), (x+1,y+1), (x+1,y-1), (x-1,y+1)]
 
@@ -121,34 +121,34 @@ class Grid2D():
         return subgrid
     
     def get_subgrid_inclusive(self, start, end):
-        if start.getX() < 0 or start.getX() >= self.get_width():    
+        if start.get_x() < 0 or start.get_x() >= self.get_width():    
             raise ValueError(f"Invalid start point X value: {start}")
 
-        if start.getY() < 0 or start.getY() >= self.get_height():    
+        if start.get_y() < 0 or start.get_y() >= self.get_height():    
             raise ValueError(f"Invalid start point Y value: {start}")
 
-        if end.getX() < 0 or end.getX() >= self.get_width():    
+        if end.get_x() < 0 or end.get_x() >= self.get_width():    
             raise ValueError(f"Invalid end point X value: {end}")
 
-        if end.getY() < 0 or end.getY() >= self.get_height():    
+        if end.get_y() < 0 or end.get_y() >= self.get_height():    
             raise ValueError(f"Invalid end point Y value: {end}")
         
-        if start.getX() >= end.getX():
+        if start.get_x() >= end.get_x():
             raise ValueError(f"Invalid start and end X values: {start} {end}")
 
-        if start.getY() >= end.getY():
+        if start.get_y() >= end.get_y():
             raise ValueError(f"Invalid start and end Y values: {start} {end}")
 
-        width = 1 + end.getX() - start.getX()
-        height = 1 + end.getY() - start.getY()
+        width = 1 + end.get_x() - start.get_x()
+        height = 1 + end.get_y() - start.get_y()
         subgrid = Grid2D(width, height)
 
-        for x in range(start.getX(), 1 + end.getX()):
-            for y in range(start.getY(), 1 + end.getY()):                
+        for x in range(start.get_x(), 1 + end.get_x()):
+            for y in range(start.get_y(), 1 + end.get_y()):                
                 p = point.Point2D(x,y)
                 value = self.get_symbol(p)
 
-                sp = point.Point2D(x - start.getX(), y - start.getY())
+                sp = point.Point2D(x - start.get_x(), y - start.get_y())
                 #print(f"DEBUG: p={p} sp={sp}")                
                 subgrid.set_symbol(sp, value)
 

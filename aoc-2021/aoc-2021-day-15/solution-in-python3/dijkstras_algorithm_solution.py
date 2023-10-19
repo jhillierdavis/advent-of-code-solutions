@@ -30,22 +30,25 @@ def create_low_risk_path_grid(chiton_grid):
         low_risk_path_grid.set_symbol(p, c)
 
         # Stop when reach target destination point
-        if p.getX() == chiton_grid.get_width() -1 and p.getY() == chiton_grid.get_height() -1:
+        if p.get_x() == chiton_grid.get_width() -1 and p.get_y() == chiton_grid.get_height() -1:
             break
 
         neighbouring_points = chiton_grid.get_cardinal_point_neighbours(p)
         for np in neighbouring_points:
             total_risk_value = int(chiton_grid.get_symbol(np)) + c
-            heapq.heappush(pq, (total_risk_value, np.getX(), np.getY()))
+            heapq.heappush(pq, (total_risk_value, np.get_x(), np.get_y()))
 
     return low_risk_path_grid
+
 
 def create_chiton_grid_from_file(filename):
     lines = fileutils.get_file_lines(filename)
     return grid.lines_to_grid(lines)
 
+
 def get_grid_bottom_right_value(low_risk_path_grid):
     return int(low_risk_path_grid.get_symbol(point.Point2D(low_risk_path_grid.get_width() -1, low_risk_path_grid.get_height() -1)))
+
 
 def calcuate_lowest_risk_score(filename):
     chiton_grid = create_chiton_grid_from_file(filename)

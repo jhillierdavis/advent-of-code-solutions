@@ -12,21 +12,21 @@ class Point2D():
         self.x = x
         self.y = y
     
-    def getX(self) -> int:
+    def get_x(self) -> int:
         return self.x
     
-    def getY(self) -> int:
+    def get_y(self) -> int:
         return self.y
     
     def __str__(self) -> str:
-        return f"Point2D(id={id(self)} , x: {self.getX()}, y: {self.getY()})"
+        return f"Point2D(id={id(self)} , x: {self.get_x()}, y: {self.get_y()})"
     
     def __repr__(self) -> str:
         return str(self)
     
     def __eq__(self,other) -> bool:
-        return self.getX() == other.getX() and self.getY() == other.getY()
+        return self.get_x() == other.get_x() and self.get_y() == other.get_y()
     
     def __hash__(self):
-        return hash(self.getX()) + hash(self.getY())
+        return hash(self.get_x()) + hash(self.get_y())
 

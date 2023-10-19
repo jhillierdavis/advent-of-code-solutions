@@ -2,8 +2,8 @@ from helpers import grid, fileutils, point
 
 
 def get_next_lowest_risk_point(citon_grid:grid.Grid2D, current_point):
-    x = current_point.getX()
-    y = current_point.getY()
+    x = current_point.get_x()
+    y = current_point.get_y()
 
     point_next_down = point.Point2D(x, y+1)
     point_next_across = point.Point2D(x+1, y)
@@ -27,7 +27,7 @@ def calculate_initial_path_score(citon_grid:grid.Grid2D):
     current_point = point.Point2D(0,0)
 
     score = 0
-    while not (current_point.getX() >= citon_grid.get_width() - 1 and current_point.getY() >= citon_grid.get_height() -1):
+    while not (current_point.get_x() >= citon_grid.get_width() - 1 and current_point.get_y() >= citon_grid.get_height() -1):
         current_point = get_next_lowest_risk_point(citon_grid, current_point)
         score += int(citon_grid.get_symbol(current_point))
 
@@ -39,8 +39,8 @@ def calculate_initial_path_score_from_file(filename):
     return calculate_initial_path_score(citon_grid)
 
 def add_score(scores, citon_grid:grid.Grid2D, current_point, current_score):
-    x = current_point.getX()
-    y = current_point.getY()
+    x = current_point.get_x()
+    y = current_point.get_y()
     
     new_score = current_score
     if not (x == 0 and y == 0):
@@ -60,12 +60,12 @@ def add_score(scores, citon_grid:grid.Grid2D, current_point, current_score):
     
     
     if False:
-        x = current_point.getX() 
+        x = current_point.get_x() 
         if x < citon_grid.get_width() - 1:
             x += 1
 
-        y =  current_point.getY()
-        if current_point.getY() < citon_grid.get_height() - 1:  
+        y =  current_point.get_y()
+        if current_point.get_y() < citon_grid.get_height() - 1:  
             y += 1          
 
         add_score(scores, citon_grid, point.Point2D(x, y), new_score)
