@@ -1,9 +1,12 @@
 ToDo next
 ---------
 
-* aoc-2021-day-15 -> Solve part 2
+* aoc-2021-day-16 -> Solve part 1
+* Grid -> Refeactor to better support integer values
+
 
 Done recently
 -------------
 
+* aoc-2021-day-15 -> Solve part 2
 * aoc-2021-day-05 -> Fix broken unit tests -> Removed use of 'typing' module since not available before Python version 3.11: ImportError: cannot import name 'Self' from 'typing'
