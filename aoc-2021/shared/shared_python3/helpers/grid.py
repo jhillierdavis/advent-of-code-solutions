@@ -17,6 +17,22 @@ def lines_to_grid(input_lines):
 
     return grid
 
+def lines_to_integer_grid(input_lines):
+    height = len(input_lines)
+    width = len(input_lines[0])
+
+    grid = Grid2D(width, height)
+
+    y = 0
+    for line in input_lines:
+        for x in range(width):
+            p = point.Point2D(x, y)
+            int_value = int(line[x])
+            grid.set_symbol(p, int_value)
+        y += 1
+
+    return grid
+
 
 def grid_to_lines(grid, separator:str=""):
     lines = []

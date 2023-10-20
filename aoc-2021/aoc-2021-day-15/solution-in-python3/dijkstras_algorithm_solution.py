@@ -45,7 +45,7 @@ def create_low_risk_path_grid(chiton_grid):
 
 def create_chiton_grid_from_file(filename):
     lines = fileutils.get_file_lines(filename)
-    return grid.lines_to_grid(lines)
+    return grid.lines_to_integer_grid(lines)
 
 
 def get_grid_bottom_right_value(low_risk_path_grid):

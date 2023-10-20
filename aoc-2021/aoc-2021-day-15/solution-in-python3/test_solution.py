@@ -25,6 +25,7 @@ def test_calculate_initial_path_score(filename, expected):
 def test_solution(filename, expected):
     assert dijkstras_algorithm_solution.calcuate_lowest_risk_score(filename) == expected
 
+
 @pytest.mark.parametrize(
     "filename,expected",
     [
@@ -41,3 +42,21 @@ def test_procedurally_generated_grid(filename, expected):
 
     # Then: the expected (larger) grid is generated
     assert procedurally_generated_grid == expected_grid
+
+
+@pytest.mark.parametrize(
+    "filename,expected",
+    [
+        pytest.param("puzzle-input-example.txt", 315),
+        pytest.param("puzzle-input-full.txt", 2952),
+    ],    
+)
+def test_risk_for_procedurally_generated_grid(filename, expected):
+    original_grid = dijkstras_algorithm_solution.create_chiton_grid_from_file(filename)
+
+    # When: a new grid is generated (based on the original)
+    procedurally_generated_grid = procedural_generation_solution.spawn_grid_from(original_grid)
+
+    low_risk_path_grid = dijkstras_algorithm_solution.create_low_risk_path_grid(procedurally_generated_grid)
+    risk = dijkstras_algorithm_solution.get_grid_bottom_right_value(low_risk_path_grid)
+    assert risk == expected
