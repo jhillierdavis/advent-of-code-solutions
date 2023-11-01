@@ -1,47 +1,7 @@
 import pytest
 
-
-"""
-def hex_to_binary(hex_string:str) -> str:
-    #return format(int(hex_str, 16), "040b")
-    # Convert the hexadecimal string to an integer using the base 16  
-    hex_integer = int(hex_string, 16)  
-    # Convert the integer to binary using the bin() function  
-    binary_string = bin(hex_integer)  
-    # Remove the '0b' prefix from the binary string  
-    binary_string = binary_string[2:] 
-    return binary_string
-"""
-
-def create_hex_to_binary_map():
-    map = {}
-
-    map['0'] = '0000'
-    map['1'] = '0001'
-    map['2'] = '0010'
-    map['3'] = '0011'
-    map['4'] = '0100'
-    map['5'] = '0101'
-    map['6'] = '0110'
-    map['7'] = '0111'
-    map['8'] = '1000'
-    map['9'] = '1001'
-    map['A'] = '1010'
-    map['A'] = '1010'
-    map['B'] = '1011'
-    map['C'] = '1100'
-    map['D'] = '1101'
-    map['E'] = '1110'
-    map['F'] = '1111'
-
-    return map
-
-def hex_to_binary(map, hex_string:str) -> str:
-    binary_string = ""
-    for i in range(len(hex_string)):
-        binary_string += map[ hex_string[i] ]
-    return binary_string
-
+# Local
+import solution
 
 @pytest.mark.parametrize(
     "hex_str,expected",
@@ -52,23 +12,59 @@ def hex_to_binary(map, hex_string:str) -> str:
     ],    
 )
 def test_hex_to_binary(hex_str, expected):
-    map = create_hex_to_binary_map()
-    assert hex_to_binary(map, hex_str) == expected
+    map = solution.create_hex_to_binary_map()
+    assert solution.hex_to_binary(map, hex_str) == expected
 
 
-def get_version_sum(hex_string:str) -> int:
-    map = create_hex_to_binary_map()
-    binary_string = hex_to_binary(map, hex_string)
-    print(f"DEBUG: binary_string={binary_string}")
-    return 0
+@pytest.mark.parametrize(
+    "hex_string, expected_version, expected_type_id, expected_literal_value",
+    [
+        pytest.param("D2FE28", 6, 4, 2021),
+    ],    
+)
+def test_literal_packet(hex_string, expected_version, expected_type_id, expected_literal_value):
+    # When:
+    packet = solution.Packet(hex_string)
 
+    # Then: packet type is as expected
+    assert packet.is_literal() == True
+    assert packet.is_operator() == False
+
+    # Then: packet has expected literal attributes
+    assert packet.get_version() == expected_version
+    assert packet.get_type_id() == expected_type_id
+    assert packet.get_literal_value() == expected_literal_value
+
+
+@pytest.mark.parametrize(
+    "hex_string, expected_version, expected_type_id, expected_length_type_id, expected_sub_packet_literals",
+    [
+        pytest.param("38006F45291200", 1, 6, 0, [10,20]),
+        pytest.param("EE00D40C823060", 7, 3, 1, [1,2,3])
+    ],    
+)
+def test_operator_packet(hex_string, expected_version, expected_type_id, expected_length_type_id, expected_sub_packet_literals):
+   # When:
+    packet = solution.Packet(hex_string)
+
+    # Then: packet type is as expected
+    assert packet.is_operator() == True
+    assert packet.is_literal() == False
+
+    # Then: packet has expected literal attributes
+    assert packet.get_version() == expected_version
+    assert packet.get_type_id() == expected_type_id
+    assert packet.get_length_type_id() == expected_length_type_id
+    assert packet.get_sub_packet_literals() == expected_sub_packet_literals
 
 
 @pytest.mark.parametrize(
     "hex_string,expected",
     [
         pytest.param("8A004A801A8002F478", 16),
+        #pytest.param("620080001611562C8802118E34", 23),
+        #pytest.param("A0016C880162017C3686B18A3D4780", 31),
     ],    
 )
 def test_version_sum(hex_string, expected):
-    assert get_version_sum(hex_string) == expected
+    assert solution.get_version_sum(hex_string) == expected
