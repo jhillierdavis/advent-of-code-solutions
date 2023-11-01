@@ -62,7 +62,7 @@ def test_operator_packet(hex_string, expected_version, expected_type_id, expecte
     "hex_string,expected",
     [
         pytest.param("8A004A801A8002F478", 16),
-        #pytest.param("620080001611562C8802118E34", 23),
+        pytest.param("620080001611562C8802118E34", 23),
         #pytest.param("A0016C880162017C3686B18A3D4780", 31),
     ],    
 )
