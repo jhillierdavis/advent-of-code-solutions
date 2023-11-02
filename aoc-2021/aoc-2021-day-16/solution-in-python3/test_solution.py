@@ -61,9 +61,10 @@ def test_operator_packet(hex_string, expected_version, expected_type_id, expecte
 @pytest.mark.parametrize(
     "hex_string,expected",
     [
-        pytest.param("8A004A801A8002F478", 16),
-        pytest.param("620080001611562C8802118E34", 23),
-        #pytest.param("A0016C880162017C3686B18A3D4780", 31),
+        pytest.param("8A004A801A8002F478", 16), # operator packet (version 4) which contains an operator packet (version 1) which contains an operator packet (version 5) which contains a literal value (version 6)
+        pytest.param("620080001611562C8802118E34", 12), # operator packet (version 3) which contains two sub-packets; each sub-packet is an operator packet that contains two literal values
+        #pytest.param("C0015000016115A2E0802F182340",23), # has the same structure as the previous example, but the outermost packet uses a different length type ID
+        #pytest.param("A0016C880162017C3686B18A3D4780", 31), # operator packet that contains an operator packet that contains an operator packet that contains five literal values
     ],    
 )
 def test_version_sum(hex_string, expected):
