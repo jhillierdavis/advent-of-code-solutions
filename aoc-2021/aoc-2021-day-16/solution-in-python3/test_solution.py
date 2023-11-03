@@ -17,14 +17,16 @@ def test_hex_to_binary(hex_str, expected):
 
 
 @pytest.mark.parametrize(
-    "hex_string, expected_version, expected_type_id, expected_literal_value",
+    "hex_string, expected_version, expected_type_id, expected_literal_value_as_binary_string, expected_literal_value",
     [
-        pytest.param("D2FE28", 6, 4, 2021),
+        pytest.param("D2FE28", 6, 4, "011111100101", 2021),
+        pytest.param("D2FEA84", 6, 4, "0111111001010001", 32337), 
     ],    
 )
-def test_literal_packet(hex_string, expected_version, expected_type_id, expected_literal_value):
+def test_literal_packet(hex_string, expected_version, expected_type_id, expected_literal_value_as_binary_string, expected_literal_value):
     # When:
-    packet = solution.Packet(hex_string)
+    #packet = solution.Packet(hex_string)
+    packet = solution.parse_to_packet(hex_string)
 
     # Then: packet type is as expected
     assert packet.is_literal() == True
@@ -33,6 +35,7 @@ def test_literal_packet(hex_string, expected_version, expected_type_id, expected
     # Then: packet has expected literal attributes
     assert packet.get_version() == expected_version
     assert packet.get_type_id() == expected_type_id
+    assert packet.get_literal_value_as_binary_string() == expected_literal_value_as_binary_string
     assert packet.get_literal_value() == expected_literal_value
 
 
@@ -45,7 +48,8 @@ def test_literal_packet(hex_string, expected_version, expected_type_id, expected
 )
 def test_operator_packet(hex_string, expected_version, expected_type_id, expected_length_type_id, expected_sub_packet_literals):
    # When:
-    packet = solution.Packet(hex_string)
+    #packet = solution.Packet(hex_string)
+    packet = solution.parse_to_packet(hex_string)
 
     # Then: packet type is as expected
     assert packet.is_operator() == True
@@ -55,7 +59,7 @@ def test_operator_packet(hex_string, expected_version, expected_type_id, expecte
     assert packet.get_version() == expected_version
     assert packet.get_type_id() == expected_type_id
     assert packet.get_length_type_id() == expected_length_type_id
-    assert packet.get_sub_packet_literals() == expected_sub_packet_literals
+    assert packet.get_sub_packet_literals() == expected_sub_packet_literals # TODO
 
 
 @pytest.mark.parametrize(
@@ -69,3 +73,4 @@ def test_operator_packet(hex_string, expected_version, expected_type_id, expecte
 )
 def test_version_sum(hex_string, expected):
     assert solution.get_version_sum(hex_string) == expected
+    pass # TODO

@@ -52,35 +52,26 @@ def get_packet_version_sum_recursively(packet) -> int:
     return version_sum
 
 def get_version_sum(hex_string:str) -> int:
-    map = create_hex_to_binary_map()
-    binary_string = hex_to_binary(map, hex_string)
-    #print(f"DEBUG: binary_string={binary_string}")
-    packet = Packet(binary_string, False)
-    
+    packet = parse_to_packet(hex_string)    
     return get_packet_version_sum_recursively(packet)
 
 
 class Packet():
-    _map = create_hex_to_binary_map()
 
-    def __init__(self, input_string, is_hex:bool=True):        
-        if not input_string:
-            raise ValueError("Empty string provided!")
+    def __init__(self, binary_string):
+        self.binary_string = binary_string
 
-        self.binary = hex_to_binary(self._map, input_string) if is_hex else input_string
+        version = int(binary_string[0:3], 2)
+        type_id = int(binary_string[3:6], 2)
 
-    
+        self.version = version
+        self.type_id = type_id
+
     def get_version(self):
-        version_str = self.binary[0:3]
-        #print(f"DEBUG: [Packet.get_version] self.binary={self.binary} version_str={version_str}")
-        return int(version_str, 2)
+        return self.version
     
     def get_type_id(self):
-        type_id_str = self.binary[3:6]
-        return int(type_id_str, 2)   
-
-    def get_literal_value(self):
-        return int(self.binary[7:11] + self.binary[12:16] + self.binary[17:21], 2)
+        return self.type_id
     
     def is_literal(self) -> bool:
         return self.get_type_id() == 4
@@ -88,28 +79,22 @@ class Packet():
     def is_operator(self) -> bool:
         return not self.is_literal()
     
-    def get_length_type_id(self):
-        return int(self.binary[6:7])
-    
-    def get_sub_packets(self):
-        print(f"DEBUG: [Packet.get_sub_packets] packet={self}")
-        sub_packets = []
-
-        if self.get_length_type_id() == 0:
-            packets = self.get_length_type_zero_sub_packets()
-            for p in packets:
-                sub_packets.append(p)
+    def get_sub_packets(self) -> []:
+        if self.is_literal():
+            return None
+        
+        length_type_id = int(self.binary_string[6:7]) 
+        if length_type_id == 0:
+            sub_packets = self.get_length_type_zero_sub_packets()
         else:   
-            packets = self.get_length_type_one_sub_packets()
-            for p in packets:
-                sub_packets.append(p)
-                
-        return sub_packets    
+            sub_packets = self.get_length_type_one_sub_packets()
+        return sub_packets
+
 
     def get_length_type_zero_sub_packets(self):   
         #print(f"DEBUG: [get_length_type_zero_sub_packets] for packet={self}")
         packets = []
-        str_length = self.binary[7:22] # 15 bits
+        str_length = self.binary_string[7:22] # 15 bits
         #assert len(str_length) == 15, f"str_length={str_length}"
         if len(str_length) < 15:
             return packets
@@ -120,19 +105,19 @@ class Packet():
         number_of_packets = length//11
         for i in range(number_of_packets):
             offset = 22 + (i*11)
-            binary_str = self.binary[offset:22 + length] if i == (number_of_packets - 1) else self.binary[offset:offset+11]
+            binary_str = self.binary_string[offset:22 + length] if i == (number_of_packets - 1) else self.binary_string[offset:offset+11]
 
             #hex_str = binary_to_hex(binary_str)
             if binary_str:
                 #print(f"DEBUG: binary_str={binary_str}")
-                packet = Packet(binary_str, False)
+                packet = Packet(binary_str)
                 packets.append(packet)
         return packets
     
     def get_length_type_one_sub_packets(self):
         #print(f"DEBUG: [get_length_type_one_sub_packets] for packet={self}")
         packets = []
-        str_length = self.binary[7:18] # 11 bits
+        str_length = self.binary_string[7:18] # 11 bits
         #assert len(str_length) == 11, f"str_length={str_length}"
         if len(str_length) < 11:
             return packets
@@ -140,20 +125,43 @@ class Packet():
         number_of_sub_packets = int(str_length,2) 
         #print(f"DEBUG: [get_length_type_one_sub_packets] number_of_sub_packets: {number_of_sub_packets}")
         if 1 == number_of_sub_packets:
-            binary_str = self.binary[18:].strip()
+            binary_str = self.binary_string[18:].strip()
             if binary_str:
-                packet = Packet(binary_str, False)
+                packet = Packet(binary_str)
                 packets.append(packet)
         else:
             for i in range(number_of_sub_packets):
                 offset = 18 + (i * 11)
-                binary_str = self.binary[offset:offset+11].strip()
+                binary_str = self.binary_string[offset:offset+11].strip()
                 #hex_str = binary_to_hex(binary_str)                
                 if binary_str:
                     #print(f"DEBUG: i={i} binary_str={binary_str}")
-                    packet = Packet(binary_str, False)
+                    packet = Packet(binary_str)
                     packets.append(packet)
         return packets
+
+
+    def get_literal_value_as_binary_string(self):
+        if not self.is_literal():
+            raise Exception("Not a literal packet!")
+
+        value = ""
+        i = 6
+        end = False         
+        while not end:
+            if self.binary_string[i] == "0": # indicates last value packet
+                end = True
+            value += self.binary_string[i+1:i+5]
+            i += 5
+        return value
+
+    def get_literal_value(self):
+        return int(self.get_literal_value_as_binary_string(), 2)
+    
+    def get_length_type_id(self):
+        if not self.is_operator():
+            raise Exception("Not an operator packet!")        
+        return int(self.binary_string[6:7])
     
     def get_sub_packet_literals(self):
         sub_packets = []
@@ -167,12 +175,18 @@ class Packet():
             for p in packets:
                 sub_packets.append(p.get_literal_value())
         return sub_packets
-    
 
     def __str__(self):
         readable = "Packet: id: " + str(id(self)) \
-            + ", binary: " + self.binary \
             + ", version: " + str(self.get_version()) \
-            + ", type_id: " + str(self.get_type_id()) \
-            + ", literal: " + str(self.is_literal())                                               
+            + ", type_id: " + str(self.get_type_id())                                           
         return readable
+
+
+
+
+def parse_to_packet(hex_string):
+    map = create_hex_to_binary_map()
+    binary_string = hex_to_binary(map, hex_string)
+    
+    return Packet(binary_string)
