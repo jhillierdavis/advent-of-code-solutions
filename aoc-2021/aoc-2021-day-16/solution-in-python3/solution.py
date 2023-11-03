@@ -44,7 +44,7 @@ def hex_to_binary(map, hex_string:str) -> str:
 #    return '%08X' % int(binary_str, 2)    
 
 def get_packet_version_sum_recursively(packet) -> int:
-    #print(f"DEBUG: [get_packet_version_sum_recursively] packet={packet}")
+    print(f"DEBUG: [get_packet_version_sum_recursively] packet={packet}")
     version_sum = packet.get_version()
     if packet.is_operator():
         for p in packet.get_sub_packets():        
@@ -59,6 +59,7 @@ def get_version_sum(hex_string:str) -> int:
 class Packet():
 
     def __init__(self, binary_string):
+        print(f"DEBUG: Constructing packet from binary_string: {binary_string}")
         self.binary_string = binary_string
 
         version = int(binary_string[0:3], 2)
@@ -83,6 +84,9 @@ class Packet():
         if self.is_literal():
             return None
         
+        if self.binary_string == "" or int(self.binary_string) == 0:
+            return []
+        
         length_type_id = int(self.binary_string[6:7]) 
         if length_type_id == 0:
             sub_packets = self.get_length_type_zero_sub_packets()
@@ -92,17 +96,19 @@ class Packet():
 
 
     def get_length_type_zero_sub_packets(self):   
-        #print(f"DEBUG: [get_length_type_zero_sub_packets] for packet={self}")
-        packets = []
+        print(f"DEBUG: [get_length_type_zero_sub_packets] for packet={self}")
+        
+        
         str_length = self.binary_string[7:22] # 15 bits
-        #assert len(str_length) == 15, f"str_length={str_length}"
+        #assert len(str_length) == 15, f"str_length={str_length}"   
         if len(str_length) < 15:
-            return packets
+            return []     
         
         length = int(str_length,2)
         #print(f"DEBUG: [get_length_type_zero_sub_packets] length={length}")
 
-        number_of_packets = length//11
+        packets = []
+        number_of_packets = length//11  # TODO: Cannot assume literals!
         for i in range(number_of_packets):
             offset = 22 + (i*11)
             binary_str = self.binary_string[offset:22 + length] if i == (number_of_packets - 1) else self.binary_string[offset:offset+11]
@@ -111,33 +117,27 @@ class Packet():
             if binary_str:
                 #print(f"DEBUG: binary_str={binary_str}")
                 packet = Packet(binary_str)
-                packets.append(packet)
+                packets.append(packet)        
         return packets
     
     def get_length_type_one_sub_packets(self):
-        #print(f"DEBUG: [get_length_type_one_sub_packets] for packet={self}")
-        packets = []
+        print(f"DEBUG: [get_length_type_one_sub_packets] for packet={self}")
+        
         str_length = self.binary_string[7:18] # 11 bits
-        #assert len(str_length) == 11, f"str_length={str_length}"
+        assert len(str_length) == 11, f"str_length={str_length}"
         if len(str_length) < 11:
-            return packets
+            return []
 
+        packets = []
         number_of_sub_packets = int(str_length,2) 
         #print(f"DEBUG: [get_length_type_one_sub_packets] number_of_sub_packets: {number_of_sub_packets}")
-        if 1 == number_of_sub_packets:
-            binary_str = self.binary_string[18:].strip()
+        for i in range(number_of_sub_packets):
+            offset = 18 + (i * 11)
+            binary_str = self.binary_string[offset:] if i >= (number_of_sub_packets - 1) else  self.binary_string[offset:offset+11]
             if binary_str:
+                print(f"DEBUG:  get_length_type_one_sub_packets i={i} number_of_sub_packet={number_of_sub_packets} binary_str={binary_str}")
                 packet = Packet(binary_str)
                 packets.append(packet)
-        else:
-            for i in range(number_of_sub_packets):
-                offset = 18 + (i * 11)
-                binary_str = self.binary_string[offset:offset+11].strip()
-                #hex_str = binary_to_hex(binary_str)                
-                if binary_str:
-                    #print(f"DEBUG: i={i} binary_str={binary_str}")
-                    packet = Packet(binary_str)
-                    packets.append(packet)
         return packets
 
 
@@ -178,8 +178,9 @@ class Packet():
 
     def __str__(self):
         readable = "Packet: id: " + str(id(self)) \
+            + ", binary_string: " + self.binary_string \
             + ", version: " + str(self.get_version()) \
-            + ", type_id: " + str(self.get_type_id())                                           
+            + ", type_id: " + str(self.get_type_id())     
         return readable
 
 
@@ -189,4 +190,5 @@ def parse_to_packet(hex_string):
     map = create_hex_to_binary_map()
     binary_string = hex_to_binary(map, hex_string)
     
+    print(f"DEBUG: hex_string: {hex_string} binary_string: {binary_string}")
     return Packet(binary_string)

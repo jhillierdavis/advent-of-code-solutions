@@ -73,4 +73,4 @@ def test_operator_packet(hex_string, expected_version, expected_type_id, expecte
 )
 def test_version_sum(hex_string, expected):
     assert solution.get_version_sum(hex_string) == expected
-    pass # TODO
+    #pass # TODO
