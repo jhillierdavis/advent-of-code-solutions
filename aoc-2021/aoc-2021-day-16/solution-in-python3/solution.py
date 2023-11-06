@@ -1,14 +1,3 @@
-"""
-def hex_to_binary(hex_string:str) -> str:
-    #return format(int(hex_str, 16), "040b")
-    # Convert the hexadecimal string to an integer using the base 16  
-    hex_integer = int(hex_string, 16)  
-    # Convert the integer to binary using the bin() function  
-    binary_string = bin(hex_integer)  
-    # Remove the '0b' prefix from the binary string  
-    binary_string = binary_string[2:] 
-    return binary_string
-"""
 
 def create_hex_to_binary_map():
     map = {}
@@ -40,33 +29,95 @@ def hex_to_binary(map, hex_string:str) -> str:
     return binary_string
 
 
-#def binary_to_hex(binary_str):
-#    return '%08X' % int(binary_str, 2)    
+def parse_hex_string_to_packet(hex_string:str):
+    map = create_hex_to_binary_map()
+    binary_string = hex_to_binary(map, hex_string)
+    
+    print(f"DEBUG: hex_string: {hex_string} binary_string: {binary_string}")
+    return parse_binary_string_to_packet(binary_string)
 
-def get_packet_version_sum_recursively(packet) -> int:
-    print(f"DEBUG: [get_packet_version_sum_recursively] packet={packet}")
-    version_sum = packet.get_version()
-    if packet.is_operator():
-        for p in packet.get_sub_packets():        
-            version_sum += get_packet_version_sum_recursively(p)
+
+def get_version_sum_for_packet(packet) -> int:
+    version_sum = packet.get_header().get_version()
+    print(f"DEBUG: version_sum={version_sum} for {packet}")
+    if packet.get_header().is_operator():
+        for sp in packet.get_sub_packets():
+            version_sum += get_version_sum_for_packet(sp)
     return version_sum
 
+
 def get_version_sum(hex_string:str) -> int:
-    packet = parse_to_packet(hex_string)    
-    return get_packet_version_sum_recursively(packet)
+    packet = parse_hex_string_to_packet(hex_string)
+    return get_version_sum_for_packet(packet)
 
 
-class Packet():
+def parse_binary_string_to_packet(binary_string:str):
+
+    if len(binary_string) <= 7:
+        return None
+
+    packet_header = PacketHeader(binary_string)
+    packet = None
+    if packet_header.is_literal():
+        value = ""
+        i = 6
+        end = False         
+        while not end:
+            if binary_string[i] == "0": # indicates last value packet
+                end = True
+            value += binary_string[i+1:i+5]
+            i += 5
+        packet = PacketLiteral(packet_header, value)
+    else:
+        packet = PacketOperator(packet_header, int(binary_string[6]))
+        if packet.get_operator_type_id() == 0:
+            value = binary_string[7:22]
+            num_bits = int(value, base=2)
+            packet.set_body(binary_string[7:22+num_bits])
+            first_sub_packet = binary_string[22:22+num_bits]
+            #print(f"DEBUG: first_sub_packet={first_sub_packet}")
+            sub_packet = parse_binary_string_to_packet(first_sub_packet)
+            packet.add_sub_packet(sub_packet)
+            if sub_packet and sub_packet.get_size() < num_bits:
+                remainder = binary_string[22+sub_packet.get_size():22+num_bits]
+                print(f"DEBUG: first packet remainder={remainder}")
+                sub_packet = parse_binary_string_to_packet(binary_string[22+sub_packet.get_size()+1:22+num_bits])
+                packet.add_sub_packet(sub_packet)
+            remainder = binary_string[22+num_bits:]
+            print(f"DEBUG: remainder={remainder}")
+            packet.add_sub_packet(parse_binary_string_to_packet(remainder))
+        else:
+            offset = 18
+            num_packs = int(binary_string[7:offset], base=2)
+            print(f"Number of packs: {num_packs}")
+            for i in range(num_packs):
+                next_packet = parse_binary_string_to_packet(binary_string[offset:])
+                if next_packet:
+                    packet.add_sub_packet(next_packet)                
+                    offset += next_packet.get_size() + 1
+            
+
+    return packet
+
+
+class PacketHeader():
 
     def __init__(self, binary_string):
-        print(f"DEBUG: Constructing packet from binary_string: {binary_string}")
-        self.binary_string = binary_string
+        print(f"DEBUG: Constructing packet header from binary_string: {binary_string}")
+
+        self.bits = binary_string[0:6]
 
         version = int(binary_string[0:3], 2)
         type_id = int(binary_string[3:6], 2)
 
         self.version = version
         self.type_id = type_id
+
+    def get_bits(self):
+        return self.bits
+    
+    def get_size(self):
+        return len(self.bits)
 
     def get_version(self):
         return self.version
@@ -80,115 +131,80 @@ class Packet():
     def is_operator(self) -> bool:
         return not self.is_literal()
     
-    def get_sub_packets(self) -> []:
-        if self.is_literal():
-            return None
-        
-        if self.binary_string == "" or int(self.binary_string) == 0:
-            return []
-        
-        length_type_id = int(self.binary_string[6:7]) 
-        if length_type_id == 0:
-            sub_packets = self.get_length_type_zero_sub_packets()
-        else:   
-            sub_packets = self.get_length_type_one_sub_packets()
-        return sub_packets
-
-
-    def get_length_type_zero_sub_packets(self):   
-        print(f"DEBUG: [get_length_type_zero_sub_packets] for packet={self}")
-        
-        
-        str_length = self.binary_string[7:22] # 15 bits
-        #assert len(str_length) == 15, f"str_length={str_length}"   
-        if len(str_length) < 15:
-            return []     
-        
-        length = int(str_length,2)
-        #print(f"DEBUG: [get_length_type_zero_sub_packets] length={length}")
-
-        packets = []
-        number_of_packets = length//11  # TODO: Cannot assume literals!
-        for i in range(number_of_packets):
-            offset = 22 + (i*11)
-            binary_str = self.binary_string[offset:22 + length] if i == (number_of_packets - 1) else self.binary_string[offset:offset+11]
-
-            #hex_str = binary_to_hex(binary_str)
-            if binary_str:
-                #print(f"DEBUG: binary_str={binary_str}")
-                packet = Packet(binary_str)
-                packets.append(packet)        
-        return packets
-    
-    def get_length_type_one_sub_packets(self):
-        print(f"DEBUG: [get_length_type_one_sub_packets] for packet={self}")
-        
-        str_length = self.binary_string[7:18] # 11 bits
-        assert len(str_length) == 11, f"str_length={str_length}"
-        if len(str_length) < 11:
-            return []
-
-        packets = []
-        number_of_sub_packets = int(str_length,2) 
-        #print(f"DEBUG: [get_length_type_one_sub_packets] number_of_sub_packets: {number_of_sub_packets}")
-        for i in range(number_of_sub_packets):
-            offset = 18 + (i * 11)
-            binary_str = self.binary_string[offset:] if i >= (number_of_sub_packets - 1) else  self.binary_string[offset:offset+11]
-            if binary_str:
-                print(f"DEBUG:  get_length_type_one_sub_packets i={i} number_of_sub_packet={number_of_sub_packets} binary_str={binary_str}")
-                packet = Packet(binary_str)
-                packets.append(packet)
-        return packets
-
-
-    def get_literal_value_as_binary_string(self):
-        if not self.is_literal():
-            raise Exception("Not a literal packet!")
-
-        value = ""
-        i = 6
-        end = False         
-        while not end:
-            if self.binary_string[i] == "0": # indicates last value packet
-                end = True
-            value += self.binary_string[i+1:i+5]
-            i += 5
-        return value
-
-    def get_literal_value(self):
-        return int(self.get_literal_value_as_binary_string(), 2)
-    
-    def get_length_type_id(self):
-        if not self.is_operator():
-            raise Exception("Not an operator packet!")        
-        return int(self.binary_string[6:7])
-    
-    def get_sub_packet_literals(self):
-        sub_packets = []
-        
-        if self.get_length_type_id() == 0:
-            packets = self.get_length_type_zero_sub_packets()
-            for p in packets:
-                sub_packets.append(p.get_literal_value())
-        else:   
-            packets = self.get_length_type_one_sub_packets()
-            for p in packets:
-                sub_packets.append(p.get_literal_value())
-        return sub_packets
+    def __repr__(self) -> str:
+        return str(self)
 
     def __str__(self):
-        readable = "Packet: id: " + str(id(self)) \
-            + ", binary_string: " + self.binary_string \
+        readable = "PacketHeader: id: " + str(id(self)) \
+            + ", bits: " + self.get_bits() \
             + ", version: " + str(self.get_version()) \
-            + ", type_id: " + str(self.get_type_id())     
+            + ", type_id: " + str(self.get_type_id())  
+           
         return readable
 
 
+class PacketLiteral:
 
+    def __init__(self, packet_header:PacketHeader, body:str):
+        self.packet_header = packet_header
+        self.body = body
 
-def parse_to_packet(hex_string):
-    map = create_hex_to_binary_map()
-    binary_string = hex_to_binary(map, hex_string)
+    def get_header(self):
+        return self.packet_header
     
-    print(f"DEBUG: hex_string: {hex_string} binary_string: {binary_string}")
-    return Packet(binary_string)
+    def get_body(self):
+        return self.body
+
+    def get_value(self):
+        return int(self.body,2)
+
+    def get_size(self):
+        return self.packet_header.get_size() + len(self.body)
+
+    def __str__(self):
+        readable = "PacketLiteral: id: " + str(id(self)) \
+            + ", header: " + str(self.get_header()) \
+            + ", body: " + str(self.get_body()) \
+            + ", value: " + str(self.get_value())     
+        return readable   
+
+
+class PacketOperator:
+
+    def __init__(self, packet_header:PacketHeader, operator_type_id:int):
+        self.packet_header = packet_header
+        self.operator_type_id = operator_type_id
+        self.sub_packets = set()
+        self.body = ""
+
+    def get_header(self):
+        return self.packet_header
+    
+    def get_operator_type_id(self) -> int:
+        return self.operator_type_id
+    
+    def get_number_of_sub_packets(self) -> int:
+        return len(self.sub_packets)
+    
+    def add_sub_packet(self, sub_packet):
+        if sub_packet:
+            self.sub_packets.add(sub_packet)
+
+    def get_sub_packets(self):
+        return self.sub_packets
+    
+    def set_body(self, body):
+        self.body = body
+    
+    def get_size(self):
+        return self.packet_header.get_size() + 1 + len(self.body)
+    
+    def __repr__(self) -> str:
+        return str(self)
+
+    def __str__(self):
+        readable = "PacketOperator: id: " + str(id(self)) \
+            + ", header: " + str(self.get_header()) \
+            + ", operator_type_id: " + str(self.get_operator_type_id()) \
+            + ", number_of_sub_packets: " + str(self.get_number_of_sub_packets())
+        return readable           
