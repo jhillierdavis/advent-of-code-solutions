@@ -13,7 +13,6 @@ def create_hex_to_binary_map():
     map['8'] = '1000'
     map['9'] = '1001'
     map['A'] = '1010'
-    map['A'] = '1010'
     map['B'] = '1011'
     map['C'] = '1100'
     map['D'] = '1101'
@@ -71,21 +70,26 @@ def parse_binary_string_to_packet(binary_string:str):
     else:
         packet = PacketOperator(packet_header, int(binary_string[6]))
         if packet.get_operator_type_id() == 0:
+
             value = binary_string[7:22]
             num_bits = int(value, base=2)
             packet.set_body(binary_string[7:22+num_bits])
             first_sub_packet = binary_string[22:22+num_bits]
             #print(f"DEBUG: first_sub_packet={first_sub_packet}")
             sub_packet = parse_binary_string_to_packet(first_sub_packet)
-            packet.add_sub_packet(sub_packet)
+            packet.add_sub_packet(sub_packet)            
             if sub_packet and sub_packet.get_size() < num_bits:
-                remainder = binary_string[22+sub_packet.get_size():22+num_bits]
+                remainder = binary_string[22+sub_packet.get_size()+1:22+num_bits]
                 print(f"DEBUG: first packet remainder={remainder}")
-                sub_packet = parse_binary_string_to_packet(binary_string[22+sub_packet.get_size()+1:22+num_bits])
-                packet.add_sub_packet(sub_packet)
+                sub_packet = parse_binary_string_to_packet(remainder)
+                if sub_packet:
+                    packet.add_sub_packet(sub_packet)            
             remainder = binary_string[22+num_bits:]
             print(f"DEBUG: remainder={remainder}")
-            packet.add_sub_packet(parse_binary_string_to_packet(remainder))
+            next_packet = parse_binary_string_to_packet(remainder)
+            if next_packet:
+                packet.add_sub_packet(next_packet)
+            
         else:
             offset = 18
             num_packs = int(binary_string[7:offset], base=2)
