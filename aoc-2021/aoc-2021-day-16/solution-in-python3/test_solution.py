@@ -161,56 +161,50 @@ def test_version_sum(hex_string, expected): # Part 1
     assert solution.parse_hex_string_to_packet_version_sum(hex_string) == expected
 
 
-def evaluate(packet):
-    result = 0
+def evaluate_value_from_packet(packet):
+    
     header = packet.get_header()
-    if header.is_operator():
-        if header.get_type_id() == 0:
-            print(f"DEBUG: Sum ")
-            for sp in packet.get_sub_packets():
-                result += evaluate(sp)
-        elif header.get_type_id() == 1:
-            print(f"DEBUG: Product ")
-            result = 1
-            for sp in packet.get_sub_packets():
-                result *= evaluate(sp)            
-        elif header.get_type_id() == 2:            
-            print(f"DEBUG: Min. ")
-            values = []
-            for sp in packet.get_sub_packets():
-                values.append( evaluate(sp))
-            return min(values)
-        elif header.get_type_id() == 3:
-            print(f"DEBUG: Max. ")
-            values = []
-            for sp in packet.get_sub_packets():
-                values.append( evaluate(sp))
-            return max(values)
-        elif header.get_type_id() == 4:
-            return packet.get_value() # Literal
-        elif header.get_type_id() == 5:
-            print(f"DEBUG: Greater than ")
-            values = []
-            for sp in packet.get_sub_packets():
-                values.append( evaluate(sp))
-            return 1 if values[0] > values[1] else 0
-        elif header.get_type_id() == 6:
-            print(f"DEBUG: Less than ")
-            values = []
-            for sp in packet.get_sub_packets():
-                values.append( evaluate(sp))
-            return 1 if values[0] < values[1] else 0
-        elif header.get_type_id() == 7:
-            print(f"DEBUG: Equals ")
-            values = []
-            for sp in packet.get_sub_packets():
-                values.append( evaluate(sp))
-            return values[0] == values[1]
-        
-    else:
+    if header.is_literal():
         return packet.get_value()
+    
+    values = []
+    for sp in packet.get_sub_packets():
+        values.append( evaluate_value_from_packet(sp))
 
-    return result
+    if header.get_type_id() == 0:
+        #print(f"DEBUG: Sum ")
+        result = 0
+        for v in values:
+            result += v
+        return result
+    elif header.get_type_id() == 1:
+        #print(f"DEBUG: Product ")
+        result = 1
+        for v in values:
+            result *= v   
+        return result         
+    elif header.get_type_id() == 2:            
+        #print(f"DEBUG: Min. ")
+        return min(values)
+    elif header.get_type_id() == 3:
+        ##print(f"DEBUG: Max. ")
+        return max(values)
+    elif header.get_type_id() == 4:
+        return packet.get_value() # Literal
+    elif header.get_type_id() == 5:
+        #print(f"DEBUG: Greater than ")
+        assert len(values) == 2
+        return values[0] > values[1]
+    elif header.get_type_id() == 6:
+        #print(f"DEBUG: Less than ")
+        assert len(values) == 2
+        return values[0] < values[1]
+    elif header.get_type_id() == 7:
+        #print(f"DEBUG: Equals ")
+        assert len(values) == 2
+        return values[0] == values[1]
+
+    raise Exception("Unhandled evaluation for packet: {packet}")
 
 @pytest.mark.parametrize(
     "hex_string,expected",
@@ -226,9 +220,12 @@ def evaluate(packet):
     ],    
 )
 def test_evaluate(hex_string, expected): # Part 2
+    # Given: an input hex string (converted to binary)
     binary_string = solution.hex_string_to_binary_string(hex_string)
+
+    # When: the first outermost packet is gathered from this input 
     packet_list = solution.parse_binary_string_to_packet_list(binary_string)
     outermost_packet = packet_list[0]
 
-    # TODO: evaluate outermost packet
-    assert evaluate(outermost_packet) == expected
+    # Then: the evaluated value of this outermost packet is as expected
+    assert evaluate_value_from_packet(outermost_packet) == expected
