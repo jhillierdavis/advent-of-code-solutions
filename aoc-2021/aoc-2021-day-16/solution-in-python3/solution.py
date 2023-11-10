@@ -59,7 +59,7 @@ def get_next_packet_literal(packet_header, binary_string):
         value = ""
         i = 6 # Header offset
         end = False         
-        while not end and i < len(binary_string):
+        while not end: 
             if binary_string[i] == "0": # indicates last value packet
                 end = True
             value += binary_string[i+1:i+5]
@@ -98,12 +98,10 @@ def parse_binary_string_to_next_packet(binary_string:str) :
         num_packs = int(binary_string[7:offset], base=2)
         while num_packs > 0:
             sub_packet = parse_binary_string_to_next_packet(binary_string[offset:])
-            print(f"DEBUG: Adding sub-packet: {sub_packet}")
-            #if None == sub_packet:
-            #    break
+            #print(f"DEBUG: Adding sub-packet: {sub_packet}")
             offset += sub_packet.get_bit_length()                        
             packet.add_sub_packet(sub_packet)            
-            print(f"DEBUG: Processing Operator Packet (type 1): {packet} offset={offset} num_packs={num_packs}")
+            #print(f"DEBUG: Processing Operator Packet (type 1): {packet} offset={offset} num_packs={num_packs}")
             num_packs -= 1
         #print(f"Processing Operator Packet (type 1): {packet}")    
         return packet

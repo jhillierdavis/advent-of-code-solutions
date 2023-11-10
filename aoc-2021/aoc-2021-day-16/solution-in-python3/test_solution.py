@@ -49,39 +49,7 @@ def test_next_literal_packet(hex_string, expected_binary_string, expected_versio
     # And: literal packet has expected bit length
     assert packet.get_bit_length() == expected_bit_length
     
-"""
-@pytest.mark.parametrize(
-    "hex_string, expected_version, expected_type_id, expected_literal_value_as_binary_string, expected_literal_value",
-    [
-        pytest.param("D2FE28", 6, 4, "011111100101", 2021),
-        pytest.param("D2FEA84", 6, 4, "0111111001010001", 32337), 
-        pytest.param("114", 0, 4, "1010", 10), # 000 100 0 1010 0
-        pytest.param("B16", 5, 4, "1011", 11), # 101 100 0 1011 0
-        pytest.param("118", 0, 4, "1100", 12), # 000 100 0 1100 0
-        pytest.param("71A", 3, 4, "1101", 13), # 011 100 0 1101 0
-    ],    
-)
-def test_literal_packet(hex_string, expected_version, expected_type_id, expected_literal_value_as_binary_string, expected_literal_value):
-    # When: packet created from binary srting
-    binary_string = solution.hex_string_to_binary_string(hex_string)    
-    packet = solution.parse_binary_string_to_next_packet(binary_string)
-    assert type(packet) is solution.PacketLiteral
-
-    # Then: packet header is as expected
-    header = packet.get_header()
-    assert type(header) is solution.PacketHeader
-    assert header.is_literal() == True
-    assert header.is_operator() == False
-    assert header.get_version() == expected_version
-    assert header.get_type_id() == expected_type_id
-    assert header.get_bit_length() == 6
-
-    # Then: packet body has expected literal attributes
-    assert packet.get_body() == expected_literal_value_as_binary_string
-    assert packet.get_value() == expected_literal_value
-    assert packet.get_bit_length() == 6 + len(expected_literal_value_as_binary_string)
-"""
-
+    
 @pytest.mark.parametrize(
     "hex_string, expected_binary_string, expected_version, expected_type_id, expected_length_type_id, expected_bit_length, expected_sub_packet_literals",
     [
