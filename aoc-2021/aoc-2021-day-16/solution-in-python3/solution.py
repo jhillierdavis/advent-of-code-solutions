@@ -207,7 +207,7 @@ class PacketOperator:
     def __init__(self, packet_header:PacketHeader, operator_type_id:int):
         self.packet_header = packet_header
         self.operator_type_id = operator_type_id
-        self.sub_packets = set()
+        self.sub_packets = [] # Retain order via a list
         self.body = ""
 
     def get_header(self):
@@ -221,7 +221,7 @@ class PacketOperator:
     
     def add_sub_packet(self, sub_packet):
         if sub_packet:
-            self.sub_packets.add(sub_packet)
+            self.sub_packets.append(sub_packet)
 
     def get_sub_packets(self):
         return self.sub_packets

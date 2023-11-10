@@ -49,7 +49,7 @@ def test_next_literal_packet(hex_string, expected_binary_string, expected_versio
     # And: literal packet has expected bit length
     assert packet.get_bit_length() == expected_bit_length
     
-    
+
 @pytest.mark.parametrize(
     "hex_string, expected_binary_string, expected_version, expected_type_id, expected_length_type_id, expected_bit_length, expected_sub_packet_literals",
     [
@@ -127,7 +127,7 @@ def test_operator_packets_using_binary(binary_string, expected_version, expected
 
 def test_problematic_packet():
     hex_string = "620080001611562C8802118E34"
-    binary_string = solution.hex_string_to_binary_string(hex_string)    
+    binary_string = solution.hex_string_to_binary_string(hex_string)
     assert binary_string == "01100010000000001000000000000000000101100001000101010110001011001000100000000010000100011000111000110100"
 
     #packet = solution.parse_binary_string_to_packet(binary_string)
@@ -156,6 +156,79 @@ def test_problematic_packet():
         pytest.param("2056FA18025A00A4F52AB13FAB6CDA779E1B2012DB003301006A35C7D882200C43289F07A5A192D200C1BC011969BA4A485E63D8FE4CC80480C00D500010F8991E23A8803104A3C425967260020E551DC01D98B5FEF33D5C044C0928053296CDAFCB8D4BDAA611F256DE7B945220080244BE59EE7D0A5D0E6545C0268A7126564732552F003194400B10031C00C002819C00B50034400A70039C009401A114009201500C00B00100D00354300254008200609000D39BB5868C01E9A649C5D9C4A8CC6016CC9B4229F3399629A0C3005E797A5040C016A00DD40010B8E508615000213112294749B8D67EC45F63A980233D8BCF1DC44FAC017914993D42C9000282CB9D4A776233B4BF361F2F9F6659CE5764EB9A3E9007ED3B7B6896C0159F9D1EE76B3FFEF4B8FCF3B88019316E51DA181802B400A8CFCC127E60935D7B10078C01F8B50B20E1803D1FA21C6F300661AC678946008C918E002A72A0F27D82DB802B239A63BAEEA9C6395D98A001A9234EA620026D1AE5CA60A900A4B335A4F815C01A800021B1AE2E4441006A0A47686AE01449CB5534929FF567B9587C6A214C6212ACBF53F9A8E7D3CFF0B136FD061401091719BC5330E5474000D887B24162013CC7EDDCDD8E5E77E53AF128B1276D0F980292DA0CD004A7798EEEC672A7A6008C953F8BD7F781ED00395317AF0726E3402100625F3D9CB18B546E2FC9C65D1C20020E4C36460392F7683004A77DB3DB00527B5A85E06F253442014A00010A8F9106108002190B61E4750004262BC7587E801674EB0CCF1025716A054AD47080467A00B864AD2D4B193E92B4B52C64F27BFB05200C165A38DDF8D5A009C9C2463030802879EB55AB8010396069C413005FC01098EDD0A63B742852402B74DF7FDFE8368037700043E2FC2C8CA00087C518990C0C015C00542726C13936392A4633D8F1802532E5801E84FDF34FCA1487D367EF9A7E50A43E90", 917)
     ],    
 )
-def test_version_sum(hex_string, expected):
+def test_version_sum(hex_string, expected): # Part 1
     #assert solution.get_version_sum(hex_string) == expected
     assert solution.parse_hex_string_to_packet_version_sum(hex_string) == expected
+
+
+def evaluate(packet):
+    result = 0
+    header = packet.get_header()
+    if header.is_operator():
+        if header.get_type_id() == 0:
+            print(f"DEBUG: Sum ")
+            for sp in packet.get_sub_packets():
+                result += evaluate(sp)
+        elif header.get_type_id() == 1:
+            print(f"DEBUG: Product ")
+            result = 1
+            for sp in packet.get_sub_packets():
+                result *= evaluate(sp)            
+        elif header.get_type_id() == 2:            
+            print(f"DEBUG: Min. ")
+            values = []
+            for sp in packet.get_sub_packets():
+                values.append( evaluate(sp))
+            return min(values)
+        elif header.get_type_id() == 3:
+            print(f"DEBUG: Max. ")
+            values = []
+            for sp in packet.get_sub_packets():
+                values.append( evaluate(sp))
+            return max(values)
+        elif header.get_type_id() == 4:
+            return packet.get_value() # Literal
+        elif header.get_type_id() == 5:
+            print(f"DEBUG: Greater than ")
+            values = []
+            for sp in packet.get_sub_packets():
+                values.append( evaluate(sp))
+            return 1 if values[0] > values[1] else 0
+        elif header.get_type_id() == 6:
+            print(f"DEBUG: Less than ")
+            values = []
+            for sp in packet.get_sub_packets():
+                values.append( evaluate(sp))
+            return 1 if values[0] < values[1] else 0
+        elif header.get_type_id() == 7:
+            print(f"DEBUG: Equals ")
+            values = []
+            for sp in packet.get_sub_packets():
+                values.append( evaluate(sp))
+            return values[0] == values[1]
+        
+    else:
+        return packet.get_value()
+
+    return result
+
+@pytest.mark.parametrize(
+    "hex_string,expected",
+    [
+        pytest.param("C200B40A82", 3), # Sum
+        pytest.param("04005AC33890", 54), # Product
+        pytest.param("880086C3E88112", 7), # Minimum
+        pytest.param("D8005AC2A8F0", 1), # Less than
+        pytest.param("F600BC2D8F", 0), # Greater than
+        pytest.param("9C005AC2F8F0", 0), # Equal
+        pytest.param("9C0141080250320F1802104A08", 1), # 1 + 3 = 2 * 2
+        pytest.param("2056FA18025A00A4F52AB13FAB6CDA779E1B2012DB003301006A35C7D882200C43289F07A5A192D200C1BC011969BA4A485E63D8FE4CC80480C00D500010F8991E23A8803104A3C425967260020E551DC01D98B5FEF33D5C044C0928053296CDAFCB8D4BDAA611F256DE7B945220080244BE59EE7D0A5D0E6545C0268A7126564732552F003194400B10031C00C002819C00B50034400A70039C009401A114009201500C00B00100D00354300254008200609000D39BB5868C01E9A649C5D9C4A8CC6016CC9B4229F3399629A0C3005E797A5040C016A00DD40010B8E508615000213112294749B8D67EC45F63A980233D8BCF1DC44FAC017914993D42C9000282CB9D4A776233B4BF361F2F9F6659CE5764EB9A3E9007ED3B7B6896C0159F9D1EE76B3FFEF4B8FCF3B88019316E51DA181802B400A8CFCC127E60935D7B10078C01F8B50B20E1803D1FA21C6F300661AC678946008C918E002A72A0F27D82DB802B239A63BAEEA9C6395D98A001A9234EA620026D1AE5CA60A900A4B335A4F815C01A800021B1AE2E4441006A0A47686AE01449CB5534929FF567B9587C6A214C6212ACBF53F9A8E7D3CFF0B136FD061401091719BC5330E5474000D887B24162013CC7EDDCDD8E5E77E53AF128B1276D0F980292DA0CD004A7798EEEC672A7A6008C953F8BD7F781ED00395317AF0726E3402100625F3D9CB18B546E2FC9C65D1C20020E4C36460392F7683004A77DB3DB00527B5A85E06F253442014A00010A8F9106108002190B61E4750004262BC7587E801674EB0CCF1025716A054AD47080467A00B864AD2D4B193E92B4B52C64F27BFB05200C165A38DDF8D5A009C9C2463030802879EB55AB8010396069C413005FC01098EDD0A63B742852402B74DF7FDFE8368037700043E2FC2C8CA00087C518990C0C015C00542726C13936392A4633D8F1802532E5801E84FDF34FCA1487D367EF9A7E50A43E90", 2536453523344)
+    ],    
+)
+def test_evaluate(hex_string, expected): # Part 2
+    binary_string = solution.hex_string_to_binary_string(hex_string)
+    packet_list = solution.parse_binary_string_to_packet_list(binary_string)
+    outermost_packet = packet_list[0]
+
+    # TODO: evaluate outermost packet
+    assert evaluate(outermost_packet) == expected
