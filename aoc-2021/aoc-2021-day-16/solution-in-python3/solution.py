@@ -1,3 +1,40 @@
+def create_hex_to_binary_map():
+    map = {}
+
+    map['0'] = '0000'
+    map['1'] = '0001'
+    map['2'] = '0010'
+    map['3'] = '0011'
+    map['4'] = '0100'
+    map['5'] = '0101'
+    map['6'] = '0110'
+    map['7'] = '0111'
+    map['8'] = '1000'
+    map['9'] = '1001'
+    map['A'] = '1010'
+    map['B'] = '1011'
+    map['C'] = '1100'
+    map['D'] = '1101'
+    map['E'] = '1110'
+    map['F'] = '1111'
+
+    return map
+
+
+def hex_to_binary(map, hex_string:str) -> str:
+    binary_string = ""
+    for i in range(len(hex_string)):
+        binary_string += map[ hex_string[i] ]
+    return binary_string
+
+
+def hex_string_to_binary_string(hex_string):
+    map = create_hex_to_binary_map()
+    binary_string = hex_to_binary(map, hex_string)
+    return binary_string
+
+
+
 def parse_hex_string_to_packet_version_sum(hex_string):
     map = create_hex_to_binary_map()
     binary_string = hex_to_binary(map, hex_string)
@@ -86,42 +123,15 @@ def parse_binary_string_to_packet_list(binary_string:str) -> []:
 
 
 
-def create_hex_to_binary_map():
-    map = {}
 
-    map['0'] = '0000'
-    map['1'] = '0001'
-    map['2'] = '0010'
-    map['3'] = '0011'
-    map['4'] = '0100'
-    map['5'] = '0101'
-    map['6'] = '0110'
-    map['7'] = '0111'
-    map['8'] = '1000'
-    map['9'] = '1001'
-    map['A'] = '1010'
-    map['B'] = '1011'
-    map['C'] = '1100'
-    map['D'] = '1101'
-    map['E'] = '1110'
-    map['F'] = '1111'
-
-    return map
-
-def hex_to_binary(map, hex_string:str) -> str:
-    binary_string = ""
-    for i in range(len(hex_string)):
-        binary_string += map[ hex_string[i] ]
-    return binary_string
-
-
+"""
 def parse_hex_string_to_packet(hex_string:str):
     map = create_hex_to_binary_map()
     binary_string = hex_to_binary(map, hex_string)
     
     print(f"DEBUG: hex_string: {hex_string} binary_string: {binary_string}")
     return parse_binary_string_to_packet(binary_string)
-
+"""
 
 def get_version_sum_for_packet(packet) -> int:
     version_sum = packet.get_header().get_version()
@@ -131,11 +141,12 @@ def get_version_sum_for_packet(packet) -> int:
             version_sum += get_version_sum_for_packet(sp)
     return version_sum
 
+"""
 def get_version_sum(hex_string:str) -> int:
     packet = parse_hex_string_to_packet(hex_string)
     return get_version_sum_for_packet(packet)
-        
-
+"""        
+"""
 def parse_binary_string_to_packet(binary_string:str):
 
     if len(binary_string) <= 7:
@@ -188,6 +199,7 @@ def parse_binary_string_to_packet(binary_string:str):
             
 
     return packet
+"""
 
 
 class PacketHeader():
@@ -302,10 +314,9 @@ class PacketOperator:
             prefix_length += 15
         else:
             prefix_length += 11
-        length_sub_packets = 0
         for sp in self.get_sub_packets():
-            length_sub_packets += sp.get_length()
-        return prefix_length + length_sub_packets
+            prefix_length += sp.get_length()
+        return prefix_length 
 
 
     def __repr__(self) -> str:
