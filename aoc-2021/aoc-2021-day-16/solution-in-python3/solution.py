@@ -130,6 +130,52 @@ def parse_binary_string_to_packet_list(binary_string:str) -> []:
     return packet_list
 
 
+def evaluate_value_from_packet(packet):
+    
+    header = packet.get_header()
+    if header.is_literal():
+        return packet.get_value()
+    
+    values = []
+    for sp in packet.get_sub_packets():
+        values.append( evaluate_value_from_packet(sp))
+
+    if header.get_type_id() == 0:
+        #print(f"DEBUG: Sum ")
+        result = 0
+        for v in values:
+            result += v
+        return result
+    elif header.get_type_id() == 1:
+        #print(f"DEBUG: Product ")
+        result = 1
+        for v in values:
+            result *= v   
+        return result         
+    elif header.get_type_id() == 2:            
+        #print(f"DEBUG: Min. ")
+        return min(values)
+    elif header.get_type_id() == 3:
+        ##print(f"DEBUG: Max. ")
+        return max(values)
+    elif header.get_type_id() == 4:
+        return packet.get_value() # Literal
+    elif header.get_type_id() == 5:
+        #print(f"DEBUG: Greater than ")
+        assert len(values) == 2
+        return values[0] > values[1]
+    elif header.get_type_id() == 6:
+        #print(f"DEBUG: Less than ")
+        assert len(values) == 2
+        return values[0] < values[1]
+    elif header.get_type_id() == 7:
+        #print(f"DEBUG: Equals ")
+        assert len(values) == 2
+        return values[0] == values[1]
+
+    raise Exception("Unhandled evaluation for packet: {packet}")
+
+
 class PacketHeader():
 
     def __init__(self, binary_string):
