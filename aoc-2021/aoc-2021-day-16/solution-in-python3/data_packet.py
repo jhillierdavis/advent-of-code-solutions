@@ -1,3 +1,9 @@
+from abc import ABC, abstractclassmethod # Import Abstract Base Class
+
+"""
+ABC (Abstract Base Class) 'Packet' is composed of a 'PacketHeader' instance and has 2 sub-classes 'PacketLiteral' & 'PacketOperator'
+"""
+
 class PacketHeader():
 
     def __init__(self, binary_string):
@@ -42,18 +48,27 @@ class PacketHeader():
         return readable
 
 
-class PacketLiteral:
-
-    def __init__(self, packet_header:PacketHeader, body:str, bit_length:int):
+class Packet(ABC):
+    def __init__(self, packet_header:PacketHeader, body:str):
         self.packet_header = packet_header
         self.body = body
-        self.bit_length = bit_length
 
     def get_header(self):
         return self.packet_header
     
     def get_body(self):
         return self.body
+    
+    @abstractclassmethod
+    def get_bit_length(self):
+        return NotImplementedError
+    
+
+class PacketLiteral(Packet):
+
+    def __init__(self, packet_header:PacketHeader, body:str, bit_length:int):
+        super().__init__(packet_header, body)
+        self.bit_length = bit_length
 
     def get_value(self):
         return int(self.body,2)
@@ -70,35 +85,28 @@ class PacketLiteral:
         return readable   
 
 
-class PacketOperator:
+class PacketOperator(Packet):
 
     def __init__(self, packet_header:PacketHeader, operator_type_id:int):
-        self.packet_header = packet_header
+        super().__init__(packet_header, "")
         self.operator_type_id = operator_type_id
         self.sub_packets = [] # Retain order via a list
-        self.body = ""
 
-    def get_header(self):
-        return self.packet_header
-    
     def get_operator_type_id(self) -> int:
         return self.operator_type_id
-    
+
     def get_number_of_sub_packets(self) -> int:
         return len(self.sub_packets)
-    
+
     def add_sub_packet(self, sub_packet):
         if sub_packet:
             self.sub_packets.append(sub_packet)
 
     def get_sub_packets(self):
         return self.sub_packets
-    
+
     def set_body(self, body):
         self.body = body
-
-    def get_body(self):
-        return self.body
 
     def get_bit_length(self):
         prefix_length = 18
@@ -107,7 +115,6 @@ class PacketOperator:
         for sp in self.get_sub_packets():
             prefix_length += sp.get_bit_length()
         return prefix_length 
-
 
     def __repr__(self) -> str:
         return str(self)
