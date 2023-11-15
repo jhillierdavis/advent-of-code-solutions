@@ -1,7 +1,8 @@
 import pytest
 
 # Local
-import solution as solution
+import solution
+import data_packet
 
 @pytest.mark.parametrize(
     "hex_str,expected",
@@ -31,11 +32,11 @@ def test_next_literal_packet(hex_string, expected_binary_string, expected_versio
     binary_string = solution.hex_string_to_binary_string(hex_string)
     assert binary_string == expected_binary_string
     packet = solution.parse_binary_string_to_next_packet(binary_string)
-    assert type(packet) is solution.PacketLiteral
+    assert type(packet) is data_packet.PacketLiteral
 
     # Then: packet header is as expected
     header = packet.get_header()
-    assert type(header) is solution.PacketHeader
+    assert type(header) is data_packet.PacketHeader
     assert header.is_literal() == True
     assert header.is_operator() == False
     assert header.get_version() == expected_version
@@ -73,11 +74,11 @@ def test_operator_packet_using_hex(hex_string, expected_binary_string, expected_
 def test_operator_packet_using_binary(binary_string, expected_version, expected_type_id, expected_length_type_id, expected_bit_length, expected_sub_packet_literals):
     # When: packet created from binary srting
     packet = solution.parse_binary_string_to_next_packet(binary_string)
-    assert type(packet) is solution.PacketOperator
+    assert type(packet) is data_packet.PacketOperator
     header = packet.get_header()
 
     # Then: packet header type is as expected
-    assert type(header) is solution.PacketHeader
+    assert type(header) is data_packet.PacketHeader
     assert header.is_operator() == True
     assert header.is_literal() == False
     assert header.get_version() == expected_version
@@ -90,7 +91,7 @@ def test_operator_packet_using_binary(binary_string, expected_version, expected_
     assert packet.get_bit_length() == expected_bit_length
     #assert packet.get_sub_packet_literals() == expected_sub_packet_literals 
     for sp in packet.get_sub_packets():
-        assert type(sp) is solution.PacketLiteral
+        assert type(sp) is data_packet.PacketLiteral
         assert sp.get_value() in expected_sub_packet_literals
 
 @pytest.mark.parametrize(
@@ -104,11 +105,11 @@ def test_operator_packets_using_binary(binary_string, expected_version, expected
     # When: packet created from binary string
     packet = solution.parse_binary_string_to_next_packet(binary_string)
 
-    assert type(packet) is solution.PacketOperator
+    assert type(packet) is data_packet.PacketOperator
     header = packet.get_header()
 
     # Then: packet header type is as expected
-    assert type(header) is solution.PacketHeader
+    assert type(header) is data_packet.PacketHeader
     assert header.is_operator() == True
     assert header.is_literal() == False
     assert header.get_version() == expected_version
@@ -120,7 +121,7 @@ def test_operator_packets_using_binary(binary_string, expected_version, expected
     assert packet.get_number_of_sub_packets() == len(expected_sub_packet_literals)
     #assert packet.get_sub_packet_literals() == expected_sub_packet_literals 
     for sp in packet.get_sub_packets():
-        assert type(sp) is solution.PacketLiteral
+        assert type(sp) is data_packet.PacketLiteral
         assert sp.get_value() in expected_sub_packet_literals
 
 
@@ -134,15 +135,15 @@ def test_problematic_packet():
     packet_list = solution.parse_binary_string_to_packet_list(binary_string)
     assert len(packet_list) == 1
     packet = packet_list[0]
-    assert type(packet) is solution.PacketOperator
+    assert type(packet) is data_packet.PacketOperator
 
     sub_packets = packet.get_sub_packets()
     assert len(sub_packets) == 2
     for sp in sub_packets:
         print(f"DEBUG: sp={sp}")
-        assert type(sp) is solution.PacketOperator
+        assert type(sp) is data_packet.PacketOperator
         for ssp in sp.get_sub_packets():
-            assert type(ssp) is solution.PacketLiteral
+            assert type(ssp) is data_packet.PacketLiteral
 
 
 # Part 1:
