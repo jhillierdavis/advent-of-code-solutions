@@ -1,1 +1,12 @@
 See https://adventofcode.com/2021/day/17
+
+Other's solutions
+-----------------
+
+Jonathan Paulson: 
+https://www.youtube.com/watch?v=C3BjIjPIUPc
+https://github.com/jonathanpaulson/AdventOfCode/blob/master/2021/17.py 
+
+William Y. Feng:
+https://www.youtube.com/watch?v=NGalXSeCo8M
+https://github.com/womogenes/AoC-2021-Solutions/tree/main/day_17
