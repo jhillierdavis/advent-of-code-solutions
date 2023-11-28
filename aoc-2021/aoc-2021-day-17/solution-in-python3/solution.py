@@ -32,8 +32,15 @@ def calculate_max_y_in_xy_sequence_list(xy_sequence_list):
     # Gather all y values from list of (x,y) entries & return the max y value
     return max(map(lambda entry: entry[1], xy_sequence_list))
 
-def calculate_height(target_rectange, target_speeds):
-    return 0
 
-def calculate_max_height(target_rectange):
-    return 0 # TODO
+def calculate_valid_sequences_transiting_target(target_min_x, target_max_x, target_min_y, target_max_y):
+    valid_sequence_list = []
+
+    for x in range(1, target_max_x+1):
+        for y in range(target_min_y, abs(target_min_y)): 
+            seq = calculate_sequence(x, y, target_max_x)
+            if transits_target_rectangle(seq, (target_min_x , target_max_x, target_min_y, target_max_y)):
+                valid_sequence_list.append(seq)
+
+    return valid_sequence_list
+

@@ -56,6 +56,7 @@ def test_max_height(speed_x, speed_y, expected_max_y):
     assert solution.calculate_max_y_in_xy_sequence_list(seq) == expected_max_y
 
 
+
 @pytest.mark.parametrize(
     "target_min_x, target_max_x, target_min_y, target_max_y, expected_max_y, expected_number_of_solutions",
     [
@@ -64,13 +65,7 @@ def test_max_height(speed_x, speed_y, expected_max_y):
     ],    
 )
 def test_solution(target_min_x, target_max_x, target_min_y, target_max_y, expected_max_y, expected_number_of_solutions):
-    valid_sequence_list = []
-
-    for x in range(1,target_max_x+1):
-        for y in range(target_min_y, abs(target_min_y)): 
-            seq = solution.calculate_sequence(x, y, target_max_x)
-            if solution.transits_target_rectangle(seq, (target_min_x , target_max_x, target_min_y, target_max_y)):
-                valid_sequence_list.append(seq)
+    valid_sequence_list = solution.calculate_valid_sequences_transiting_target(target_min_x, target_max_x, target_min_y, target_max_y)
 
     max_y = 0
     for entry in valid_sequence_list:
@@ -78,5 +73,5 @@ def test_solution(target_min_x, target_max_x, target_min_y, target_max_y, expect
         if entry_max_y > max_y:
             max_y = entry_max_y
 
-    assert max_y ==expected_max_y
-    assert len(valid_sequence_list) == expected_number_of_solutions
+    assert max_y == expected_max_y # Part 1
+    assert len(valid_sequence_list) == expected_number_of_solutions # Part 2
