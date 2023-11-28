@@ -1,5 +1,7 @@
 https://adventofcode.com/2021/day/16
 
+https://www.rapidtables.com/convert/number/binary-to-decimal.html
+
 3rd party solutions:
 
 https://github.com/womogenes/AoC-2021-Solutions/blob/main/day_16/day_16_p1.py
