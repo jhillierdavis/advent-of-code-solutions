@@ -28,6 +28,9 @@ def transits_target_rectangle(sequence, target_area):
                 return True
     return False
 
+def calculate_max_y_in_xy_sequence_list(xy_sequence_list):
+    # Gather all y values from list of (x,y) entries & return the max y value
+    return max(map(lambda entry: entry[1], xy_sequence_list))
 
 def calculate_height(target_rectange, target_speeds):
     return 0
