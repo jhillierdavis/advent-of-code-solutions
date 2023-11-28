@@ -55,25 +55,21 @@ def test_max_height(speed_x, speed_y, expected_max_y):
 
     assert solution.calculate_max_y_in_xy_sequence_list(seq) == expected_max_y
 
-"""
+
 @pytest.mark.parametrize(
-    "target_rectangle, expected_max_y",
+    "target_min_x, target_max_x, target_min_y, target_max_y, expected_max_y, expected_number_of_solutions",
     [
-        pytest.param("x=20..30, y=-10..-5", 45),
+        pytest.param(20, 30, -10, -5, 45, 112), # Example data (part's 1 & 2)
+        pytest.param(244, 303, -91, -54, 4095, 3773) # Full data (part's 1 & 2)
     ],    
 )
-def test_calculate_max_height(target_rectangle, expected_max_y):
-    assert solution.calculate_max_height(target_rectangle) == expected_max_y
-"""
-
-# TODO: Calculate boundary conditions
-def test_part1_example():
+def test_solution(target_min_x, target_max_x, target_min_y, target_max_y, expected_max_y, expected_number_of_solutions):
     valid_sequence_list = []
 
-    for i in range(1,100):
-        for j in range(-100,100):
-            seq = solution.calculate_sequence(i, j, 50)
-            if solution.transits_target_rectangle(seq, (20,30,-10,-5)):
+    for x in range(1,target_max_x+1):
+        for y in range(target_min_y, abs(target_min_y)): 
+            seq = solution.calculate_sequence(x, y, target_max_x)
+            if solution.transits_target_rectangle(seq, (target_min_x , target_max_x, target_min_y, target_max_y)):
                 valid_sequence_list.append(seq)
 
     max_y = 0
@@ -82,24 +78,5 @@ def test_part1_example():
         if entry_max_y > max_y:
             max_y = entry_max_y
 
-    assert max_y == 45
-    assert len(valid_sequence_list) == 112
-
-# TODO: Calculate boundary conditions
-def test_part1_full():
-    valid_sequence_list = []
-
-    for i in range(1,400):
-        for j in range(-100,100):
-            seq = solution.calculate_sequence(i, j, 250)
-            if solution.transits_target_rectangle(seq, (244,303,-91,-54)):
-                valid_sequence_list.append(seq)
-
-    max_y = 0
-    for entry in valid_sequence_list:
-        entry_max_y = solution.calculate_max_y_in_xy_sequence_list(entry)
-        if entry_max_y > max_y:
-            max_y = entry_max_y
-
-    assert max_y == 4095    
-    assert len(valid_sequence_list) == 3773
+    assert max_y ==expected_max_y
+    assert len(valid_sequence_list) == expected_number_of_solutions
