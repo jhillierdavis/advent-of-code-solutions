@@ -66,12 +66,13 @@ def test_calculate_max_height(target_rectangle, expected_max_y):
     assert solution.calculate_max_height(target_rectangle) == expected_max_y
 """
 
+# TODO: Calculate boundary conditions
 def test_part1_example():
     valid_sequence_list = []
 
-    for i in range(1,20):
-        for j in range(1,10):
-            seq = solution.calculate_sequence(i, j, 20)
+    for i in range(1,100):
+        for j in range(-100,100):
+            seq = solution.calculate_sequence(i, j, 50)
             if solution.transits_target_rectangle(seq, (20,30,-10,-5)):
                 valid_sequence_list.append(seq)
 
@@ -84,13 +85,13 @@ def test_part1_example():
     assert max_y == 45
     assert len(valid_sequence_list) == 112
 
-# 244..303, y=-91..-54
-def test_part1_example():
+# TODO: Calculate boundary conditions
+def test_part1_full():
     valid_sequence_list = []
 
-    for i in range(-100,1000):
-        for j in range(-100,91):
-            seq = solution.calculate_sequence(i, j, 1000)
+    for i in range(1,400):
+        for j in range(-100,100):
+            seq = solution.calculate_sequence(i, j, 250)
             if solution.transits_target_rectangle(seq, (244,303,-91,-54)):
                 valid_sequence_list.append(seq)
 
