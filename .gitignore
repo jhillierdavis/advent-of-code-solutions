@@ -137,3 +137,4 @@ dmypy.json
 
 # Symbolic links
 aoc-2021/aoc-2021-day-*/solution-in-python3/helpers
+aoc-2023/aoc-2021-day-*/solution-in-python3/helpers
