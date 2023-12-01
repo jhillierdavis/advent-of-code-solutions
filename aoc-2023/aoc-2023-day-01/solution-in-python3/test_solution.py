@@ -27,6 +27,7 @@ def test_extract_number_from_string(input, expected):
         pytest.param('five', 55),       
         pytest.param('sevenmfpxvntvkpqvpbnnbpr5seven18sixeighteightwok',72), # Overlapping words
         pytest.param('eightwo', 82), # Overlapping words
+        pytest.param('sevenine', 79), # Overlapping words
     ],    
 )
 def test_extract_number_from_string_including_words(input, expected):
