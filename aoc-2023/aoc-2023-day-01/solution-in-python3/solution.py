@@ -35,13 +35,7 @@ def extract_calibration_value_from_string(input, digits_only=True):
     word_to_digit_map = get_word_to_digit_map()
 
     num_str = extract_all_numbers_from_string(input, word_to_digit_map, digits_only)
-
-    length = len(num_str)
-
-    if length == 1: # First == last, so duplicate
-           num_str += num_str
-    elif length > 2: # Get first + last
-           num_str = num_str[0] + num_str[length-1]
+    num_str = num_str[0] + num_str[-1]
 
     #print(f"DEBUG: {num_str}")
     return int(num_str) # Convert to integer value
