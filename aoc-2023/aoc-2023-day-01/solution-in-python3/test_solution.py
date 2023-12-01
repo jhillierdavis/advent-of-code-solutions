@@ -3,12 +3,32 @@ import pytest
 import solution
 from helpers import fileutils
 
-def extract_number_from_string(input):
+def extract_number_from_string(input, digits_only=True):
     num_str = ""
     for i in range(len(input)):
         ch = input[i]
         if ch.isnumeric():
             num_str += ch
+        elif digits_only == False:
+             substr = input[i:]
+             if (substr.startswith('one')):
+                  num_str += '1'
+             if (substr.startswith('two')):
+                  num_str += '2'
+             if (substr.startswith('three')):
+                  num_str += '3'
+             if (substr.startswith('four')):
+                  num_str += '4'
+             if (substr.startswith('five')):
+                  num_str += '5'
+             if (substr.startswith('six')):
+                  num_str += '6'
+             if (substr.startswith('seven')):
+                  num_str += '7'
+             if (substr.startswith('eight')):
+                  num_str += '8'
+             if (substr.startswith('nine')):
+                  num_str += '9'
 
     length = len(num_str)
 
@@ -34,15 +54,31 @@ def extract_number_from_string(input):
 def test_extract_number_from_string(input, expected):
     assert extract_number_from_string(input) == expected
 
+@pytest.mark.parametrize(
+    "input,expected",
+    [
+        pytest.param('two1nine', 29),
+        pytest.param('eightwothree', 83),
+        pytest.param('abcone2threexyz', 13), 
+        pytest.param('xtwone3four', 24), 
+        pytest.param('4nineeightseven2', 42),
+        pytest.param('zoneight234', 14), 
+        pytest.param('7pqrstsixteen', 76),       
+    ],    
+)
+def test_extract_number_from_string_including_words(input, expected):
+    assert extract_number_from_string(input, False) == expected
+
 
 @pytest.mark.parametrize(
     "input,expected",
     [
         pytest.param('puzzle-input-example.txt', 142),
+        #pytest.param('puzzle-input-example-part2.txt', 281),
         pytest.param('puzzle-input-full.txt', 54968),
     ],    
 )
-def test_solution(input, expected):
+def test_part1_solution(input, expected):
     lines = fileutils.get_file_lines(input)
     #print(f"DEBUG: {lines}")
 
@@ -51,3 +87,22 @@ def test_solution(input, expected):
          ans += extract_number_from_string(l)
 
     assert ans == expected
+
+
+@pytest.mark.parametrize(
+    "input,expected",
+    [        
+        pytest.param('puzzle-input-example-part2.txt', 281),
+        pytest.param('puzzle-input-full.txt', 54094),
+    ],    
+)
+def test_part2_solution(input, expected):
+    lines = fileutils.get_file_lines(input)
+    #print(f"DEBUG: {lines}")
+
+    ans = 0
+    for l in lines:
+         ans += extract_number_from_string(l, False)
+
+    assert ans == expected
+
