@@ -69,24 +69,24 @@ def test_extract_number_from_string(input, expected):
 def test_extract_number_from_string_including_words(input, expected):
     assert extract_number_from_string(input, False) == expected
 
+def extract_first_and_last_numbers_from_file(filename, digits_only=True):
+    lines = fileutils.get_file_lines(filename)
+
+    ans = 0
+    for l in lines:
+         ans += extract_number_from_string(l, digits_only)
+    return ans     
+
 
 @pytest.mark.parametrize(
     "input,expected",
     [
         pytest.param('puzzle-input-example.txt', 142),
-        #pytest.param('puzzle-input-example-part2.txt', 281),
         pytest.param('puzzle-input-full.txt', 54968),
     ],    
 )
 def test_part1_solution(input, expected):
-    lines = fileutils.get_file_lines(input)
-    #print(f"DEBUG: {lines}")
-
-    ans = 0
-    for l in lines:
-         ans += extract_number_from_string(l)
-
-    assert ans == expected
+    assert extract_first_and_last_numbers_from_file(input) == expected
 
 
 @pytest.mark.parametrize(
@@ -97,12 +97,4 @@ def test_part1_solution(input, expected):
     ],    
 )
 def test_part2_solution(input, expected):
-    lines = fileutils.get_file_lines(input)
-    #print(f"DEBUG: {lines}")
-
-    ans = 0
-    for l in lines:
-         ans += extract_number_from_string(l, False)
-
-    assert ans == expected
-
+    assert extract_first_and_last_numbers_from_file(input, False) == expected
