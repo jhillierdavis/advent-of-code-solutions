@@ -26,6 +26,7 @@ def test_extract_number_from_string(input, expected):
         pytest.param('7pqrstsixteen', 76),
         pytest.param('five', 55),       
         pytest.param('sevenmfpxvntvkpqvpbnnbpr5seven18sixeighteightwok',72),
+        pytest.param('eightwo', 82),
     ],    
 )
 def test_extract_number_from_string_including_words(input, expected):
