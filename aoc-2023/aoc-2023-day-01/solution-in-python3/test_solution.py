@@ -12,7 +12,7 @@ import solution
     ],    
 )
 def test_extract_number_from_string(input, expected):
-    assert solution.extract_number_from_string(input) == expected
+    assert solution.extract_calibration_value_from_string(input) == expected
 
 @pytest.mark.parametrize(
     "input,expected",
@@ -27,7 +27,7 @@ def test_extract_number_from_string(input, expected):
     ],    
 )
 def test_extract_number_from_string_including_words(input, expected):
-    assert solution.extract_number_from_string(input, False) == expected
+    assert solution.extract_calibration_value_from_string(input, False) == expected
 
 @pytest.mark.parametrize(
     "input,expected",
@@ -37,7 +37,7 @@ def test_extract_number_from_string_including_words(input, expected):
     ],    
 )
 def test_part1_solution(input, expected):
-    assert solution.extract_first_and_last_numbers_from_file(input) == expected
+    assert solution.extract_calibration_value_sum_from_file(input) == expected
 
 
 @pytest.mark.parametrize(
@@ -48,4 +48,4 @@ def test_part1_solution(input, expected):
     ],    
 )
 def test_part2_solution(input, expected):
-    assert solution.extract_first_and_last_numbers_from_file(input, False) == expected
+    assert solution.extract_calibration_value_sum_from_file(input, False) == expected
