@@ -34,3 +34,37 @@ def solve(filename):
                 valid_game_count += game_number
         print(f"DEBUG: {map_colours}")
     return valid_game_count
+
+def solve_part2(filename):
+    
+    total_power = 0
+
+    lines = fileutils.get_file_lines(filename)
+    for l in lines:
+        is_valid = True
+        (g,r) = l.split(":")
+        print(f"DEBUG: {g}")
+        game_number = int(g.split()[1].strip())
+
+        sets = r.split(';')
+
+        map_colours = defaultdict(int)
+        for s in sets:
+            values = s.split(",")
+
+
+            for v in values:                
+                (n,c) = v.strip().split()
+                colour_value = int(n)
+                if c in map_colours.keys():                    
+                    if colour_value > map_colours[c]:
+                        map_colours[c] = colour_value
+                else:
+                    map_colours[c] = colour_value
+
+
+        power = map_colours['red'] * map_colours['green'] * map_colours['blue']
+        total_power += power
+
+        print(f"DEBUG: {map_colours} power={power}")
+    return total_power
