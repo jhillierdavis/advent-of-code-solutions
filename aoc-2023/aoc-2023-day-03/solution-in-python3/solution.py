@@ -36,7 +36,7 @@ def extract_number(g, p):
     return value
 
 
-def solve(filename):
+def solve_part1(filename):
     lines = fileutils.get_file_lines(filename)
 
     g = grid.lines_to_grid(lines)
@@ -58,7 +58,7 @@ def solve(filename):
             symbol = g.get_symbol(p)
             if symbol.isnumeric():
                 value =  extract_number(g,p)
-                print(f"DEBUG: value={value}")  
+                #print(f"DEBUG: value={value}")  
                 skip = len(value) -1
                 if value and check_value_touches_a_symbol(g, p, value):
                     #print(f"DEBUG: value={value} touches symbol")    
@@ -66,3 +66,7 @@ def solve(filename):
                 #number_points.append(p)
 
     return total
+
+
+def solve_part2(filename):
+    return 0
