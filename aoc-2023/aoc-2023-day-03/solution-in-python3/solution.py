@@ -68,5 +68,61 @@ def solve_part1(filename):
     return total
 
 
+def get_value_star_points(g, p, value):
+    star_points = set()
+    
+    for i in range(len(value)):
+        np = point.Point2D(p.get_x() + i, p.get_y())       
+        #print(f"DBEUG: checking point={np} i={i}" ) 
+        add_if_touches_a_star(g, np, star_points)        
+    return star_points
+
+
+def add_if_touches_a_star(g, p, star_points):
+    neighbours = g.get_surrounding_neighbours(p)  
+    for np in neighbours:
+        s  = g.get_symbol(np)                
+        if s == '*':
+            star_points.add(np)
+
 def solve_part2(filename):
-    return 0
+    lines = fileutils.get_file_lines(filename)
+    g = grid.lines_to_grid(lines)
+
+    
+    map_star_to_value = {}
+    for y in range(g.get_height()):
+        skip = 0
+        for x in range(g.get_width()):
+            if skip > 0:
+                skip -= 1
+                continue
+
+            p = point.Point2D(x,y)
+
+            symbol = g.get_symbol(p)
+            if symbol.isnumeric():
+                value =  extract_number(g,p)
+                #print(f"DEBUG: value={value}")  
+                skip = len(value) -1
+                if value:
+                    #print(f"DEBUG: value={value} touches symbol")    
+                    star_points = get_value_star_points(g,p, value)
+                    for sp in star_points:
+                        if sp in map_star_to_value.keys():
+                            map_star_to_value[sp] =  map_star_to_value[sp] + "|" + value
+                        else:
+                            map_star_to_value[sp] = value           
+                #number_points.append(p)
+
+    #print(f"map_star_to_value={map_star_to_value}")
+
+    total = 0
+    for k in map_star_to_value.keys():
+        values = map_star_to_value[k].split('|')
+        #print(f"DEBUG: values={values}")
+        if len(values) == 2:
+            #print(f"DEBUG: values[0]={value[0]} values[1]={values[1]}")
+            result = int(values[0]) * int(values[1])
+            total += result
+    return total
