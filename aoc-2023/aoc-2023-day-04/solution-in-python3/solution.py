@@ -14,7 +14,7 @@ def get_cards_from_filename(filename):
         winning_cards = w.split()
         holding_cards = h.split()
 
-        list_cards.append( (scratchcard, winning_cards, holding_cards) )
+        list_cards.append( (scratchcard, set(winning_cards), set(holding_cards)) )
 
     return list_cards
 
@@ -25,17 +25,15 @@ def solve_part1(filename):
 
     total = 0
     for entry in list_cards:
+        points = 0
         winning_cards = entry[1]
         holding_cards = entry[2]
 
-        points = 0
-        for hc in holding_cards:
-            for wc in winning_cards:
-                if hc == wc:
-                    if points == 0:
-                        points = 1
-                    else:
-                        points *= 2
+        # Matches = size of intersection (of 2 sets)
+        matches = len(holding_cards & winning_cards) 
+        if matches > 0:      
+            # When there is a match: points = 2 to power of number of (matches - 1)
+            points = 2**(matches-1) 
 
         #print(f"DEBUG: {winning_cards} {holding_cards} {points}")
         total += points
@@ -46,29 +44,24 @@ def solve_part1(filename):
 def solve_part2(filename):
     map_points = defaultdict(int)
 
-    list_cards = get_cards_from_filename(filename)
-
-    total = 0
+    list_cards = get_cards_from_filename(filename) 
     for entry in list_cards:
         scratchcard = entry[0]
         winning_cards = entry[1]
         holding_cards = entry[2]
         map_points[scratchcard] += 1
         
-        matches = 0
-        for hc in holding_cards:
-            for wc in winning_cards:
-                if hc == wc:
-                    matches += 1
-
-        #print(f"DBEUG: {card} {winning_cards} {holding_cards} {matches}")
+        # Matches = size of intersection (of 2 sets)
+        matches = len(holding_cards & winning_cards) 
+        #print(f"DEBUG: {card} {winning_cards} {holding_cards} {matches}")
 
         for i in range(matches):
-            wins_card = scratchcard + i + 1
+            winning_card = scratchcard + i + 1
             #print(f"DEBUG: Card {card} wins {wins_card}")
-            map_points[wins_card] += map_points[scratchcard] 
+            map_points[winning_card] += map_points[scratchcard] 
 
     #print(f"DEBUG: {map_points}")
+    total = 0
     for v in map_points.values():
         total += v
 
