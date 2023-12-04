@@ -9,10 +9,10 @@ import solution
         pytest.param('puzzle-input-full.txt', 2162),
     ],    
 )
-def test_solution(input, expected):
+def test_solution_part1(input, expected):
 
     # only 12 red cubes, 13 green cubes, and 14 blue cubes
-    assert solution.solve(input) == expected
+    assert solution.solve_part1(input) == expected
 
 @pytest.mark.parametrize(
     "input,expected",
@@ -22,6 +22,4 @@ def test_solution(input, expected):
     ],    
 )
 def test_solution_part2(input, expected):
-
-    # only 12 red cubes, 13 green cubes, and 14 blue cubes
     assert solution.solve_part2(input) == expected    

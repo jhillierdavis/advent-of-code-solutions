@@ -2,8 +2,9 @@ from helpers import fileutils
 
 from collections import defaultdict
 
-def solve(filename):
-    games = []
+
+
+def solve_part1(filename):
     valid_game_count = 0
 
     lines = fileutils.get_file_lines(filename)
@@ -35,17 +36,14 @@ def solve(filename):
         print(f"DEBUG: {map_colours}")
     return valid_game_count
 
-def solve_part2(filename):
-    
+def solve_part2(filename):    
     total_power = 0
 
     lines = fileutils.get_file_lines(filename)
     for l in lines:
-        is_valid = True
         (g,r) = l.split(":")
         print(f"DEBUG: {g}")
-        game_number = int(g.split()[1].strip())
-
+    
         sets = r.split(';')
 
         map_colours = defaultdict(int)
