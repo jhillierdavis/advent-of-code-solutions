@@ -13,7 +13,7 @@ import solution
         pytest.param('Card 6: 31 18 13 56 72 | 74 77 10 23 35 67 36 11', 0),
     ],    
 )
-def test_foo(input, expected):
+def test_get_card_matches_from_string(input, expected):
      assert solution.get_card_matches_from_string(input) == expected
 
 @pytest.mark.parametrize(
