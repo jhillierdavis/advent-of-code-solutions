@@ -1,1 +1,9 @@
-https://adventofcode.com/2023/day/?
+https://adventofcode.com/2023/day/4
+
+Other's solutions
+-----------------
+
+Jonathan Paulson (Python solution):
+
+https://www.youtube.com/watch?v=tXnPMSSQgCU
+https://github.com/jonathanpaulson/AdventOfCode/blob/master/2023/4.py
