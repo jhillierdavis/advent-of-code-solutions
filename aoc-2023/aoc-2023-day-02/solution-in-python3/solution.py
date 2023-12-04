@@ -2,20 +2,26 @@ from helpers import fileutils
 
 from collections import defaultdict
 
+def get_sets_from_filename(filename):
+    list_of_sets = []
+    lines = fileutils.get_file_lines(filename)    
+    for l in lines:
+        (g,r) = l.split(":")
+        #print(f"DEBUG: {g}")
+        sets = r.split(';')
+        list_of_sets.append(sets)
+    return list_of_sets
 
 
 def solve_part1(filename):
     valid_game_count = 0
 
-    lines = fileutils.get_file_lines(filename)
-    for l in lines:
+    list_of_sets = get_sets_from_filename(filename)
+
+    index = 0
+    for sets in list_of_sets:
+        index += 1
         is_valid = True
-        (g,r) = l.split(":")
-        print(f"DEBUG: {g}")
-        game_number = int(g.split()[1].strip())
-
-        sets = r.split(';')
-
         for s in sets:
             values = s.split(",")
 
@@ -31,25 +37,21 @@ def solve_part1(filename):
                  is_valid = False
 
         if is_valid:
-                print(f"DEBUG: Valid game line = {l}")
-                valid_game_count += game_number
+                print(f"DEBUG: Valid game line = {index}")
+                valid_game_count += index
         print(f"DEBUG: {map_colours}")
     return valid_game_count
+
 
 def solve_part2(filename):    
     total_power = 0
 
-    lines = fileutils.get_file_lines(filename)
-    for l in lines:
-        (g,r) = l.split(":")
-        print(f"DEBUG: {g}")
+    list_of_sets = get_sets_from_filename(filename)
     
-        sets = r.split(';')
-
+    for sets in list_of_sets:
         map_colours = defaultdict(int)
         for s in sets:
             values = s.split(",")
-
 
             for v in values:                
                 (n,c) = v.strip().split()
@@ -64,5 +66,5 @@ def solve_part2(filename):
         power = map_colours['red'] * map_colours['green'] * map_colours['blue']
         total_power += power
 
-        print(f"DEBUG: {map_colours} power={power}")
+        #print(f"DEBUG: {map_colours} power={power}")
     return total_power
