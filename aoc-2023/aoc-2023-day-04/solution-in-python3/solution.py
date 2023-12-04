@@ -48,8 +48,4 @@ def solve_part2(filename):
             map_points[winning_card] += map_points[scratchcard] 
 
     #print(f"DEBUG: {map_points}")
-    total = 0
-    for v in map_points.values():
-        total += v
-
-    return total
+    return sum(map_points.values())
