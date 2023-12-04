@@ -27,7 +27,7 @@ def solve_part1(filename):
 
             map_colours = defaultdict(int)
             for v in values:
-                (n,c) = v.strip().split()
+                (n,c) = v.split()
                 if c in map_colours.keys():
                     map_colours[c] = map_colours[c] + int(n)
                 else:
@@ -35,11 +35,12 @@ def solve_part1(filename):
 
             if map_colours['red'] > 12 or map_colours['green'] > 13 or map_colours['blue'] > 14:
                  is_valid = False
+                 break
 
         if is_valid:
-                print(f"DEBUG: Valid game line = {index}")
+                #print(f"DEBUG: Valid game line = {index}")
                 valid_game_count += index
-        print(f"DEBUG: {map_colours}")
+        #print(f"DEBUG: {map_colours}")
     return valid_game_count
 
 
@@ -54,7 +55,7 @@ def solve_part2(filename):
             values = s.split(",")
 
             for v in values:                
-                (n,c) = v.strip().split()
+                (n,c) = v.split()
                 colour_value = int(n)
                 if c in map_colours.keys():                    
                     if colour_value > map_colours[c]:
