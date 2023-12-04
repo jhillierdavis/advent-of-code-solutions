@@ -45,7 +45,6 @@ def solve_part2(filename):
         
         for i in range(matches):
             winning_card = scratchcard + i + 1
-            #print(f"DEBUG: Card {card} wins {wins_card}")
             map_points[winning_card] += map_points[scratchcard] 
 
     #print(f"DEBUG: {map_points}")
