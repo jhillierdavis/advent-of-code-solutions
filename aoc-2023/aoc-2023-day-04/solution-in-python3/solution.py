@@ -2,21 +2,23 @@ from helpers import fileutils
 
 from collections import defaultdict
 
+def get_card_matches_from_string(input):
+    (c,r) = input.split(':')
+    (w,h) = r.split('|')
+    winning_cards = w.split()
+    holding_cards = h.split()
+    # Number of card matches = size of intersection (of 2 sets; winning cards & holding cards)
+    matches = len(set(holding_cards) & set(winning_cards))
+    return matches
+
+
 def get_card_matches_from_filename(filename):
     lines = fileutils.get_file_lines(filename)
 
     list_card_matches = []
     scratchcard = 0
     for l in lines:
-        scratchcard += 1
-        (c,r) = l.split(':')
-        (w,h) = r.split('|')
-        winning_cards = w.split()
-        holding_cards = h.split()
-
-        # Number of card matches = size of intersection (of 2 sets; winning cards & holding cards)
-        matches = len(set(holding_cards) & set(winning_cards))
-
+        matches = get_card_matches_from_string(l)
         list_card_matches.append(matches)
 
     return list_card_matches
