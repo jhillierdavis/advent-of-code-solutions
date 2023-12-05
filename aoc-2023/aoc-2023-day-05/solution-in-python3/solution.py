@@ -15,7 +15,7 @@ class Adjuster():
     def get_value(self, key):
         if not self.contains_key(key):
             raise Exception("Does not contain key={key}!")
-        return self.offset + (key - self.min)
+        return self.offset + (key - self.min)        
 
 class AdjusterMap():
 
@@ -31,6 +31,9 @@ class AdjusterMap():
             if adjuster.contains_key(key):
                 return adjuster.get_value(key)
         return key
+    
+    def get_adjuster_list(self):
+        return self.adjuster_list
 
 
 
