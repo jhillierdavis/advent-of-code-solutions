@@ -38,3 +38,24 @@ def test_get_location_for_seed_from_filename(filename, seed, location):
 )
 def test_get_nearest_location_for_seeds_from_filename(filename, expected):
     assert solution.get_nearest_location_for_seeds_from_filename(filename) == expected
+
+def test_get_seed_list():
+    part1_seed_list = solution.get_seed_list_from_filename('puzzle-input-example.txt')
+    assert part1_seed_list == [79, 14, 55, 13]
+
+    part2_seed_list = solution.get_seed_list_as_range_pairs_from_filename('puzzle-input-example.txt')
+    assert len(part2_seed_list) == 27
+
+    #part2_seed_list = solution.get_seed_list_as_range_pairs_from_filename('puzzle-input-full.txt')
+    #assert len(part2_seed_list) == 27
+
+
+@pytest.mark.parametrize(
+    "filename,expected",
+    [
+        pytest.param('puzzle-input-example.txt', 46),
+        #pytest.param('puzzle-input-full.txt', 0),
+    ],    
+)
+def test_solve_part2(filename, expected):
+    assert solution.solve_part2(filename) == expected
