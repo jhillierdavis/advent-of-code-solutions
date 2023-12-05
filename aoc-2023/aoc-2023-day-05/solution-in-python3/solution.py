@@ -2,6 +2,38 @@ from helpers import fileutils
 
 from collections import defaultdict
 
+class Adjuster():
+    
+    def __init__(self, offset, min, scope):
+        self.offset = offset
+        self.min = min
+        self.scope = scope
+
+    def contains_key(self, key):
+        return key >= self.min and key < self.min + self.scope
+    
+    def get_value(self, key):
+        if not self.contains_key(key):
+            raise Exception("Does not contain key={key}!")
+        return self.offset + (key - self.min)
+
+class AdjusterMap():
+
+    def __init__(self):
+        self.adjuster_list = []
+
+    def add_adjuster(self, offset, min, scope):
+        adjuster = Adjuster(offset, min, scope)
+        self.adjuster_list.append(adjuster)
+
+    def get_value(self, key):
+        for adjuster in self.adjuster_list:
+            if adjuster.contains_key(key):
+                return adjuster.get_value(key)
+        return key
+
+
+
 class MyDefaultDict(defaultdict):
     def __missing__(self, key):
         return key
@@ -18,13 +50,13 @@ def get_location_for_seed_from_filename(filename, seed):
     map_lines = fileutils.get_lines_after_empty_from_file(filename)
     #print(f"DEBUG: {map_lines}={map_lines}")
 
-    seed_to_soil_map = MyDefaultDict(int)  
-    soil_to_fertilizer_map = MyDefaultDict(int)
-    fertilizer_to_water_map = MyDefaultDict(int)
-    water_to_light_map = MyDefaultDict(int)
-    light_to_temperature_map = MyDefaultDict(int)
-    temperature_to_humidity_map = MyDefaultDict(int)
-    humidity_to_location_map = MyDefaultDict(int)
+    seed_to_soil_map = AdjusterMap()
+    soil_to_fertilizer_map = AdjusterMap()
+    fertilizer_to_water_map = AdjusterMap()
+    water_to_light_map = AdjusterMap()
+    light_to_temperature_map = AdjusterMap()
+    temperature_to_humidity_map = AdjusterMap()
+    humidity_to_location_map = AdjusterMap()
     
 
     map = None
@@ -61,29 +93,28 @@ def get_location_for_seed_from_filename(filename, seed):
 
         values = l.split()
         #print(f"DEBUG: values={values}")
-        for i in range(int(values[2])):
-            map[int(values[1])+i] = int(values[0])+i
+        map.add_adjuster(int(values[0]),int(values[1]),int(values[2]))
 
 
-    soil = seed_to_soil_map[seed]    
+    soil = seed_to_soil_map.get_value(seed)
     print(f"DEBUG: soil={soil}")
 
-    fertilizer = soil_to_fertilizer_map[soil]    
+    fertilizer = soil_to_fertilizer_map.get_value(soil)
     print(f"DEBUG: fertilizer={fertilizer}")
 
-    water = fertilizer_to_water_map[fertilizer]
+    water = fertilizer_to_water_map.get_value(fertilizer)
     print(f"DEBUG: water={water}")
 
-    light = water_to_light_map[water]
+    light = water_to_light_map.get_value(water)
     print(f"DEBUG: light={light}")
 
-    temperature = light_to_temperature_map[light]
+    temperature = light_to_temperature_map.get_value(light)
     print(f"DEBUG: temperature={temperature}")
 
-    humidity = temperature_to_humidity_map[temperature]
+    humidity = temperature_to_humidity_map.get_value(temperature)
     print(f"DEBUG: humidity={humidity}")
 
-    location = humidity_to_location_map[humidity]
+    location = humidity_to_location_map.get_value(humidity)
     print(f"DEBUG: location={location}")
 
 
@@ -101,13 +132,14 @@ def get_nearest_location_for_seeds_from_filename(filename):
     map_lines = fileutils.get_lines_after_empty_from_file(filename)
     #print(f"DEBUG: {map_lines}={map_lines}")
 
-    seed_to_soil_map = MyDefaultDict(int)  
-    soil_to_fertilizer_map = MyDefaultDict(int)
-    fertilizer_to_water_map = MyDefaultDict(int)
-    water_to_light_map = MyDefaultDict(int)
-    light_to_temperature_map = MyDefaultDict(int)
-    temperature_to_humidity_map = MyDefaultDict(int)
-    humidity_to_location_map = MyDefaultDict(int)
+    seed_to_soil_map = AdjusterMap()
+    soil_to_fertilizer_map = AdjusterMap()
+    fertilizer_to_water_map = AdjusterMap()
+    water_to_light_map = AdjusterMap()
+    light_to_temperature_map = AdjusterMap()
+    temperature_to_humidity_map = AdjusterMap()
+    humidity_to_location_map = AdjusterMap()
+    
     
 
     map = None
@@ -144,32 +176,33 @@ def get_nearest_location_for_seeds_from_filename(filename):
 
         values = l.split()
         #print(f"DEBUG: values={values}")
-        for i in range(int(values[2])):
-            map[int(values[1])+i] = int(values[0])+i
+        #for i in range(int(values[2])):
+        #    map[int(values[1])+i] = int(values[0])+i
+        map.add_adjuster(int(values[0]),int(values[1]),int(values[2]))
 
 
     seed_to_location_map = defaultdict(int)
 
     for seed in seed_list:
-        soil = seed_to_soil_map[int(seed)]    
+        soil = seed_to_soil_map.get_value(int(seed))
         print(f"DEBUG: soil={soil}")
 
-        fertilizer = soil_to_fertilizer_map[soil]    
+        fertilizer = soil_to_fertilizer_map.get_value(soil)
         print(f"DEBUG: fertilizer={fertilizer}")
 
-        water = fertilizer_to_water_map[fertilizer]
+        water = fertilizer_to_water_map.get_value(fertilizer)
         print(f"DEBUG: water={water}")
 
-        light = water_to_light_map[water]
+        light = water_to_light_map.get_value(water)
         print(f"DEBUG: light={light}")
 
-        temperature = light_to_temperature_map[light]
+        temperature = light_to_temperature_map.get_value(light)
         print(f"DEBUG: temperature={temperature}")
 
-        humidity = temperature_to_humidity_map[temperature]
+        humidity = temperature_to_humidity_map.get_value(temperature)
         print(f"DEBUG: humidity={humidity}")
 
-        location = humidity_to_location_map[humidity]
+        location = humidity_to_location_map.get_value(humidity)
         print(f"DEBUG: location={location}")
 
         seed_to_location_map[seed] = int(location)
