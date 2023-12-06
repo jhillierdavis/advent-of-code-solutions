@@ -1,1 +1,17 @@
-https://adventofcode.com/2023/day/4
+https://adventofcode.com/2023/day/6
+
+Other's solutions
+-----------------
+
+Jonathan Paulson:
+
+https://www.youtube.com/watch?v=R_tud5SLROs&t=0s
+https://github.com/jonathanpaulson/AdventOfCode/blob/master/2023/6.py
+
+https://www.youtube.com/watch?v=BmXauJqkMzg
+https://github.com/jonathanpaulson/AdventOfCode/blob/master/2023/6_binary_search.py
+
+William Y. Feng:
+
+https://www.youtube.com/watch?v=Q89EpotUuzk
+https://github.com/womogenes/AoC-2023-Solutions/tree/main/day_06
