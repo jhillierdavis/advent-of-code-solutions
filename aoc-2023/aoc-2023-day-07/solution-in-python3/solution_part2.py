@@ -106,7 +106,7 @@ def get_card_value(label):
 def is_five_of_a_kind(hand):
     jokers = get_joker_count(hand)
 
-    if 5 == jokers:
+    if jokers == 5:
         return True
 
     freq = get_sorted_char_freq_without_jokers(hand)    
@@ -116,22 +116,29 @@ def is_five_of_a_kind(hand):
 def is_four_of_a_kind(hand):
     jokers = get_joker_count(hand)
 
-    if 4 == jokers:
+    if jokers >= 4:
         return True
 
     freq = get_sorted_char_freq_without_jokers(hand)
     max = freq[0]
     sum = jokers + max
 
-    print(f"DEBUG: hand={hand} jokers={jokers} max={max} sum={sum}")    
-    if sum >= 4:
-        return True
-    return False
+    #print(f"DEBUG: hand={hand} jokers={jokers} max={max} sum={sum}")    
+    return sum >= 4
 
 def is_full_house(hand):
+    jokers = get_joker_count(hand)
+    if jokers >= 5:
+        return True
+    
     freq = get_sorted_char_freq_without_jokers(hand)
     max = freq[0]
-    jokers = get_joker_count(hand)
+
+    if jokers == 0:
+        return freq == [3,2]
+
+    if jokers == 1:
+        return freq == [2,2] or freq == [3,1]
 
     if max + jokers >= 3:
         rem_jokers = max + jokers - 3
@@ -141,15 +148,31 @@ def is_full_house(hand):
     return False
 
 def is_three_of_a_kind(hand):
+    jokers = get_joker_count(hand)
+    if jokers >= 5:
+        return True
+    
     freq = get_sorted_char_freq_without_jokers(hand)
     max = freq[0]
-    jokers = get_joker_count(hand)
+
+    if jokers == 0:
+        return freq == [3,1,1]
+
     return max + jokers >= 3
 
 def is_two_pair(hand):
+    jokers = get_joker_count(hand)
+    if jokers >= 5:
+        return True
+    
     freq = get_sorted_char_freq_without_jokers(hand)
     max = freq[0]
-    jokers = get_joker_count(hand)
+
+    if jokers == 0:
+        return freq == [2,2,1]
+
+    if jokers == 1:
+        return freq == [2,1,1]
 
     if max + jokers >= 2:
         rem_jokers = max + jokers - 2
@@ -158,32 +181,52 @@ def is_two_pair(hand):
     return False
 
 def is_one_pair(hand):
+    jokers = get_joker_count(hand)
+    if jokers >= 5:
+        return True
+    
     freq = get_sorted_char_freq_without_jokers(hand)
     max = freq[0]
-    jokers = get_joker_count(hand)
 
+    if jokers == 0:
+        return freq == [2,1,1,1]
+    
     return max + jokers >= 2
 
-def get_type(hand):
+def is_distinct(hand):
+    jokers = get_joker_count(hand)
+    if jokers >= 5:
+        return True
+    
+    freq = get_sorted_char_freq_without_jokers(hand)
+    max = freq[0]
+
+    if jokers == 0:
+        return freq == [1,1,1,1,1]
+    
+    return max + jokers >= 1
+
+
+def get_hand_type(hand):
     if is_five_of_a_kind(hand):
-        return 6
+        return 0
     
     if is_four_of_a_kind(hand):        
-        return 5
+        return 1
 
     if is_full_house(hand):
-        return 4  
+        return 2  
 
     if is_three_of_a_kind(hand):
         return 3
     
     if is_two_pair(hand):
-        return 2
+        return 4
 
     if is_one_pair(hand):
-        return 1
+        return 5
 
-    return 0
+    return 6
 
 
 def compare_same_hand_type(hand_left, hand_right):
@@ -203,11 +246,11 @@ def compare(hand_left, hand_right):
     if hand_left == hand_right:
         return 0
     
-    type_hand_left = get_type(hand_left)
-    type_hand_right = get_type(hand_right)
+    type_hand_left = get_hand_type(hand_left)
+    type_hand_right = get_hand_type(hand_right)
 
     if not type_hand_left == type_hand_right:
-        return  type_hand_left - type_hand_right
+        return  type_hand_right - type_hand_left
     
     return compare_same_hand_type(hand_left, hand_right)
 
@@ -244,13 +287,3 @@ def get_total_winnings_with_wildcard_jokers(filename):
         winnings += value
 
     return winnings
-
-"""
-winnings_example = get_total_winnings_with_wildcard_jokers('puzzle-input-example.txt')
-print(f"DEBUG: Part 2 example: {winnings_example}")
-assert winnings_example == 5905
-
-winnings_full = get_total_winnings_with_wildcard_jokers('puzzle-input-full.txt')
-print(f"DEBUG: Part 2 full: {winnings_full}")
-assert winnings_full == 245576185
-"""

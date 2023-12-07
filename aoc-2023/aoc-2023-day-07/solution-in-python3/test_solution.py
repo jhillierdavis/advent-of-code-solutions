@@ -154,7 +154,7 @@ def test_get_total_winnings(input, expected):
     assert solution.get_total_winnings(input) == expected
 
 import solution_part2
-"""
+
 @pytest.mark.parametrize(
     "hand,expected",
     [
@@ -307,11 +307,11 @@ def test_three_of_a_kind_with_wildcard_jokers(hand, expected):
         pytest.param('A23A4', False), # One pair
         pytest.param('94J8A', False),
         pytest.param('KJ524', False),
+        pytest.param('J1112', False),        
         pytest.param('23432', True), # Two pair        
         pytest.param('JJ123', True),
         pytest.param('J3432', True),
-        pytest.param('J343J', True), 
-        pytest.param('J1112', True),
+        pytest.param('J343J', True),         
         pytest.param('JJ432', True),
         pytest.param('JJJ12', True),
         pytest.param('JJJJ2', True), 
@@ -351,6 +351,7 @@ def test_is_two_pair_with_wildcard_jokers(hand, expected):
 def test_is_one_pair_with_wildcard_jokers(hand, expected):
     assert solution_part2.is_one_pair(hand) == expected
 
+
 @pytest.mark.parametrize(
     "hand,expected",
     [
@@ -384,8 +385,6 @@ def test_is_distinct_with_wildcard_jokers(hand, expected):
         pytest.param(['2AAAA','33332'], ['2AAAA','33332']), # Both four of a kind
         pytest.param(['77888','77788'], ['77788','77888']), # Both full house
         pytest.param(['77788','77888'], ['77788','77888']), # Both full house
-        #pytest.param(['AKQJT','AKQTJ'], ['AKQTJ', 'AKQJT']),
-        #pytest.param(['AKQTJ','AKQJT'], ['AKQTJ','AKQJT']), 
         pytest.param(['AAAAA','AA8AA'], ['AA8AA', 'AAAAA']),
         pytest.param(['23332','AA8AA'], ['23332','AA8AA' ]),
         pytest.param(['32T3K','T55J5','KK677','KTJJT','QQQJA'], ['32T3K', 'KK677', 'T55J5', 'QQQJA', 'KTJJT']),
@@ -394,18 +393,8 @@ def test_is_distinct_with_wildcard_jokers(hand, expected):
 )
 def test_sort_by_rank_with_wildcard_jokers(list_of_hands, expected):
     assert solution_part2.sort_by_rank_with_wildcard_jokers(list_of_hands) == expected
-"""
 
-@pytest.mark.parametrize(
-    "input,expected",
-    [
-        pytest.param('puzzle-input-example.txt', 5905),
-        pytest.param('puzzle-input-full.txt', 245576185), # Not 245899462 #245899462? # Less than: 248441102 , 245629441 , greater than 245512350
-    ],    
-)
-def test_get_total_winnings_with_wildcard_jokers(input, expected):
-    assert solution_part2.get_total_winnings_with_wildcard_jokers(input) == expected
-"""
+
 @pytest.mark.parametrize(
     "hand,expected",
     [
@@ -418,10 +407,18 @@ def test_get_total_winnings_with_wildcard_jokers(input, expected):
         pytest.param('6J546', 3),
         pytest.param('KJ524', 5),
         pytest.param('94J8A', 5),
-        #pytest.param('TODO', 2),
-
     ],    
 )
 def test_check_hand_type(hand, expected):
     assert solution_part2.get_hand_type(hand) == expected
-"""
+
+# Check part 2 answers
+@pytest.mark.parametrize(
+    "input,expected",
+    [
+        pytest.param('puzzle-input-example.txt', 5905),
+        pytest.param('puzzle-input-full.txt', 245576185),
+    ],    
+)
+def test_get_total_winnings_with_wildcard_jokers(input, expected):
+    assert solution_part2.get_total_winnings_with_wildcard_jokers(input) == expected
