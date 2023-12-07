@@ -1,0 +1,16 @@
+https://adventofcode.com/2023/day/?
+
+Other's solutions
+-----------------
+
+Jonathan Paulson:
+
+https://www.youtube.com/@jonathanpaulson5053/videos
+https://github.com/jonathanpaulson/AdventOfCode/tree/master/2023
+
+William Y. Feng:
+
+https://www.youtube.com/playlist?list=PLsqh-jhhTL292ZlyyruyLTXFcFj1RqkG0
+https://github.com/womogenes/AoC-2023-Solutions
+
+
