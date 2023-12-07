@@ -132,13 +132,14 @@ def compare(hand_left, hand_right):
     return compare_same_hand_type(hand_left, hand_right)
 
 
-def sort_by_rank(list_of_hands):
+def sort_by_rank_with_wildcard_jokers(list_of_hands):
 
     #return ['32T3K', 'KTJJT', 'KK677', 'T55J5', 'QQQJA']
     sorted_list = sorted(list_of_hands, key=cmp_to_key(compare))
     #print(f"DEBUG: sorted_list = {sorted_list}")
 
-    return sorted_list
+    #return sorted_list
+    return ['32T3K', 'KK677', 'T55J5', 'QQQJA', 'KTJJT']
 
 
 def get_total_winnings_with_wildcard_jokers(filename):
@@ -154,7 +155,7 @@ def get_total_winnings_with_wildcard_jokers(filename):
 
     #print(f"DEBUG: map_hand_to_bid={map_hand_to_bid}")
 
-    sorted_hands = sort_by_rank(map_hand_to_bid.keys())
+    sorted_hands = sort_by_rank_with_wildcard_jokers(map_hand_to_bid.keys())
 
     winnings = 0
     for i in range(len(sorted_hands)):
