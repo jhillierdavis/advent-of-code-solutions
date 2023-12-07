@@ -3,10 +3,14 @@ from collections import defaultdict
 
 from helpers import fileutils
 
-def check_char_freq(hand):
+def get_char_freq_map_from_string(input):
     freq = {}
-    for c in set(hand):
-       freq[c] = hand.count(c)
+    for c in set(input):
+       freq[c] = input.count(c)
+    return freq
+
+def check_char_freq(hand):
+    freq = get_char_freq_map_from_string(hand)
     return sorted(freq.values(), reverse=True)
 
 def get_max_same_card(hand):
@@ -20,34 +24,107 @@ def get_max_same_card(hand):
             max_same = same
     return max_same
 
-def is_five_of_a_kind(hand):
-    return get_max_same_card(hand) == 5
+def get_max_same_card_ignore_jokers(hand):
+    return get_max_same_card(hand.strip('J'))
 
-def is_four_of_a_kind(hand):
-    return get_max_same_card(hand) == 4
+def get_count_jokers(hand):
+    jokers = 0
+    for i in range(len(hand)):
+        if 'J' == hand[i]:
+            jokers += 1
+    return jokers
+
+def is_five_of_a_kind(hand):
+    max = get_max_same_card_ignore_jokers(hand)
+    jokers = get_count_jokers(hand)
+    if max == 5 and jokers == 0:
+        return True
+    if max == 4 and jokers == 1:
+        return True    
+    if max == 3 and jokers == 2:
+        return True        
+    if max == 2 and jokers == 3:
+        return True
+    if max == 1 and jokers == 4:
+        return True            
+    elif jokers == 5: 
+        return True    
+    return False
+
+def is_four_of_a_kind(hand):    
+    max = get_max_same_card_ignore_jokers(hand)
+    jokers = get_count_jokers(hand)
+    if max == 4 and jokers == 0:
+        return True
+    if max == 3 and jokers == 1:
+        return True    
+    if max == 2 and jokers == 2:
+        return True        
+    if max == 1 and jokers == 3:
+        return True        
+    elif jokers == 4: 
+        return True    
+    return False
 
 def is_distinct(hand):
     return get_max_same_card(hand) == 1
 
 def is_full_house(hand):
     freq = check_char_freq(hand)
+    max = get_max_same_card_ignore_jokers(hand)
+    jokers = get_count_jokers(hand)
+
     #print(f"DEBUG: {freq}")
-    return freq == [3,2]
+    if freq == [3,2]:
+        return True
+    elif jokers == 1 and freq == [2,2,1]:
+        return True
+    elif jokers == 2 and freq == [2,1,1,1]:
+        return True    
+    elif jokers == 3 and freq == [3,1,1]:
+        return True        
+    return False
 
 def is_three_of_a_kind(hand):
     freq = check_char_freq(hand)
+    max = get_max_same_card_ignore_jokers(hand)
+    jokers = get_count_jokers(hand)
+
     #print(f"DEBUG: {freq}")
-    return freq == [3,1,1]
+    if freq == [3,1,1]:
+        return True
+    elif jokers == 1 and freq == [2,1,1,1]:
+        return True
+    elif jokers == 2 and max == 1:
+        return True
+    return False
 
 def is_two_pair(hand):
     freq = check_char_freq(hand)
     #print(f"DEBUG: {freq}")
-    return freq == [2,2,1]
+    max = get_max_same_card_ignore_jokers(hand)
+    jokers = get_count_jokers(hand)
+
+    if freq == [2,2,1]:
+        return True
+    elif jokers == 1 and freq == [2,1,1,1]:
+        return True
+    elif jokers == 2 and max == 1:
+        return True    
+    return False
+
 
 def is_one_pair(hand):
+    max = get_max_same_card_ignore_jokers(hand)
+    jokers = get_count_jokers(hand)
+
     freq = check_char_freq(hand)
     #print(f"DEBUG: {freq}")
-    return freq == [2,1,1,1]
+    if [1,1,1,1] and max == 1 and jokers == 1:
+        return True
+    elif freq == [2,1,1,1]:
+        return True
+    return False
 
 
 
@@ -132,14 +209,15 @@ def compare(hand_left, hand_right):
     return compare_same_hand_type(hand_left, hand_right)
 
 
+
 def sort_by_rank_with_wildcard_jokers(list_of_hands):
 
     #return ['32T3K', 'KTJJT', 'KK677', 'T55J5', 'QQQJA']
     sorted_list = sorted(list_of_hands, key=cmp_to_key(compare))
     #print(f"DEBUG: sorted_list = {sorted_list}")
 
-    #return sorted_list
-    return ['32T3K', 'KK677', 'T55J5', 'QQQJA', 'KTJJT']
+    return sorted_list
+    #return ['32T3K', 'KK677', 'T55J5', 'QQQJA', 'KTJJT']
 
 
 def get_total_winnings_with_wildcard_jokers(filename):
