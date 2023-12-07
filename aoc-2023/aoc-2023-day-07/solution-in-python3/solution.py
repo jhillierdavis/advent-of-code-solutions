@@ -3,6 +3,88 @@ from collections import defaultdict
 
 from helpers import fileutils
 
+def check_char_freq(hand):
+    freq = {}
+    for c in set(hand):
+       freq[c] = hand.count(c)
+    return sorted(freq.values(), reverse=True)
+
+def get_max_same_card(hand):
+    max_same = 0
+    for i in range(len(hand)):
+        same = 0
+        for j in range(len(hand)):
+            if hand[i] == hand[j]:
+                same += 1
+        if same > max_same:
+            max_same = same
+    return max_same
+
+def is_five_of_a_kind(hand):
+    return get_max_same_card(hand) == 5
+
+def is_four_of_a_kind(hand):
+    return get_max_same_card(hand) == 4
+
+def is_distinct(hand):
+    return get_max_same_card(hand) == 1
+
+def is_full_house(hand):
+    freq = check_char_freq(hand)
+    #print(f"DEBUG: {freq}")
+    return freq == [3,2]
+
+def is_three_of_a_kind(hand):
+    freq = check_char_freq(hand)
+    #print(f"DEBUG: {freq}")
+    return freq == [3,1,1]
+
+def is_two_pair(hand):
+    freq = check_char_freq(hand)
+    #print(f"DEBUG: {freq}")
+    return freq == [2,2,1]
+
+def is_one_pair(hand):
+    freq = check_char_freq(hand)
+    #print(f"DEBUG: {freq}")
+    return freq == [2,1,1,1]
+
+
+
+def get_hand_type(hand):
+    #Five of a kind, where all five cards have the same label: AAAAA
+    #Four of a kind, where four cards have the same label and one card has a different label: AA8AA
+    #Full house, where three cards have the same label, and the remaining two cards share a different label: 23332
+    #Three of a kind, where three cards have the same label, and the remaining two cards are each different from any other card in the hand: TTT98
+    #Two pair, where two cards share one label, two other cards share a second label, and the remaining card has a third label: 23432
+    #One pair, where two cards share one label, and the other three cards have a different label from the pair and each other: A23A4
+    #High card, where all cards' labels are distinct: 23456
+
+    if is_five_of_a_kind(hand):
+        return 0
+
+    if is_four_of_a_kind(hand):
+        return 1
+
+    if is_full_house(hand):
+        return 2
+
+    if is_three_of_a_kind(hand):
+        return 3
+
+    if is_two_pair(hand):
+        return 4
+
+    if is_one_pair(hand):
+        return 5
+
+    if is_distinct(hand): # High card
+        return 6
+        
+    raise ValueError(f"Unhanded type for hand={hand}")
+
+
+
 def get_card_value(label):
     if label.isnumeric():
         return int(label)
@@ -37,6 +119,12 @@ def compare(hand_left, hand_right):
 
     if hand_left == hand_right:
         return 0
+    
+    type_hand_left = get_hand_type(hand_left)
+    type_hand_right = get_hand_type(hand_right)
+
+    if not type_hand_left == type_hand_right:
+        return  type_hand_right - type_hand_left
     
     return compare_same_hand_type(hand_left, hand_right)
 
