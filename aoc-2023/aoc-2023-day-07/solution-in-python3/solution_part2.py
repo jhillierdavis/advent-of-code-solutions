@@ -9,157 +9,79 @@ def get_char_freq_map_from_string(input):
        freq[c] = input.count(c)
     return freq
 
-def check_char_freq(hand):
+def get_sorted_char_freq(hand):
     freq = get_char_freq_map_from_string(hand)
     return sorted(freq.values(), reverse=True)
 
-def get_max_same_card(hand):
-    max_same = 0
-    for i in range(len(hand)):
-        same = 0
-        for j in range(len(hand)):
-            if hand[i] == hand[j]:
-                same += 1
-        if same > max_same:
-            max_same = same
-    return max_same
+def get_sorted_char_freq_without_jokers(hand):
+    return get_sorted_char_freq(hand.replace('J',''))
 
-def get_max_same_card_ignore_jokers(hand):
-    return get_max_same_card(hand.strip('J'))
-
-def get_count_jokers(hand):
+def get_joker_count(hand):
     jokers = 0
     for i in range(len(hand)):
         if 'J' == hand[i]:
             jokers += 1
     return jokers
 
-def is_five_of_a_kind(hand):
-    max = get_max_same_card_ignore_jokers(hand)
-    jokers = get_count_jokers(hand)
-    if max == 5 and jokers == 0:
-        return True
-    if max == 4 and jokers == 1:
-        return True    
-    if max == 3 and jokers == 2:
-        return True        
-    if max == 2 and jokers == 3:
-        return True
-    if max == 1 and jokers == 4:
-        return True            
-    elif jokers == 5: 
-        return True    
-    return False
 
-def is_four_of_a_kind(hand):    
-    max = get_max_same_card_ignore_jokers(hand)
-    jokers = get_count_jokers(hand)
-    if max == 4 and jokers == 0:
-        return True
-    if max == 3 and jokers == 1:
-        return True    
-    if max == 2 and jokers == 2:
-        return True        
-    if max == 1 and jokers == 3:
-        return True        
-    elif jokers == 4: 
-        return True    
-    return False
+def get_card_value(label):
+    if label.isnumeric():
+        return int(label)
 
-def is_distinct(hand):
-    return get_max_same_card(hand) == 1
+from functools import cmp_to_key
+from collections import defaultdict
 
-def is_full_house(hand):
-    freq = check_char_freq(hand)
-    max = get_max_same_card_ignore_jokers(hand)
-    jokers = get_count_jokers(hand)
+from helpers import fileutils
 
-    #print(f"DEBUG: {freq}")
-    if freq == [3,2]:
-        return True
-    elif jokers == 1 and freq == [2,2,1]:
-        return True
-    elif jokers == 2 and freq == [2,1,1,1]:
-        return True    
-    elif jokers == 3 and freq == [3,1,1]:
-        return True        
-    return False
+def get_char_freq_map_from_string(input):
+    freq = {}
+    for c in set(input):
+       freq[c] = input.count(c)
+    return freq
 
-def is_three_of_a_kind(hand):
-    freq = check_char_freq(hand)
-    max = get_max_same_card_ignore_jokers(hand)
-    jokers = get_count_jokers(hand)
+def get_sorted_char_freq(hand):
+    freq = get_char_freq_map_from_string(hand)
+    return sorted(freq.values(), reverse=True)
 
-    #print(f"DEBUG: {freq}")
-    if freq == [3,1,1]:
-        return True
-    elif jokers == 1 and freq == [2,1,1,1]:
-        return True
-    elif jokers == 2 and max == 1:
-        return True
-    return False
+def get_sorted_char_freq_without_jokers(hand):
+    return get_sorted_char_freq(hand.replace('J',''))
 
-def is_two_pair(hand):
-    freq = check_char_freq(hand)
-    #print(f"DEBUG: {freq}")
-    max = get_max_same_card_ignore_jokers(hand)
-    jokers = get_count_jokers(hand)
-
-    if freq == [2,2,1]:
-        return True
-    elif jokers == 1 and freq == [2,1,1,1]:
-        return True
-    elif jokers == 2 and max == 1:
-        return True    
-    return False
+def get_joker_count(hand):
+    jokers = 0
+    for i in range(len(hand)):
+        if 'J' == hand[i]:
+            jokers += 1
+    return jokers
 
 
-def is_one_pair(hand):
-    max = get_max_same_card_ignore_jokers(hand)
-    jokers = get_count_jokers(hand)
+def get_card_value(label):
+    if label.isnumeric():
+        return int(label)
 
-    freq = check_char_freq(hand)
-    #print(f"DEBUG: {freq}")
-    if [1,1,1,1] and max == 1 and jokers == 1:
-        return True
-    elif freq == [2,1,1,1]:
-        return True
-    return False
+from functools import cmp_to_key
+from collections import defaultdict
 
+from helpers import fileutils
 
+def get_char_freq_map_from_string(input):
+    freq = {}
+    for c in set(input):
+       freq[c] = input.count(c)
+    return freq
 
-def get_hand_type(hand):
-    #Five of a kind, where all five cards have the same label: AAAAA
-    #Four of a kind, where four cards have the same label and one card has a different label: AA8AA
-    #Full house, where three cards have the same label, and the remaining two cards share a different label: 23332
-    #Three of a kind, where three cards have the same label, and the remaining two cards are each different from any other card in the hand: TTT98
-    #Two pair, where two cards share one label, two other cards share a second label, and the remaining card has a third label: 23432
-    #One pair, where two cards share one label, and the other three cards have a different label from the pair and each other: A23A4
-    #High card, where all cards' labels are distinct: 23456
+def get_sorted_char_freq(hand):
+    freq = get_char_freq_map_from_string(hand)
+    return sorted(freq.values(), reverse=True)
 
-    if is_five_of_a_kind(hand):
-        return 0
+def get_sorted_char_freq_without_jokers(hand):
+    return get_sorted_char_freq(hand.replace('J',''))
 
-    if is_four_of_a_kind(hand):
-        return 1
-
-    if is_full_house(hand):
-        return 2
-
-    if is_three_of_a_kind(hand):
-        return 3
-
-    if is_two_pair(hand):
-        return 4
-
-    if is_one_pair(hand):
-        return 5
-
-    if is_distinct(hand): # High card
-        return 6
-        
-    raise ValueError(f"Unhanded type for hand={hand}")
-
+def get_joker_count(hand):
+    jokers = 0
+    for i in range(len(hand)):
+        if 'J' == hand[i]:
+            jokers += 1
+    return jokers
 
 
 def get_card_value(label):
@@ -178,10 +100,91 @@ def get_card_value(label):
     # Wildcard jokers
     if label == 'J':
         return 1
-
     
     raise ValueError("label={label}")
+
+def is_five_of_a_kind(hand):
+    jokers = get_joker_count(hand)
+
+    if 5 == jokers:
+        return True
+
+    freq = get_sorted_char_freq_without_jokers(hand)    
+    max = freq[0]    
+    return max + jokers >= 5
+
+def is_four_of_a_kind(hand):
+    jokers = get_joker_count(hand)
+
+    if 4 == jokers:
+        return True
+
+    freq = get_sorted_char_freq_without_jokers(hand)
+    max = freq[0]
+    sum = jokers + max
+
+    print(f"DEBUG: hand={hand} jokers={jokers} max={max} sum={sum}")    
+    if sum >= 4:
+        return True
+    return False
+
+def is_full_house(hand):
+    freq = get_sorted_char_freq_without_jokers(hand)
+    max = freq[0]
+    jokers = get_joker_count(hand)
+
+    if max + jokers >= 3:
+        rem_jokers = max + jokers - 3
+        #print(f"DEBUG: hand={hand} freq={freq}")
+        if (len(freq) >= 2 and freq[1] + rem_jokers >= 2 ) or rem_jokers >= 2:
+            return True
+    return False
+
+def is_three_of_a_kind(hand):
+    freq = get_sorted_char_freq_without_jokers(hand)
+    max = freq[0]
+    jokers = get_joker_count(hand)
+    return max + jokers >= 3
+
+def is_two_pair(hand):
+    freq = get_sorted_char_freq_without_jokers(hand)
+    max = freq[0]
+    jokers = get_joker_count(hand)
+
+    if max + jokers >= 2:
+        rem_jokers = max + jokers - 2
+        if (len(freq) >= 2 and freq[1] + rem_jokers >= 2 ) or rem_jokers >= 2:
+            return True
+    return False
+
+def is_one_pair(hand):
+    freq = get_sorted_char_freq_without_jokers(hand)
+    max = freq[0]
+    jokers = get_joker_count(hand)
+
+    return max + jokers >= 2
+
+def get_type(hand):
+    if is_five_of_a_kind(hand):
+        return 6
     
+    if is_four_of_a_kind(hand):        
+        return 5
+
+    if is_full_house(hand):
+        return 4  
+
+    if is_three_of_a_kind(hand):
+        return 3
+    
+    if is_two_pair(hand):
+        return 2
+
+    if is_one_pair(hand):
+        return 1
+
+    return 0
+
 
 def compare_same_hand_type(hand_left, hand_right):
     # A hand consists of five cards labeled one of A, K, Q, J, T, 9, 8, 7, 6, 5, 4, 3, or 2. 
@@ -200,14 +203,13 @@ def compare(hand_left, hand_right):
     if hand_left == hand_right:
         return 0
     
-    type_hand_left = get_hand_type(hand_left)
-    type_hand_right = get_hand_type(hand_right)
+    type_hand_left = get_type(hand_left)
+    type_hand_right = get_type(hand_right)
 
     if not type_hand_left == type_hand_right:
-        return  type_hand_right - type_hand_left
+        return  type_hand_left - type_hand_right
     
     return compare_same_hand_type(hand_left, hand_right)
-
 
 
 def sort_by_rank_with_wildcard_jokers(list_of_hands):
@@ -242,3 +244,13 @@ def get_total_winnings_with_wildcard_jokers(filename):
         winnings += value
 
     return winnings
+
+"""
+winnings_example = get_total_winnings_with_wildcard_jokers('puzzle-input-example.txt')
+print(f"DEBUG: Part 2 example: {winnings_example}")
+assert winnings_example == 5905
+
+winnings_full = get_total_winnings_with_wildcard_jokers('puzzle-input-full.txt')
+print(f"DEBUG: Part 2 full: {winnings_full}")
+assert winnings_full == 245576185
+"""
