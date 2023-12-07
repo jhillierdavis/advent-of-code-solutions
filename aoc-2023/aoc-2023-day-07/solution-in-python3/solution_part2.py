@@ -1,88 +1,17 @@
 from functools import cmp_to_key
 from collections import defaultdict
 
-from helpers import fileutils
-
-def get_char_freq_map_from_string(input):
-    freq = {}
-    for c in set(input):
-       freq[c] = input.count(c)
-    return freq
+from helpers import fileutils, strutils
 
 def get_sorted_char_freq(hand):
-    freq = get_char_freq_map_from_string(hand)
+    freq = strutils.get_char_freq_map_from_string(hand)
     return sorted(freq.values(), reverse=True)
 
 def get_sorted_char_freq_without_jokers(hand):
     return get_sorted_char_freq(hand.replace('J',''))
 
 def get_joker_count(hand):
-    jokers = 0
-    for i in range(len(hand)):
-        if 'J' == hand[i]:
-            jokers += 1
-    return jokers
-
-
-def get_card_value(label):
-    if label.isnumeric():
-        return int(label)
-
-from functools import cmp_to_key
-from collections import defaultdict
-
-from helpers import fileutils
-
-def get_char_freq_map_from_string(input):
-    freq = {}
-    for c in set(input):
-       freq[c] = input.count(c)
-    return freq
-
-def get_sorted_char_freq(hand):
-    freq = get_char_freq_map_from_string(hand)
-    return sorted(freq.values(), reverse=True)
-
-def get_sorted_char_freq_without_jokers(hand):
-    return get_sorted_char_freq(hand.replace('J',''))
-
-def get_joker_count(hand):
-    jokers = 0
-    for i in range(len(hand)):
-        if 'J' == hand[i]:
-            jokers += 1
-    return jokers
-
-
-def get_card_value(label):
-    if label.isnumeric():
-        return int(label)
-
-from functools import cmp_to_key
-from collections import defaultdict
-
-from helpers import fileutils
-
-def get_char_freq_map_from_string(input):
-    freq = {}
-    for c in set(input):
-       freq[c] = input.count(c)
-    return freq
-
-def get_sorted_char_freq(hand):
-    freq = get_char_freq_map_from_string(hand)
-    return sorted(freq.values(), reverse=True)
-
-def get_sorted_char_freq_without_jokers(hand):
-    return get_sorted_char_freq(hand.replace('J',''))
-
-def get_joker_count(hand):
-    jokers = 0
-    for i in range(len(hand)):
-        if 'J' == hand[i]:
-            jokers += 1
-    return jokers
-
+    return strutils.get_char_occurances_in_string(hand, 'J')
 
 def get_card_value(label):
     if label.isnumeric():
@@ -256,14 +185,9 @@ def compare(hand_left, hand_right):
 
 
 def sort_by_rank_with_wildcard_jokers(list_of_hands):
-
-    #return ['32T3K', 'KTJJT', 'KK677', 'T55J5', 'QQQJA']
     sorted_list = sorted(list_of_hands, key=cmp_to_key(compare))
     #print(f"DEBUG: sorted_list = {sorted_list}")
-
     return sorted_list
-    #return ['32T3K', 'KK677', 'T55J5', 'QQQJA', 'KTJJT']
-
 
 def get_total_winnings_with_wildcard_jokers(filename):
     lines = fileutils.get_file_lines(filename)
