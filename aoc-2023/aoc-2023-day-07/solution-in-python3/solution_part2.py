@@ -95,10 +95,13 @@ def get_card_value(label):
         return 13
     if label == 'Q':
         return 12
-    if label == 'J':
-        return 11
     if label == 'T':
         return 10
+    
+    # Wildcard jokers
+    if label == 'J':
+        return 1
+
     
     raise ValueError("label={label}")
     
@@ -137,7 +140,8 @@ def sort_by_rank(list_of_hands):
 
     return sorted_list
 
-def get_total_winnings(filename):
+
+def get_total_winnings_with_wildcard_jokers(filename):
     lines = fileutils.get_file_lines(filename)
 
     map_hand_to_bid = defaultdict(int)
