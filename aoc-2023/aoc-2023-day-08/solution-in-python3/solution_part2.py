@@ -2,10 +2,11 @@ from collections import defaultdict
 
 from helpers import fileutils
 import math
-def process_steps(start, node_map, instructions):
+
+def process_steps(start, target_ending, node_map, instructions):
     current_node = start
     count = 0
-    while current_node[-1] != "Z":        
+    while not current_node.endswith(target_ending):        
         step = instructions[count % len(instructions)]
         if step == "L":
             current_node = node_map[current_node][0]
@@ -60,7 +61,7 @@ def solve(filename):
     values = []
     total_count = 1
     for start in start_nodes:
-        count = process_steps(start, node_map, instructions)
+        count = process_steps(start, 'Z', node_map, instructions)
         map_start_to_finish[start] = count
         if not count in values:
             values.append(count)
