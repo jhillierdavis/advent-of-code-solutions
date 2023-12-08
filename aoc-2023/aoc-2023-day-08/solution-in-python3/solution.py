@@ -16,7 +16,7 @@ def get_number_of_steps_from_start_to_finish(start, target_ending, node_map, ins
         elif step == 'R': # Right
             current_node = node_map[current_node][1]
         else:
-            raise Exception(f"Unexpetected unknown step={step}!")
+            raise Exception(f"Unexpected unknown instruction step={step}!") # Not left or right
         count += 1
     return count
 
