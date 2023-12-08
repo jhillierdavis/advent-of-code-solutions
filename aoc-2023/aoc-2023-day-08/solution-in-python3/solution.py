@@ -1,5 +1,5 @@
 from collections import defaultdict
-import math
+import math, re
 
 from helpers import fileutils
 
@@ -13,7 +13,7 @@ def process_steps(start, target_ending, node_map, instructions):
         elif step == 'R':
             current_node = node_map[current_node][1]
         else:
-            raise Exception(f"Unknown step={step}!")
+            raise Exception(f"Unexpetected unknown step={step}!")
         count += 1
     return count
 
@@ -26,23 +26,11 @@ def get_instructions(filename):
 def get_node_map(filename):
     node_map = {}
     lines = fileutils.get_lines_after_empty_from_file(filename)
-    root_node = None
+
+    regexp_pattern = r'(...) = \((...), (...)\)'
     for l in lines:
-        (p,c) = l.split("=")
-        p = p.replace(' ', '') 
-        c = c.replace(" ", "")
-        c = c.replace("(", "")
-        c = c.replace(")", "")
-        (left,right) = c.split(",")
-        left = left.replace(" ", "")
-        right = right.replace(" ", "")
-        #print(f"DEBUG: p={p} left={left} right={right}")
-
-        if not root_node:
-            root_node = p
-
-        if not p in node_map.keys():
-            node_map[p] = (left, right)  
+        parent, left, right = re.search(regexp_pattern, l).groups(0)
+        node_map[parent] = (left, right)  
     return node_map    
 
 def solve_part1(filename):
@@ -75,4 +63,4 @@ def solve_part2(filename):
         map_start_to_finish[start] = count
 
     #print(f"DEBUG: map_start_to_finish={map_start_to_finish}")
-    return math.lcm(*map_start_to_finish.values()) # Get lowest common multiple of all step counts
+    return math.lcm(*map_start_to_finish.values()) # Get LCM (Lowest Common Multiple) of all step counts (in the set of paths)
