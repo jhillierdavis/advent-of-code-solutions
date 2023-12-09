@@ -22,3 +22,6 @@ def get_char_occurances_in_string(source:str, target:chr) -> int:
         if target == source[i]:
             occurances += 1
     return occurances
+
+def string_to_int_list(line):
+    return list(map(int, line.split()))
