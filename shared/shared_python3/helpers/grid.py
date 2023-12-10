@@ -103,6 +103,25 @@ class Grid2D():
                 neightbours.add(np)
         return neightbours  
 
+    def get_point_or_none(self, x:int, y:int) -> point.Point2D:
+        p = point.Point2D(x,y)
+        if self.contains(p):
+            return p
+        return None
+
+
+    def get_neighbour_point_east(self, current:point.Point2D) -> point.Point2D:
+        return self.get_point_or_none(current.get_x() + 1, current.get_y())
+
+    def get_neighbour_point_west(self, current:point.Point2D) -> point.Point2D:
+        return self.get_point_or_none(current.get_x() - 1, current.get_y())
+
+    def get_neighbour_point_north(self, current:point.Point2D) -> point.Point2D:
+        return self.get_point_or_none(current.get_x(), current.get_y() - 1)
+
+    def get_neighbour_point_south(self, current:point.Point2D) -> point.Point2D:
+        return self.get_point_or_none(current.get_x(), current.get_y() + 1)
+
     def get_surrounding_neighbours(self, p:point.Point2D) -> set:
         neightbours = set()
 

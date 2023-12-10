@@ -209,3 +209,84 @@ def test_clone_and_equals():
 
     # But: equal (same symbol values at each equivalent point)
     assert g == cloned
+
+@pytest.mark.parametrize(
+    "start_coord, expected_coord, expected_symbol",
+    [
+        pytest.param((1,2), (2,2), 10),
+        pytest.param((3,0), None, None),
+    ],    
+)
+def test_get_neighbour_east(start_coord, expected_coord, expected_symbol):
+    # Given: a test grid
+    g = create_populated_test_grid()
+    #display_grid(g)
+
+    # Then:
+    right = g.get_neighbour_point_east(Point2D(start_coord[0], start_coord[1]))
+    if None != expected_coord:
+        assert right == Point2D(expected_coord[0], expected_coord[1])
+        assert g.get_symbol(right) == expected_symbol
+    else:
+        assert right == None
+
+@pytest.mark.parametrize(
+    "start_coord, expected_coord, expected_symbol",
+    [
+        pytest.param((1,2), (0,2), 2),
+        pytest.param((0,1), None, None),
+    ],    
+)
+def test_get_neighbour_point_west(start_coord, expected_coord, expected_symbol):
+    # Given: a test grid
+    g = create_populated_test_grid()
+    #display_grid(g)
+
+    # Then:
+    right = g.get_neighbour_point_west(Point2D(start_coord[0], start_coord[1]))
+    if None != expected_coord:
+        assert right == Point2D(expected_coord[0], expected_coord[1])
+        assert g.get_symbol(right) == expected_symbol
+    else:
+        assert right == None
+
+@pytest.mark.parametrize(
+    "start_coord, expected_coord, expected_symbol",
+    [
+        pytest.param((1,2), (1,1), 5),
+        pytest.param((1,0), None, None),
+    ],    
+)
+def test_get_neighbour_point_north(start_coord, expected_coord, expected_symbol):
+    # Given: a test grid
+    g = create_populated_test_grid()
+    #display_grid(g)
+
+    # Then:
+    right = g.get_neighbour_point_north(Point2D(start_coord[0], start_coord[1]))
+    if None != expected_coord:
+        assert right == Point2D(expected_coord[0], expected_coord[1])
+        assert g.get_symbol(right) == expected_symbol
+    else:
+        assert right == None
+
+
+@pytest.mark.parametrize(
+    "start_coord, expected_coord, expected_symbol",
+    [
+        pytest.param((1,2), (1,3), 7),
+        pytest.param((1,3), None, None),
+    ],    
+)
+def test_get_neighbour_point_south(start_coord, expected_coord, expected_symbol):
+    # Given: a test grid
+    g = create_populated_test_grid()
+    #display_grid(g)
+
+    # Then:
+    right = g.get_neighbour_point_south(Point2D(start_coord[0], start_coord[1]))
+    if None != expected_coord:
+        assert right == Point2D(expected_coord[0], expected_coord[1])
+        assert g.get_symbol(right) == expected_symbol
+    else:
+        assert right == None
