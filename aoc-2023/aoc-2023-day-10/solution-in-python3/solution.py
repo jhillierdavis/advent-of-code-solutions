@@ -3,153 +3,165 @@ from collections import defaultdict
 
 from helpers import fileutils, grid, point
 
-sys.setrecursionlimit(10000)
-
-"""
-| is a vertical pipe connecting north and south.
-- is a horizontal pipe connecting east and west.
-L is a 90-degree bend connecting north and east.
-J is a 90-degree bend connecting north and west.
-7 is a 90-degree bend connecting south and west.
-F is a 90-degree bend connecting south and east.
-. is ground; there is no pipe in this tile.
-S is the starting position of the animal; there is a pipe on this tile, but your sketch doesn't show what shape the pipe has.
-"""
-
-def can_move_right(current, next):
-    if (current == 'S' or current == '-' or current == 'L' or current == 'F') and next in ['S', '-', '7', 'J']: # right -> right, down, up
+def can_move_east(current, next):
+    #print(f"DEBUG: current={current} next={next}")
+    if current == next and current == 'S':
+        return False
+    if current in 'S-FL' and next in 'S-7J': # right -> right, down, up
         return True
     return False
 
-def can_move_left(current, next):
-    if (current == 'S' or current == '-' or current == 'J' or current == '7') and next in ['S', '-', 'L', 'F']: # left -> left, up, down
+def can_move_west(current, next):
+    if current == next and current == 'S':
+        return False
+    if current in 'S-7J' and next in 'S-FL': # left -> left, up, down
         return True
     return False
 
 
-def can_move_down(current, next):
-    if (current == 'S' or current == '|' or current == 'F' or current == '7') and next in ['S', '|', 'L', 'J' ]: # down -> down, right, left
+def can_move_south(current, next):
+    if current == next and current == 'S':
+        return False
+    if current in 'S|7F' and next in 'S|JL': # down -> down, right, left
         return True
     return False
 
-def can_move_up(current, next):
-    if (current == 'S' or  current == '|' or current == 'J' or current == 'L') and next in ['S', '|', 'F' , '7']: # up -> up, right, left
+def can_move_north(current, next):
+    if current == next and current == 'S':
+        return False
+    if current in 'S|JL' and next in 'S|7F': # up -> up, right, left
         return True
     return False
 
 
-def can_move_from_to(current, next):
-    if next == 'S':
-        return True
+def has_valid_neighbours(g, p, s):
+    count = 0
+    east = g.get_neighbour_point_east(p)
+    if east and can_move_east(s, g.get_symbol(east)):
+        count += 1
 
-    if current == 'S':
-        return next in ['-', '|']
+    west = g.get_neighbour_point_west(p)
+    if west and can_move_west(s, g.get_symbol(west)):
+        count += 1
 
-    if can_move_right(current, next) or can_move_left(current, next) or can_move_down(current, next) or can_move_up(current, next):
-        return True
-    return False
+    north = g.get_neighbour_point_north(p)
+    if north and can_move_north(s, g.get_symbol(north)):
+        count += 1
 
-def can_move_from_point_to_point(g, cp, np):
-    cps = g.get_symbol(cp)
-    nps = g.get_symbol(np)
+    south = g.get_neighbour_point_south(p)
+    if south and can_move_south(s, g.get_symbol(south)):
+        count += 1
 
-    #print(f"DEBUG: cps={cps} nps={nps} cp={cp} nps={nps}")
-
-    if cps == 'S' and nps != '.':
-        return True
-
-    if cps != 'S' and nps == 'S':
-        return True
-
-    if np.get_x() - cp.get_x() == -1:  # Moving left
-        return can_move_left(cps, nps)
-
-    if np.get_x() - cp.get_x() == 1:  # Moving right
-        return can_move_right(cps, nps)
-    
-    if np.get_y() - cp.get_y() == -1:  # Moving up
-        return can_move_up(cps, nps)
-
-    if np.get_y() - cp.get_y() == 1:  # Moving down
-        return can_move_down(cps, nps)
-    
-    return False
+    return True if count > 1 else False
 
 
-def get_max_loop_distance(g, sp):
-    sp_symbol = g.get_symbol(sp)
+def remove_invalid_pipes(g):
+    modifications = 0
+    for r in range(g.get_width()):
+        for c in range(g.get_height()):
 
-    distance_set = set()
-    n_set = g.get_cardinal_point_neighbours(sp)
-    for n in n_set:
-        if can_move_from_point_to_point(g, sp, n):
-            n_symbol = g.get_symbol(n)
-            print(f"DEBUG: Can move: {sp_symbol} -> {n_symbol}")
+            p = point.Point2D(r,c)
+            s = g.get_symbol(p)
 
-            count = get_count_loop_length(g,sp,n,[n])
-            distance_set.add((1 + count) / 2)
-    return max(distance_set) if len(distance_set) > 0 else 0
+            #print(f"DEBUG: p={p} s={s}")
+            if not has_valid_neighbours(g,p,s):
+                g.set_symbol(p, '.')    
+                modifications += 1
 
-def get_count_loop_length(g, fp, cp, path):
-    #print(f"DEBUG: current_point={cp} path={path}")
+    return g
 
-    if len(path) >= 9999:
-        print(f"DEBUG: Excessive loop!")
-        return 0
 
-    """
-    if cp == fp:
-        count = len(path)
-        #print(f"DEBUG: At finish point after count={count}")
-        #print(f"DEBUG: Start to finish path={path}")
-        return count
-    """
-    cp_symbol = g.get_symbol(cp)
+def show_grid(g):
+    for c in range(g.get_height()):
+        v = ""
+        for r in range(g.get_width()):
+            p = point.Point2D(r,c)
+            s = g.get_symbol(p)
+            v += s
+        print(v)
+    print()
 
-    count_list = []
-    n_set = g.get_cardinal_point_neighbours(cp)
-    for n in n_set:
-        if n in path: # Already visited (so skip)
-            continue
-        
 
-        n_symbol = g.get_symbol(n)
-        if not (n_symbol in "S-|7FJL"): # Ground (or other invalid next position)
-            continue
 
-        if not can_move_from_point_to_point(g, cp, n):
-            #print(f"DEBUG: Cannot move from current={cp_symbol} to next={n_symbol} !")
-            continue
+def get_cleansed_grid(filename):
+    lines = fileutils.get_file_lines(filename)
 
-        #print(f"DEBUG: Can move: {cp_symbol} -> {n_symbol}")
 
-        # Valid unvisited next point in path
-        #print(f"DEBUG: Can move: {cp_symbol} -> {n_symbol}")
-        
-        if n == fp:
-            count = len(path)
-        else:      
-            path.append(n)        
-            count = get_count_loop_length(g, fp, n, path)  
-        count_list.append(count)
-        
-    return max(count_list) if len(count_list) > 0 else 0
+    g = grid.lines_to_grid(lines)
+    #grid.display_grid(g)
 
-def find_starting_position(g):
+    #show_grid(g)
+
+    #for i in range(0,1):
+    #    remove_invalid_pipes(g)
+    #show_grid(g)
+    return g
+
+def get_starting_position_from_grid(g):  
     for h in range(g.get_height()):
         for w in range(g.get_width()):
             p = point.Point2D(w,h)
             if g.get_symbol(p) == 'S':
-                print(f"DEBUG: Starting point: {p}")
                 return p
 
     raise ValueError("No starting point 'S' in grid={g}!")
 
-def solve(filename):
-    lines = fileutils.get_file_lines(filename)
+def get_pipe_points(g, cp, lp=None):
+    pipe_points = []
+    cps = g.get_symbol(cp)
 
-    g = grid.lines_to_grid(lines)
-    #grid.display_grid(g)
-     
-    sp = find_starting_position(g)    
-    return get_max_loop_distance(g, sp)
+    east = g.get_neighbour_point_east(cp)
+    if east and can_move_east(cps, g.get_symbol(east)):
+        #print(f"DEBUG: {display_point(g, cp)} -> east={display_point(g, east)}")
+        pipe_points.append(east)
+    
+    north = g.get_neighbour_point_north(cp)
+    if north and can_move_north(cps, g.get_symbol(north)):
+        #print(f"DEBUG: {display_point(g, cp)} -> north={display_point(g, north)}")
+        pipe_points.append(north)
+
+    south = g.get_neighbour_point_south(cp)
+    if south and can_move_south(cps, g.get_symbol(south)):
+        #print(f"DEBUG: {display_point(g, cp)} -> south={display_point(g, south)}")
+        pipe_points.append(south)
+
+    west = g.get_neighbour_point_west(cp)
+    if west and can_move_west(cps, g.get_symbol(west)):
+        #print(f"DEBUG: {display_point(g, cp)} -> west={display_point(g, west)}")
+        pipe_points.append(west)
+
+    if lp:
+        pipe_points.remove(lp)
+    return pipe_points
+
+def display_point(g, p):
+    return g.get_symbol(p) + "(" + str(p.get_x()) + ", " + str(p.get_y()) + ") "
+
+def display_pipe_points(g, pipe_points):
+    line = ""
+    for pp in pipe_points:
+        line += display_point(g, pp) + " "
+
+    print(line)
+    
+
+def get_loop_path_length(g, sp):
+    next_pipes = get_pipe_points(g, sp)
+    #display_pipe_points(g, next_pipes)
+    np = next_pipes[0]
+    
+    count = 1
+    while g.get_symbol(np) != 'S':
+        next_pipes = get_pipe_points(g, np, sp)
+        #display_pipe_points(g, next_pipes)
+        sp = np
+        np = next_pipes[0]
+        count += 1
+
+    return count
+
+def solve(filename):
+    g = get_cleansed_grid(filename)
+    sp = get_starting_position_from_grid(g)    
+    length = get_loop_path_length(g, sp)
+    return length // 2
