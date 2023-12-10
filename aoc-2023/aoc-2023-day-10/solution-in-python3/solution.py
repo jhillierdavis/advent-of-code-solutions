@@ -1,6 +1,9 @@
+import sys
+from collections import defaultdict
+
 from helpers import fileutils, grid, point
 
-from collections import defaultdict
+sys.setrecursionlimit(10000)
 
 """
 | is a vertical pipe connecting north and south.
@@ -14,24 +17,26 @@ S is the starting position of the animal; there is a pipe on this tile, but your
 """
 
 def can_move_right(current, next):
-    if (current == 'S' or current == '-' or current == 'L' or current == 'F') and next in ['-', '7', 'J']: # right -> right, down, up
-        return True
-    return False
-
-def can_move_down(current, next):
-    if (current == 'S' or current == '|' or current == 'F' or current == '7') and next in ['|', 'L', 'J' ]: # down -> down, right, left
-        return True
-    return False
-
-def can_move_up(current, next):
-    if (current == 'S' or  current == '|' or current == 'J' or current == 'L') and next in ['|', 'F' , '7']: # up -> up, right, left
+    if (current == 'S' or current == '-' or current == 'L' or current == 'F') and next in ['S', '-', '7', 'J']: # right -> right, down, up
         return True
     return False
 
 def can_move_left(current, next):
-    if (current == 'S' or current == '-' or current == 'J' or current == '7') and next in ['-', 'L', 'F']: # left -> left, up, down
+    if (current == 'S' or current == '-' or current == 'J' or current == '7') and next in ['S', '-', 'L', 'F']: # left -> left, up, down
         return True
     return False
+
+
+def can_move_down(current, next):
+    if (current == 'S' or current == '|' or current == 'F' or current == '7') and next in ['S', '|', 'L', 'J' ]: # down -> down, right, left
+        return True
+    return False
+
+def can_move_up(current, next):
+    if (current == 'S' or  current == '|' or current == 'J' or current == 'L') and next in ['S', '|', 'F' , '7']: # up -> up, right, left
+        return True
+    return False
+
 
 def can_move_from_to(current, next):
     if next == 'S':
@@ -48,21 +53,24 @@ def can_move_from_point_to_point(g, cp, np):
     cps = g.get_symbol(cp)
     nps = g.get_symbol(np)
 
-    print(f"DEBUG: cps={cps} nps={nps} cp={cp} nps={nps}")
+    #print(f"DEBUG: cps={cps} nps={nps} cp={cp} nps={nps}")
 
-    if nps == 'S':
+    if cps == 'S' and nps != '.':
         return True
 
-    if cp.get_x() - np.get_x() == 1:  # Moving left
+    if cps != 'S' and nps == 'S':
+        return True
+
+    if np.get_x() - cp.get_x() == -1:  # Moving left
         return can_move_left(cps, nps)
 
-    if cp.get_x() - np.get_x() == -1:  # Moving right
+    if np.get_x() - cp.get_x() == 1:  # Moving right
         return can_move_right(cps, nps)
     
-    if cp.get_y() - np.get_y() == 1:  # Moving up
+    if np.get_y() - cp.get_y() == -1:  # Moving up
         return can_move_up(cps, nps)
 
-    if cp.get_y() - np.get_y() == -1:  # Moving down
+    if np.get_y() - cp.get_y() == 1:  # Moving down
         return can_move_down(cps, nps)
     
     return False
@@ -78,42 +86,51 @@ def get_max_loop_distance(g, sp):
             n_symbol = g.get_symbol(n)
             print(f"DEBUG: Can move: {sp_symbol} -> {n_symbol}")
 
-            count = get_count_loop_length(g,sp,n,[])
+            count = get_count_loop_length(g,sp,n,[n])
             distance_set.add((1 + count) / 2)
     return max(distance_set) if len(distance_set) > 0 else 0
 
 def get_count_loop_length(g, fp, cp, path):
     #print(f"DEBUG: current_point={cp} path={path}")
 
+    if len(path) >= 9999:
+        print(f"DEBUG: Excessive loop!")
+        return 0
+
+    """
     if cp == fp:
         count = len(path)
         #print(f"DEBUG: At finish point after count={count}")
         #print(f"DEBUG: Start to finish path={path}")
         return count
-
+    """
     cp_symbol = g.get_symbol(cp)
 
     count_list = []
     n_set = g.get_cardinal_point_neighbours(cp)
     for n in n_set:
-        n_symbol = g.get_symbol(n)
-        if n_symbol == '.': # Ground
+        if n in path: # Already visited (so skip)
             continue
+        
 
-        if n in path:
+        n_symbol = g.get_symbol(n)
+        if not (n_symbol in "S-|7FJL"): # Ground (or other invalid next position)
             continue
 
         if not can_move_from_point_to_point(g, cp, n):
-            print(f"DEBUG: Cannot move from current={cp_symbol} to next={n_symbol} !")
+            #print(f"DEBUG: Cannot move from current={cp_symbol} to next={n_symbol} !")
             continue
 
         #print(f"DEBUG: Can move: {cp_symbol} -> {n_symbol}")
 
-        # Store the current path (if not already done)    
-        if not cp in path:
-            path.append(cp)   
-
-        count = get_count_loop_length(g, fp, n, path)  
+        # Valid unvisited next point in path
+        #print(f"DEBUG: Can move: {cp_symbol} -> {n_symbol}")
+        
+        if n == fp:
+            count = len(path)
+        else:      
+            path.append(n)        
+            count = get_count_loop_length(g, fp, n, path)  
         count_list.append(count)
         
     return max(count_list) if len(count_list) > 0 else 0

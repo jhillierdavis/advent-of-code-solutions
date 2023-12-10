@@ -1,4 +1,5 @@
 import pytest
+import sys
 
 import solution
 
@@ -32,8 +33,10 @@ def test_can_move_from_to(current, next, expected):
         pytest.param('puzzle-input-example-1.txt', 4),
         pytest.param('puzzle-input-example-1a.txt', 4),
         pytest.param('puzzle-input-example-2.txt', 8),
+        pytest.param('puzzle-input-example-2a.txt', 8),
         #pytest.param('puzzle-input-full.txt', 0), # TODO: Answer?
     ],    
 )
 def test_solution(filename, expected):
+    sys.setrecursionlimit(10000)    
     assert solution.solve(filename) == expected
