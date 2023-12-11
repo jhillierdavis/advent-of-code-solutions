@@ -206,9 +206,41 @@ def count_enclosed_ground_tiles(g, path):
     return count
 
 
+def count_contained_tiles(line):
+    
+    is_within = False
+
+    line = line.replace('-', '')
+    line = line.replace('S', '|')
+    line = line.replace('LJ', '||')
+    line = line.replace('L7', '|')
+    line = line.replace('FJ', '|')
+    line = line.replace('F7', '||')
+    #print(f"DEBUG: line={line}")
+    wall_count = 0
+    tmp_count = 0
+    total_count = 0
+    for i in range(len(line)):
+        chr = line[i]
+        if chr in '|':
+            is_within = False if is_within else True
+            wall_count += 1
+            if wall_count % 2 == 0:
+                total_count += tmp_count
+                tmp_count = 0
+        elif '.' == chr and i > 0 and is_within:
+            tmp_count += 1
+    return total_count
+
+
 def solve_part2(filename):
-    g = get_cleansed_grid(filename, 3)
+    g = get_cleansed_grid(filename, 5)
     sp = get_starting_position_from_grid(g)    
-    path = get_loop_path(g, sp)
+    #path = get_loop_path(g, sp)
     show_grid(g)
-    return count_enclosed_ground_tiles(g, path)
+
+    lines = grid.grid_to_lines(g)
+    ans = 0
+    for l in lines:
+        ans += count_contained_tiles(l)
+    return ans

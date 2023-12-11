@@ -150,6 +150,27 @@ def test_can_move_west(current, next, expected):
 def test_solution(filename, expected):
     assert solution.solve_part1(filename) == expected
 
+
+@pytest.mark.parametrize(
+    "line,expected",
+    [
+        pytest.param('|....|', 4),
+        pytest.param('.|..|.', 2),
+        pytest.param('.|.|..', 1),
+        pytest.param('.||...', 0),
+        pytest.param('.S-------7.', 0),
+        pytest.param('.|F-----7|.', 0),
+        pytest.param('.||.....||.', 0),
+        pytest.param('.|L-7.F-J|.', 0),
+        pytest.param('.|..|.|..|.', 4),
+        pytest.param('.L--J.L--J.',0),
+        pytest.param('.|....', 0),
+    ],    
+)
+def test_solution_count_contained_tiles(line, expected):
+    assert solution.count_contained_tiles(line) == expected
+
+
 @pytest.mark.parametrize(
     "filename,expected",
     [
@@ -157,8 +178,8 @@ def test_solution(filename, expected):
         pytest.param('puzzle-input-example-1a.txt', 1),
         pytest.param('puzzle-input-part2-example-1.txt', 4),
         pytest.param('puzzle-input-part2-example-2.txt', 8),        
-        #pytest.param('puzzle-input-part2-example-3.txt', 10),        
-        #pytest.param('puzzle-input-full.txt', 0), 
+        pytest.param('puzzle-input-part2-example-3.txt', 10),        
+        pytest.param('puzzle-input-full.txt', 445), 
     ],    
 )
 def test_solution_part2(filename, expected):
