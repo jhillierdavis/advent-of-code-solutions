@@ -1,9 +1,27 @@
 from collections import defaultdict
 import math
 
-from helpers import fileutils, grid, point
+from helpers import fileutils, grid
 
+"""
+def get_empty_rows_from_lines(lines):
+    height, width = len(lines), len(lines[0])
 
+    empty = []
+    for r in range(height):
+        if all([lines[r][c] == "." for c in range(width)]):
+               empty.append(r)
+    return empty
+
+def get_empty_columns_from_lines(lines):
+    height, width = len(lines), len(lines[0])    
+    empty = []
+    for c in range(width):
+        if all([lines[r][c] == "." for r in range(height)]):
+               empty.append(c)
+    return empty
+"""
+"""
 def get_rows_without_galaxies(g):
     empty_rows = []
     for y in range(g.get_height()):
@@ -30,7 +48,7 @@ def get_columns_without_galaxies(g):
         if is_empty:
             empty_cols.append(x)
     return empty_cols
-
+"""
 
 def get_grid_from_filename(filename):
     lines = fileutils.get_file_lines(filename)
@@ -40,19 +58,25 @@ def get_grid_from_filename(filename):
     #grid.display_grid(g)
     return g
 
+"""
+def get_empty_rows_from_filename(filename):
+    lines = fileutils.get_file_lines(filename)    
+    return get_empty_rows_from_lines(lines)
+
+
+def get_empty_columns_from_filename(filename):
+    lines = fileutils.get_file_lines(filename)
+    return get_empty_columns_from_lines(lines)
+"""
 
 def get_empty_rows_from_filename(filename):
-    g = get_grid_from_filename(filename)    
-    empty_rows = get_rows_without_galaxies(g)
-    #print(f"DEBUG: empty_rows={empty_rows}")
-    return empty_rows
+    g = get_grid_from_filename(filename)
+    return g.get_rows_where_only_symbol('#')
 
 
 def get_empty_columns_from_filename(filename):
     g = get_grid_from_filename(filename)    
-    empty_cols = get_columns_without_galaxies(g)
-    #print(f"DEBUG: empty_cols={empty_cols}")
-    return empty_cols
+    return g.get_columns_where_only_symbol('#')
 
 
 def get_lines_with_duplicated_rows(lines, target_rows):
@@ -81,13 +105,16 @@ def get_lines_with_duplicated_cols(lines, target_cols):
 
 
 def get_expanded_grid_from_filename(filename):
-    g = get_grid_from_filename(filename)
+    """
+    lines = fileutils.get_file_lines(filename)
+    empty_rows = get_empty_rows_from_lines(lines)
+    empty_cols = get_empty_columns_from_lines(lines)
+    """
 
-    lines = grid.grid_to_lines(g)
-    #print(f"DEBUG: grid lines={lines}")
-
-    empty_rows = get_rows_without_galaxies(g)
-    empty_cols = get_columns_without_galaxies(g)
+    lines = fileutils.get_file_lines(filename)
+    g = grid.lines_to_grid(lines)
+    empty_rows = g.get_rows_where_only_symbol('#')
+    empty_cols = g.get_columns_where_only_symbol('#')
 
     new_lines = get_lines_with_duplicated_rows(lines, empty_rows)
     assert len(new_lines) == len(lines) + len(empty_rows)
@@ -110,7 +137,7 @@ def get_galaxy_pair_shortest_distances(g):
         for lp2 in locations:
             if lp1 == lp2:
                 break
-            distance = abs(lp1.get_x() - lp2.get_x()) + abs(lp1.get_y() - lp2.get_y())
+            distance = lp1.get_manhatten_distance_to(lp2)
             #print(f"Galaxy location={lp1} distance={distance}")
             distances.append(distance)
     return distances
@@ -144,7 +171,7 @@ def get_y_distance(gp1, gp2, empty_rows, expansion_size):
     return distance
 
 
-def get_galaxy_pair_shortest_distances_with_calculated_expansion(g, empty_cols, empty_rows, expansion_size):
+def get_galaxy_pair_shortest_distances_with_calculated_expansion(g, empty_rows, empty_cols, expansion_size):
     locations = get_galaxy_locations(g)
     #print(f"DEBUG: locations={locations}")
 
@@ -167,10 +194,11 @@ def solve_part1(filename):
 
 
 def solve_part2(filename, expansion_ratio):
-    g = get_grid_from_filename(filename)
-    empty_rows = get_empty_rows_from_filename(filename)
-    empty_cols = get_empty_columns_from_filename(filename)
+    lines = fileutils.get_file_lines(filename)
+    g = grid.lines_to_grid(lines)
+    empty_rows = g.get_rows_where_only_symbol('#')
+    empty_cols = g.get_columns_where_only_symbol('#')
 
     expansion_size = expansion_ratio - 1 
-    distances = get_galaxy_pair_shortest_distances_with_calculated_expansion(g, empty_cols, empty_rows, expansion_size)
+    distances = get_galaxy_pair_shortest_distances_with_calculated_expansion(g, empty_rows, empty_cols, expansion_size)
     return sum(distances)

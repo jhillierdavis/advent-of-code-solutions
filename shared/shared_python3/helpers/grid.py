@@ -243,7 +243,35 @@ class Grid2D():
                     self.set_symbol(p, symbol)
 
         return self
+
     
+    def get_rows_where_only_symbol(self, symbol:chr):
+        matched = []
+        for r in range(self.get_height()):
+            is_matched = True
+            for c in range(self.get_width()):
+                s = self.get_symbol(point.Point2D(c, r))
+                if s == symbol:
+                    is_matched = False
+                    break
+            if is_matched:
+                matched.append(r)
+        return matched
+    
+        
+    def get_columns_where_only_symbol(self, symbol:chr):
+        matched = []
+        for c in range(self.get_width()):
+            is_matched = True
+            for r in range(self.get_height()):
+                s = self.get_symbol(point.Point2D(c, r))
+                if s == symbol:
+                    is_matched = False
+                    break
+            if is_matched:
+                matched.append(c)
+        return matched
+
 
     def clone(self):
         cloned_grid = Grid2D(self.get_width(), self.get_height())

@@ -18,6 +18,9 @@ class Point2D():
     def get_y(self) -> int:
         return self.y
     
+    def get_manhatten_distance_to(self, other):
+        return abs(self.get_x() - other.get_x()) + abs(self.get_y() - other.get_y())        
+    
     def __str__(self) -> str:
         return f"Point2D(id={id(self)} , x: {self.get_x()}, y: {self.get_y()})"
     
