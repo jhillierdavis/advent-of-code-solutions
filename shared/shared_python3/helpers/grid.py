@@ -102,6 +102,16 @@ class Grid2D():
             if self.contains(np):
                 neightbours.add(np)
         return neightbours  
+    
+    def get_matching_symbol_coords(self, symbol:chr):
+        locations = []
+        for x in range(self.get_width()):
+            for y in range(self.get_height()):
+                p = point.Point2D(x,y)
+                if self.get_symbol(p) == symbol:
+                    locations.append(p)
+        return locations
+
 
     def get_point_or_none(self, x:int, y:int) -> point.Point2D:
         p = point.Point2D(x,y)

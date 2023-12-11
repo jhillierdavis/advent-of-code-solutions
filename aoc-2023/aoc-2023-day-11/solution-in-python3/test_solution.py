@@ -81,5 +81,3 @@ def test_solution(filename, expected):
 )
 def test_solution(filename, expansion_ratio, expected):
     assert solution.solve_part2(filename, expansion_ratio) == expected
-
-    
