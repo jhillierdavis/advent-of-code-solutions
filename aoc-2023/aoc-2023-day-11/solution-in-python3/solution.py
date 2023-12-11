@@ -42,13 +42,13 @@ def get_grid_from_filename(filename):
 def get_empty_rows_from_filename(filename):
     g = get_grid_from_filename(filename)    
     empty_rows = get_rows_without_galaxies(g)
-    print(f"DEBUG: empty_rows={empty_rows}")
+    #print(f"DEBUG: empty_rows={empty_rows}")
     return empty_rows
 
 def get_empty_columns_from_filename(filename):
     g = get_grid_from_filename(filename)    
     empty_cols = get_columns_without_galaxies(g)
-    print(f"DEBUG: empty_cols={empty_cols}")
+    #print(f"DEBUG: empty_cols={empty_cols}")
     return empty_cols
 
 def get_offset_values(orig_values):
@@ -123,14 +123,70 @@ def get_galaxy_pair_shortest_distances(g):
             if lp1 == lp2:
                 break
             distance = abs(lp1.get_x() - lp2.get_x()) + abs(lp1.get_y() - lp2.get_y())
-            print(f"Galaxy location={lp1} distance={distance}")
+            #print(f"Galaxy location={lp1} distance={distance}")
             distances.append(distance)
     return distances
 
+def get_x_distance(gp1, gp2, empty_rows, expansion_size):
+    min_x = min(gp1.get_x(), gp2.get_x())
+    max_x = max(gp1.get_x(), gp2.get_x())
 
-def solve(filename):
+    adjustment = 0
+    for e in empty_rows:
+        if e > min_x and e < max_x:
+            adjustment += 1
+
+    distance = max_x - min_x + (adjustment * expansion_size)
+    #print(f"DEBUG: distance={distance} min_x={min_x} max_x={max_x} adjustment={adjustment} empty_rows={empty_rows}")
+    #return  max_x + (adjustment * expansion_size) - min_x
+    #return abs(gp1.get_x() - gp2.get_x()) + (adjustment * expansion_size)
+    return distance
+
+def get_y_distance(gp1, gp2, empty_cols, expansion_size):
+    min_y = min(gp1.get_y(), gp2.get_y())
+    max_y = max(gp1.get_y(), gp2.get_y())
+
+    adjustment = 0
+    for e in empty_cols:
+        if e > min_y and e < max_y:
+            adjustment += 1
+
+    #return  max_y + (adjustment * expansion_size) - min_y
+    #return abs(gp1.get_y() - gp2.get_y()) + (adjustment * expansion_size)
+    distance = max_y - min_y + (adjustment * expansion_size)
+    #print(f"DEBUG: distance={distance} min_y={min_y} max_y={max_y} adjustment={adjustment} empty_cols={empty_cols}")
+    return distance
+
+
+
+
+def get_galaxy_pair_shortest_distances_with_calculated_expansion(g, empty_rows, empty_cols, expansion_size):
+    locations = get_galaxy_locations(g)
+    #print(f"DEBUG: locations={locations}")
+
+    distances = []
+
+    for lp1 in locations:
+        for lp2 in locations:
+            if lp1 == lp2:
+                break
+            distance = get_x_distance(lp1, lp2, empty_rows, expansion_size) + get_y_distance(lp1, lp2, empty_cols, expansion_size)
+            #print(f"Galaxy distance={distance} lp1={lp1}, lp2={lp2}")
+            distances.append(distance)
+    return distances
+
+def solve_part1(filename):
     
     g = get_expanded_grid_from_filename(filename)
     
     distances = get_galaxy_pair_shortest_distances(g)
+    return sum(distances)
+
+
+def solve_part2(filename, expansion_size):
+    g = get_grid_from_filename(filename)
+    empty_rows = get_empty_rows_from_filename(filename)
+    empty_cols = get_empty_columns_from_filename(filename)
+
+    distances = get_galaxy_pair_shortest_distances_with_calculated_expansion(g, empty_cols, empty_rows, expansion_size)
     return sum(distances)

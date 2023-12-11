@@ -60,8 +60,26 @@ def test_solution(filename, expected):
     "filename,expected",
     [
         pytest.param("puzzle-input-example.txt", 374),
-        pytest.param("puzzle-input-full.txt", 0), # 9693756
+        pytest.param("puzzle-input-full.txt",  9693756),
     ],    
 )
 def test_solution(filename, expected):
-    assert solution.solve(filename) == expected
+    assert solution.solve_part1(filename) == expected
+
+
+# TODO: Remove need for expansion size - 1!
+@pytest.mark.parametrize(
+    "filename, expansion_size, expected",
+    [
+        pytest.param("puzzle-input-example.txt", 0, 292),
+        pytest.param("puzzle-input-example.txt", 1, 374),
+        pytest.param("puzzle-input-full.txt", 1, 9693756),
+        pytest.param("puzzle-input-example.txt", 9, 1030),
+        pytest.param("puzzle-input-example.txt", 100-1, 8410),
+        pytest.param("puzzle-input-full.txt", 1000000-1, 717878258016), # Too high: 717878975886
+    ],    
+)
+def test_solution(filename, expansion_size, expected):
+    assert solution.solve_part2(filename, expansion_size) == expected
+
+    
