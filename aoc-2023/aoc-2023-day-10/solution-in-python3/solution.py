@@ -184,7 +184,7 @@ def solve_part1(filename):
     return length // 2
 
 def count_enclosed_ground_tiles(g, path):
-    
+    #print("DEBUG: count_enclosed_ground_tiles")
     count = 0
     for c in range(g.get_height()):
 
@@ -194,14 +194,14 @@ def count_enclosed_ground_tiles(g, path):
             p = point.Point2D(r, c)            
             if p in path:
                 east = g.get_neighbour_point_east(p)
-                if east and east in path and g.get_symbol(east) in '-7':
+                if east and east in path and g.get_symbol(east) in '-7J':
                     continue                
                 is_within = False if is_within else True # Toggle
                 if is_within == False:
                     count += tmp_count
                     tmp_count = 0
             elif is_within and '.' == g.get_symbol(p):                
-                print(f"DEBUG: {display_point(g, p)}")
+                #print(f"DEBUG: {display_point(g, p)}")
                 tmp_count += 1
     return count
 
