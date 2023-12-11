@@ -83,7 +83,7 @@ def show_grid(g):
 
 
 
-def get_cleansed_grid(filename):
+def get_cleansed_grid(filename, max=0):
     lines = fileutils.get_file_lines(filename)
 
 
@@ -92,8 +92,8 @@ def get_cleansed_grid(filename):
 
     #show_grid(g)
 
-    #for i in range(0,1):
-    #    remove_invalid_pipes(g)
+    for i in range(0,max):
+        remove_invalid_pipes(g)
     #show_grid(g)
     return g
 
@@ -160,8 +160,55 @@ def get_loop_path_length(g, sp):
 
     return count
 
-def solve(filename):
+def get_loop_path(g, sp):
+    path = [sp]
+
+    next_pipes = get_pipe_points(g, sp)
+    #display_pipe_points(g, next_pipes)
+    np = next_pipes[0]
+    
+    
+    while g.get_symbol(np) != 'S':
+        next_pipes = get_pipe_points(g, np, sp)
+        #display_pipe_points(g, next_pipes)
+        sp = np
+        np = next_pipes[0]
+        path.append(np)
+
+    return path
+
+def solve_part1(filename):
     g = get_cleansed_grid(filename)
     sp = get_starting_position_from_grid(g)    
     length = get_loop_path_length(g, sp)
     return length // 2
+
+def count_enclosed_ground_tiles(g, path):
+    
+    count = 0
+    for c in range(g.get_height()):
+
+        is_within = False
+        tmp_count = 0
+        for r in range(g.get_width()):
+            p = point.Point2D(r, c)            
+            if p in path:
+                east = g.get_neighbour_point_east(p)
+                if east and east in path and g.get_symbol(east) in '-7':
+                    continue                
+                is_within = False if is_within else True # Toggle
+                if is_within == False:
+                    count += tmp_count
+                    tmp_count = 0
+            elif is_within and '.' == g.get_symbol(p):                
+                print(f"DEBUG: {display_point(g, p)}")
+                tmp_count += 1
+    return count
+
+
+def solve_part2(filename):
+    g = get_cleansed_grid(filename, 3)
+    sp = get_starting_position_from_grid(g)    
+    path = get_loop_path(g, sp)
+    show_grid(g)
+    return count_enclosed_ground_tiles(g, path)
