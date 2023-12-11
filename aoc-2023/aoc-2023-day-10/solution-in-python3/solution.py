@@ -211,7 +211,7 @@ def count_contained_tiles(line):
     is_within = False
 
     line = line.replace('-', '')
-    line = line.replace('S', '|')
+    line = line.replace('S', '|') # TODO: Is this a valid assumption?
     line = line.replace('LJ', '||')
     line = line.replace('L7', '|')
     line = line.replace('FJ', '|')
@@ -234,10 +234,10 @@ def count_contained_tiles(line):
 
 
 def solve_part2(filename):
-    g = get_cleansed_grid(filename, 5)
-    sp = get_starting_position_from_grid(g)    
+    g = get_cleansed_grid(filename, 3) # TODO: Replace with graph of plotted loop points instead?
+    #sp = get_starting_position_from_grid(g)    
     #path = get_loop_path(g, sp)
-    show_grid(g)
+    #show_grid(g)
 
     lines = grid.grid_to_lines(g)
     ans = 0
