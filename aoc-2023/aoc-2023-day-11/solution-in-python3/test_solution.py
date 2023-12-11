@@ -67,19 +67,19 @@ def test_solution(filename, expected):
     assert solution.solve_part1(filename) == expected
 
 
-# TODO: Remove need for expansion size - 1!
+# Expansion 2 -> ratio 1:2 (i.e. double) for empty lines (i.e. rows or columns without any galaxies identified by '#' - should have been '@' :-)
 @pytest.mark.parametrize(
-    "filename, expansion_size, expected",
+    "filename, expansion_ratio, expected",
     [
-        pytest.param("puzzle-input-example.txt", 0, 292),
-        pytest.param("puzzle-input-example.txt", 1, 374),
-        pytest.param("puzzle-input-full.txt", 1, 9693756),
-        pytest.param("puzzle-input-example.txt", 9, 1030),
-        pytest.param("puzzle-input-example.txt", 100-1, 8410),
-        pytest.param("puzzle-input-full.txt", 1000000-1, 717878258016), # Too high: 717878975886
+        pytest.param("puzzle-input-example.txt", 1, 292), # No expansion
+        pytest.param("puzzle-input-example.txt", 2, 374), # Double expansion
+        pytest.param("puzzle-input-full.txt", 2, 9693756),
+        pytest.param("puzzle-input-example.txt", 10, 1030), # 10 x expansion
+        pytest.param("puzzle-input-example.txt", 100, 8410),
+        pytest.param("puzzle-input-full.txt", 1000000, 717878258016), # 1 million times expansion
     ],    
 )
-def test_solution(filename, expansion_size, expected):
-    assert solution.solve_part2(filename, expansion_size) == expected
+def test_solution(filename, expansion_ratio, expected):
+    assert solution.solve_part2(filename, expansion_ratio) == expected
 
     

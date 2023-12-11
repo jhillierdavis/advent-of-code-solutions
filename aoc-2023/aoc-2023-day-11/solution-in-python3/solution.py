@@ -183,10 +183,11 @@ def solve_part1(filename):
     return sum(distances)
 
 
-def solve_part2(filename, expansion_size):
+def solve_part2(filename, expansion_ratio):
     g = get_grid_from_filename(filename)
     empty_rows = get_empty_rows_from_filename(filename)
     empty_cols = get_empty_columns_from_filename(filename)
 
+    expansion_size = expansion_ratio - 1 
     distances = get_galaxy_pair_shortest_distances_with_calculated_expansion(g, empty_cols, empty_rows, expansion_size)
     return sum(distances)
