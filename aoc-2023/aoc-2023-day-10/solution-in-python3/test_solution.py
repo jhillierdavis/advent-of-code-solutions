@@ -148,4 +148,18 @@ def test_can_move_west(current, next, expected):
     ],    
 )
 def test_solution(filename, expected):
-    assert solution.solve(filename) == expected
+    assert solution.solve_part1(filename) == expected
+
+@pytest.mark.parametrize(
+    "filename,expected",
+    [
+        pytest.param('puzzle-input-example-1.txt', 1),
+        pytest.param('puzzle-input-example-1a.txt', 1),
+        pytest.param('puzzle-input-part2-example-1.txt', 4),
+        pytest.param('puzzle-input-part2-example-2.txt', 8),        
+        #pytest.param('puzzle-input-part2-example-3.txt', 10),        
+        #pytest.param('puzzle-input-full.txt', 0), 
+    ],    
+)
+def test_solution_part2(filename, expected):
+    assert solution.solve_part2(filename) == expected
