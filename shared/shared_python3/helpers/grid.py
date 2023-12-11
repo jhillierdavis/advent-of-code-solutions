@@ -244,14 +244,14 @@ class Grid2D():
 
         return self
 
-    
+
     def get_rows_where_only_symbol(self, symbol:chr):
         matched = []
         for r in range(self.get_height()):
             is_matched = True
             for c in range(self.get_width()):
                 s = self.get_symbol(point.Point2D(c, r))
-                if s == symbol:
+                if s != symbol:
                     is_matched = False
                     break
             if is_matched:
@@ -265,7 +265,7 @@ class Grid2D():
             is_matched = True
             for r in range(self.get_height()):
                 s = self.get_symbol(point.Point2D(c, r))
-                if s == symbol:
+                if s != symbol:
                     is_matched = False
                     break
             if is_matched:

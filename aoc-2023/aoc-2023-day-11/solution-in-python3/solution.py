@@ -3,6 +3,9 @@ import math
 
 from helpers import fileutils, grid
 
+GALAXY_SYMBOL = '#' # Should be '@'! ;-)
+SPACE_SYMBOL = '.'
+
 
 def get_grid_from_filename(filename):
     lines = fileutils.get_file_lines(filename)
@@ -13,14 +16,26 @@ def get_grid_from_filename(filename):
     return g
 
 
+def get_all_empty_rows_in_grid(g):
+    return g.get_rows_where_only_symbol(SPACE_SYMBOL)    
+
+
+def get_all_empty_columns_in_grid(g):
+    return g.get_columns_where_only_symbol(SPACE_SYMBOL)    
+
+
+def get_galaxy_locations(g):
+    return g.get_matching_symbol_coords(GALAXY_SYMBOL)
+
+
 def get_empty_rows_from_filename(filename):
     g = get_grid_from_filename(filename)
-    return g.get_rows_where_only_symbol('#')
+    return get_all_empty_rows_in_grid(g)
 
 
 def get_empty_columns_from_filename(filename):
     g = get_grid_from_filename(filename)    
-    return g.get_columns_where_only_symbol('#')
+    return get_all_empty_columns_in_grid(g)
 
 
 def get_lines_with_duplicated_rows(lines, target_rows):
@@ -51,8 +66,8 @@ def get_lines_with_duplicated_cols(lines, target_cols):
 def get_expanded_grid_from_filename(filename):
     lines = fileutils.get_file_lines(filename)
     g = grid.lines_to_grid(lines)
-    empty_rows = g.get_rows_where_only_symbol('#')
-    empty_cols = g.get_columns_where_only_symbol('#')
+    empty_rows = get_all_empty_rows_in_grid(g)
+    empty_cols = get_all_empty_columns_in_grid(g)
 
     new_lines = get_lines_with_duplicated_rows(lines, empty_rows)
     assert len(new_lines) == len(lines) + len(empty_rows)
@@ -62,9 +77,6 @@ def get_expanded_grid_from_filename(filename):
 
     return grid.lines_to_grid(new_lines)
 
-
-def get_galaxy_locations(g):
-    return g.get_matching_symbol_coords('#')
 
 
 def get_galaxy_pair_shortest_distances(g):
@@ -109,12 +121,14 @@ def get_y_distance(gp1, gp2, empty_rows, expansion_size):
     return distance
 
 
-def get_galaxy_pair_shortest_distances_with_calculated_expansion(g, empty_rows, empty_cols, expansion_size):
+def get_galaxy_pair_shortest_distances_with_calculated_expansion(g, expansion_size):
     locations = get_galaxy_locations(g)
     #print(f"DEBUG: locations={locations}")
 
-    distances = []
-
+    empty_rows = g.get_rows_where_only_symbol(SPACE_SYMBOL)
+    empty_cols = g.get_columns_where_only_symbol(SPACE_SYMBOL)
+    
+    distances = [] # List of distances between pairs of galaxies
     for lp1 in locations:
         for lp2 in locations:
             if lp1 == lp2:
@@ -132,11 +146,8 @@ def solve_part1(filename):
 
 
 def solve_part2(filename, expansion_ratio):
-    lines = fileutils.get_file_lines(filename)
-    g = grid.lines_to_grid(lines)
-    empty_rows = g.get_rows_where_only_symbol('#')
-    empty_cols = g.get_columns_where_only_symbol('#')
+    g = get_grid_from_filename(filename)
 
     expansion_size = expansion_ratio - 1 
-    distances = get_galaxy_pair_shortest_distances_with_calculated_expansion(g, empty_rows, empty_cols, expansion_size)
+    distances = get_galaxy_pair_shortest_distances_with_calculated_expansion(g, expansion_size)
     return sum(distances)

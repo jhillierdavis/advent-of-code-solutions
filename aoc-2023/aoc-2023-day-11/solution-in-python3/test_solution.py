@@ -67,7 +67,7 @@ def test_solution(filename, expected):
     assert solution.solve_part1(filename) == expected
 
 
-# Expansion 2 -> ratio 1:2 (i.e. double) for empty lines (i.e. rows or columns without any galaxies identified by '#' - should have been '@' :-)
+# Expansion 2 -> ratio 1:2 (i.e. double) for empty lines (i.e. rows or columns without any galaxies identified by '#')
 @pytest.mark.parametrize(
     "filename, expansion_ratio, expected",
     [
