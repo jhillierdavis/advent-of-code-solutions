@@ -26,9 +26,6 @@ def is_five_of_a_kind(hand):
 def is_four_of_a_kind(hand):
     return get_max_same_card(hand) == 4
 
-def is_distinct(hand):
-    return get_max_same_card(hand) == 1
-
 def is_full_house(hand):
     freq = check_char_freq(hand)
     #print(f"DEBUG: {freq}")
@@ -48,6 +45,9 @@ def is_one_pair(hand):
     freq = check_char_freq(hand)
     #print(f"DEBUG: {freq}")
     return freq == [2,1,1,1]
+
+def is_distinct(hand):
+    return get_max_same_card(hand) == 1
 
 
 
