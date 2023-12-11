@@ -1,0 +1,20 @@
+https://adventofcode.com/2023/day/10
+
+Other's solutions
+=================
+
+Jonathan Paulson
+----------------
+( https://www.youtube.com/@jonathanpaulson5053/videos , https://github.com/jonathanpaulson/AdventOfCode/tree/master/2023 )
+
+https://github.com/jonathanpaulson/AdventOfCode/blob/master/2023/10.py
+
+
+William Y. Feng
+---------------
+
+( https://www.youtube.com/@WilliamYFeng/videos , https://github.com/womogenes/AoC-2023-Solutions )
+
+https://www.youtube.com/watch?v=zhmzPQwgPg0
+https://github.com/womogenes/AoC-2023-Solutions/tree/main/day_10
+https://en.wikipedia.org/wiki/Breadth-first_search
