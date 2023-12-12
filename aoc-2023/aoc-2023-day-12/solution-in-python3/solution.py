@@ -3,7 +3,7 @@ from collections import defaultdict
 from helpers import fileutils
 
 
-def list_broken_springs(input):
+def get_damaged_contiguous_spring_list_from_condition_record(input):
     values = []
     springs = input + '.' # Add extra char to ease matching
 
@@ -29,88 +29,28 @@ def replace_next_unknown(input, values):
         replace_next_unknown(input[:index] + "." + input[index+1:], values)
         replace_next_unknown(input[:index] + "#" + input[index+1:], values)
     
-#values=set()
-#replace_next_unknown('.?.#?', values)
-#print(f"DEBUG: {values}")
 
 
-def count_valid_arrangements_using_brute_force(input):
-    v = get_gear_sequence(input)
-    lg = get_broken_gear_groupings(input)
-    print(f"DEBUG: v={v}")
-    print(f"DEBUG: lg={lg}")
-
+def get_count_of_all_valid_possibilies(condition_record:str, grouping_to_match:[]):
     possibles = set()
-    replace_next_unknown(v, possibles)
+    replace_next_unknown(condition_record, possibles)
 
     count = 0
     for p in possibles:
-        lb = list_broken_springs(p)        
-        #print(f"DEBUG: p={p} lb={lb} lg={lg}")
-        if lb == lg:
+        damaged = get_damaged_contiguous_spring_list_from_condition_record(p)        
+        if damaged == grouping_to_match:
             count += 1
-
-    return count
-
-def unfold(input,times):
-    return input * times
-
-def get_count_of_all_valid_possibilies(chunk:str, grouping_to_match:[]):
-    possibles = set()
-    replace_next_unknown(chunk, possibles)
-
-    count = 0
-    for p in possibles:
-        lb = list_broken_springs(p)        
-        if lb == grouping_to_match:
-            count += 1
-
     return count
 
 
-def get_gear_sequence(input):
+def get_spring_condition_record(input):
     return input.split()[0]
 
-def get_broken_gear_groupings(input):
+
+def get_list_of_contiguous_damaged_spring_groupings(input):
     right = input.split()[1]
-    bgg = [int(e) for e in right.split(',')]
-    return bgg
+    return [int(e) for e in right.split(',')]
 
-
-def count_valid_arrangements_with_unfolding(input):
-    v = get_gear_sequence(input)
-    lg = get_broken_gear_groupings(input)
-    print(f"DEBUG: v={v}")
-    print(f"DEBUG: lg={lg}")
-
-    unfolded_v = v + '?' + v + '?' + v + '?' + v + '?' + v
-    print(f"DEBUG: unfolded_v={unfolded_v}")
-
-    unfolded_g = g + ',' + g + ',' + g + ',' + g + ',' + g
-    print(f"DEBUG: unfolded_g={unfolded_g}")
-
-
-    possibles = set()
-    replace_next_unknown(unfolded_v, possibles)
-
-    count = 0
-    for p in possibles:
-        lb = list_broken_springs(p)
-        
-        #print(f"DEBUG: p={p} lb={lb} lg={lg}")
-        if lb == lg:
-            count += 1
-
-    return count
-
-
-def solve_part1(filename):
-    lines = fileutils.get_file_lines(filename)
-    total = 0
-
-    for l in lines:
-        total += count_valid_arrangements_using_brute_force(l)
-    return total
 
 def get_chunks(record):
     chunks = []
@@ -125,32 +65,81 @@ def get_chunks(record):
             buf = "" # Reset
     return chunks
 
-def count_valid_arrangements_using_caching(input):
-    (v,g) = input.split()
-    lg = [int(e) for e in g.split(',')]
-    print(f"DEBUG: v={v}")
-    print(f"DEBUG: lg={lg} g={g}")
-
-    chunks = get_chunks(v)
-    print(f"DEBUG: chunks={chunks}")
-
-    """
-    possibles = set()
-    replace_next_unknown(v, possibles)
-
-    count = 0
-    for p in possibles:
-        lb = list_broken_springs(p)        
-        #print(f"DEBUG: p={p} lb={lb} lg={lg}")
-        if lb == lg:
-            count += 1
-    """
-    return 0
-
 
 def get_combo_count_for_chunk_and_hash_pattern(chunk, hash_pattern):
     if not '?' in chunk:
-        raise ValueError("No '?' in chunk={chunk} !")
-    
-    
+        return 1
+        
     return get_count_of_all_valid_possibilies(chunk, hash_pattern)
+
+
+def count_valid_arrangements_using_cache(input):
+    record = get_spring_condition_record(input)
+    grouping = get_list_of_contiguous_damaged_spring_groupings(input)
+
+    #print(f"DEBUG: record={record}")
+    #print(f"DEBUG: grouping={grouping}")
+
+    return get_valid_combo_count_for_unknowns(record, grouping)
+
+
+def get_valid_combo_count_for_unknowns(record, grouping, brute_force=False):
+    if brute_force:
+        ans = get_count_of_all_valid_possibilies(record, grouping)
+    else:
+        ans = 0 # TODO: Implement
+    return ans
+
+
+def unfold_record(spring_record):
+    # TODO: Is there a better way (without so much duplication)?
+    return '?'.join([spring_record,spring_record,spring_record,spring_record,spring_record])
+
+
+def unfold_grouping(damaged_spring_grouping):
+    multiplied = []
+    for i in range(5):
+        multiplied.extend(damaged_spring_grouping)
+    return multiplied
+
+
+def count_valid_arrangements_using_brute_force(input:str) -> int:
+    record = get_spring_condition_record(input)
+    grouping = get_list_of_contiguous_damaged_spring_groupings(input)
+    return get_count_of_all_valid_possibilies(record, grouping)
+
+
+def count_valid_arrangements_using_cache(input:str, unfold:bool=False) -> int:
+    record = get_spring_condition_record(input)
+    grouping = get_list_of_contiguous_damaged_spring_groupings(input)
+    if unfold:
+        record = unfold_record(record)
+        grouping = unfold_grouping(grouping)   
+
+    return get_valid_combo_count_for_unknowns(record, grouping)
+
+
+def solve_part1(filename):
+    lines = fileutils.get_file_lines(filename)
+
+    total = 0
+    for l in lines:
+        total += count_valid_arrangements_using_brute_force(l)
+    return total
+
+
+def solve_part1_using_cache(filename):
+    lines = fileutils.get_file_lines(filename)
+
+    total = 0
+    for l in lines:
+        total += count_valid_arrangements_using_cache(l)
+    return total
+
+
+def solve_part2(filename):
+    lines = fileutils.get_file_lines(filename)
+    total = 0
+    for l in lines:
+        total += count_valid_arrangements_using_cache(l, True) # Unfolding input
+    return total
