@@ -1,16 +1,29 @@
-https://adventofcode.com/2023/day/?
+https://adventofcode.com/2023/day/7
 
 Other's solutions
------------------
+=================
 
-Jonathan Paulson:
+Jonathan Paulson
+----------------
 
 https://www.youtube.com/@jonathanpaulson5053/videos
 https://github.com/jonathanpaulson/AdventOfCode/tree/master/2023
 
-William Y. Feng:
+Day 7: 
 
-https://www.youtube.com/playlist?list=PLsqh-jhhTL292ZlyyruyLTXFcFj1RqkG0
+https://www.youtube.com/watch?v=22IrAlrWqu4
+https://github.com/jonathanpaulson/AdventOfCode/blob/master/2023/7.py
+
+
+William Y. Feng
+---------------
+
+https://www.youtube.com/@WilliamYFeng/videos 
 https://github.com/womogenes/AoC-2023-Solutions
+
+Day 7:
+
+https://www.youtube.com/watch?v=DUzKm0n6HgY
+https://github.com/womogenes/AoC-2023-Solutions/tree/main/day_07
 
 
