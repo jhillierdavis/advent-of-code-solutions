@@ -34,4 +34,4 @@ def test_solve_part1(filename, expected):
     ],    
 )
 def test_solve_part2(filename, expected):
-    assert solution.solve_part2(filename) == expected    
+    assert solution.solve_part2(filename) == expected
