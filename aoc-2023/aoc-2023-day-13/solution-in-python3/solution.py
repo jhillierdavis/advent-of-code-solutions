@@ -1,10 +1,7 @@
-from collections import defaultdict
-
-from helpers import fileutils, grid, point
+from helpers import grid, point
 
 def get_symmetry_row(g, target_mismatch:int=0):
-    height = g.get_height()
-    width = g.get_width()
+    height = g.get_height(); width = g.get_width()
 
     for row in range(height-1):
         mismatch = 0
@@ -20,14 +17,13 @@ def get_symmetry_row(g, target_mismatch:int=0):
 
         if mismatch == target_mismatch:
             location = row + 1
-            print(f"DEBUG: Vertical symmetry found at {location}")
+            #print(f"DEBUG: Vertical symmetry found at {location}")
             return location
         
     return -1 # Symmetry mot found
 
 def get_symmetry_column(g, target_mismatch:int=0):
-    height = g.get_height()
-    width = g.get_width()
+    height = g.get_height(); width = g.get_width()
 
     for column in range(width-1):
         mismatch = 0
@@ -43,7 +39,7 @@ def get_symmetry_column(g, target_mismatch:int=0):
 
         if mismatch == target_mismatch:
             location = column + 1
-            print(f"DEBUG: Horizontal symmetry found at {location}")
+            #print(f"DEBUG: Horizontal symmetry found at {location}")
             return location
         
     return -1  # Symmetry mot found 
@@ -52,8 +48,7 @@ def get_symmetry_column(g, target_mismatch:int=0):
 def solve(filename, target_mismatch:int=0):
     grids = grid.get_multiple_grids_from(filename)
 
-    index = 0
-    total = 0
+    total = 0; index = 0
     for g in grids:
         index += 1
         #print(f"DEBUG: Finding relection point for grid")
@@ -61,11 +56,8 @@ def solve(filename, target_mismatch:int=0):
         if location < 0:
             location = get_symmetry_row(g, target_mismatch) * 100
         
-        assert location > 0 , f"No symmetry found for index={index} grid={g}"        
-        
-        total += location
-
-
+        assert location > 0 , f"No symmetry found for index={index} grid={g}"                
+        total += location        
     return total
 
 
