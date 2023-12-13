@@ -1,6 +1,6 @@
 import pytest # for parameterised tests etc.
 
-from helpers.grid import Grid2D
+from helpers.grid import Grid2D, get_multiple_grids_from
 from helpers.grid import display_grid
 from helpers.point import Point2D
 
@@ -290,3 +290,17 @@ def test_get_neighbour_point_south(start_coord, expected_coord, expected_symbol)
         assert g.get_symbol(right) == expected_symbol
     else:
         assert right == None
+
+@pytest.mark.parametrize(
+    "filename,expected",
+    [
+        pytest.param("aoc-2023-day-13-puzzle-input-example.txt", 2),
+        pytest.param("aoc-2023-day-13-puzzle-input-full.txt", 100),
+    ],    
+)
+def test_get_grids_from(filename, expected):
+    # When: a list of grids are retrieved from file content
+    grids = get_multiple_grids_from(filename)
+
+    # Then: the number of grids is as anticipated
+    assert len(grids) == expected

@@ -2,18 +2,6 @@ import pytest
 
 import solution
 
-@pytest.mark.parametrize(
-    "filename,expected",
-    [
-        pytest.param("puzzle-input-example.txt", 2),
-        pytest.param("puzzle-input-full.txt", 100),
-    ],    
-)
-def test_get_grids_from(filename, expected):
-    grids = solution.get_grids_from(filename)
-
-    assert len(grids) == expected
-
 
 @pytest.mark.parametrize(
     "filename,expected",

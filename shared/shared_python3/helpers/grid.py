@@ -1,4 +1,4 @@
-from helpers import point
+from helpers import point, fileutils
 
 # TODO: Update to follow style conventions (e.g. for class & method names) https://peps.python.org/pep-0008/
 
@@ -49,6 +49,16 @@ def display_grid(grid, separator:str=""):
     lines = grid_to_lines(grid, separator)
     for gl in lines:
         print(f"Grid line: {gl} ")
+
+
+def get_multiple_grids_from(filename):
+    list_of_grid_lines = fileutils.get_contiguous_non_empty_lines_from(filename)
+
+    grids = []
+    for lines in list_of_grid_lines:
+        g = lines_to_grid(lines)
+        grids.append(g)
+    return grids
 
 
 class Grid2D():
