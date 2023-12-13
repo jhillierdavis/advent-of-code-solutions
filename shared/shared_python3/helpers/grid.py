@@ -283,6 +283,52 @@ class Grid2D():
         return matched
 
 
+    def get_reflected_row_locations(self, acceptable_symbol_difference:int=0):
+        height = self.get_height(); width = self.get_width()
+
+        row_locations = []
+        for row in range(height-1):
+            differences = 0
+            for offset in range(height):
+                left = row - offset
+                right = row + 1 + offset
+
+                if left >= 0 and right < height:
+                    # Check similarity of row (point by point)
+                    for rp in range(width):
+                        if self.get_symbol(point.Point2D(rp, left)) != self.get_symbol(point.Point2D(rp, right)):
+                            differences += 1
+
+            if differences == acceptable_symbol_difference:
+                location = row + 1
+                #print(f"DEBUG: Vertical symmetry found at {location}")
+                row_locations.append(location)
+        return row_locations
+
+    def get_reflected_column_locations(self, acceptable_symbol_differences:int=0):
+        height = self.get_height(); width = self.get_width()
+
+        col_locations = []
+        for column in range(width-1):
+            differences = 0
+            for offset in range(width):
+                top = column - offset
+                bottom = column + 1 + offset
+
+                if top >= 0 and bottom < width:
+                    # Check similarity of column (point by point)
+                    for cp in range(height):
+                        if self.get_symbol(point.Point2D(top, cp)) != self.get_symbol(point.Point2D(bottom, cp)):
+                            differences += 1
+
+            if differences == acceptable_symbol_differences:
+                location = column + 1
+                #print(f"DEBUG: Horizontal symmetry found at {location}")
+                col_locations.append(location)
+            
+        return col_locations 
+
+
     def clone(self):
         cloned_grid = Grid2D(self.get_width(), self.get_height())
 
