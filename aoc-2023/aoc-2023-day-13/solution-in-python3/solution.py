@@ -1,4 +1,4 @@
-from helpers import grid, point
+from helpers import grid
 
 def solve(filename, acceptable_differences:int=0):
     grids = grid.get_multiple_grids_from(filename)
@@ -7,7 +7,8 @@ def solve(filename, acceptable_differences:int=0):
     for g in grids:
         locations = g.get_reflected_column_locations(acceptable_differences)   
         #print(f"DEBUG: Column locations={locations}")     
-        if len(locations) <= 0:
+        
+        if len(locations) <= 0: # Not reflected horizontally
             locations = g.get_reflected_row_locations(acceptable_differences)
             #print(f"DEBUG: Row locations={locations}")     
             total += locations[0] * 100
