@@ -87,7 +87,7 @@ def get_valid_combo_count_for_unknowns(record, grouping, brute_force=False):
     if brute_force:
         ans = get_count_of_all_valid_possibilies(record, grouping)
     else:
-        ans = 0 # TODO: Implement
+        ans = get_valid_permutations(record, grouping)
     return ans
 
 
@@ -143,3 +143,73 @@ def solve_part2(filename):
     for l in lines:
         total += count_valid_arrangements_using_cache(l, True) # Unfolding input
     return total
+
+
+def get_valid_permutations(record:str, grouping:[]):
+    #print(f"DEBUG: record={record} grouping={grouping}") 
+    cache = {} # Create a new cache, a map of state to number of permutations
+    return get_valid_permutations_using_cache(cache, record.rstrip('.'), grouping)
+
+
+def get_halting_case_value(grouping, gindex, contiguous):
+    is_beyond_last_grouping = gindex >= len(grouping)
+
+    if is_beyond_last_grouping:
+        return 1 if contiguous == 0 else 0
+    
+    is_at_last_grouping = gindex == (len(grouping) - 1) 
+    is_grouping_value_matched = grouping[gindex] == contiguous       
+
+    if is_at_last_grouping and is_grouping_value_matched:
+        return 1         
+    return 0    
+
+def get_recursive_case_value(current_char, cache, record, grouping, rindex, gindex, contiguous):
+    if current_char == '#':
+        return get_valid_permutations_using_cache(cache, record, grouping, rindex, gindex, 1 + contiguous)
+
+    if current_char =='.': # No longer contiguous (if was)       
+        if contiguous == 0:
+            return get_valid_permutations_using_cache(cache, record, grouping, rindex, gindex, 0)        
+        
+        is_within_grouping = gindex < len(grouping)
+        if is_within_grouping:
+            is_matched_grouping = grouping[gindex] == contiguous
+            if is_matched_grouping:
+                # Move to next grouping (if present)
+                return get_valid_permutations_using_cache(cache, record, grouping, rindex, 1+gindex, 0)
+
+    return 0
+    
+
+def get_valid_permutations_using_cache(cache:{}, record:str, grouping:[], rindex:int=0, gindex:int=0, contiguous:int=0):   
+    state = (rindex, gindex, contiguous)
+    
+    if state in cache.keys():
+        result = cache[state]
+        #print(f"DEBUG: From cache state={state} result={result}")
+        return result
+
+    # for convenience / readability
+    is_record_fully_processed = rindex >= len(record)    
+
+    # Base case - return 1 if a valid permutation (i.e. record matches grouping)
+    if is_record_fully_processed: 
+        return get_halting_case_value(grouping, gindex, contiguous)
+    
+    # Non-base case
+    current_char = record[rindex]
+    
+    rindex += 1 # Move to next index
+    #print(f"DEBUG: state={state} cache={cache} char={char}")
+
+    result = 0
+    if current_char == '?':
+        # Count results for each valid option ('#' or '.')
+        result += get_recursive_case_value('#', cache, record, grouping, rindex, gindex, contiguous)
+        result += get_recursive_case_value('.', cache, record, grouping, rindex, gindex, contiguous)
+    else:
+        result += get_recursive_case_value(current_char, cache, record, grouping, rindex, gindex, contiguous)
+
+    cache[state] = result
+    return result

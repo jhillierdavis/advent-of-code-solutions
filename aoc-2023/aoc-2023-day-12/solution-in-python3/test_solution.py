@@ -102,19 +102,19 @@ def test_unfold_grouping(input, expected):
         pytest.param('???.### 1,1,3', False, 1),
         pytest.param('.??..??...?##. 1,1,3', False, 4),
         pytest.param('.?###????????. 3,2,1', False, 10),
-        #pytest.param('.??..??...?##. 1,1,3', True, 16384), # with unfolding
-        #pytest.param('?###???????? 3,2,1', True, 506250), # with unfolding
+        pytest.param('.??..??...?##. 1,1,3', True, 16384), # with unfolding
+        pytest.param('?###???????? 3,2,1', True, 506250), # with unfolding
     ],    
 )
 def test_count_valid_arrangements_using_cache(record, unfold, expected):
     assert solution.count_valid_arrangements_using_cache(record, unfold) == expected
 
-"""
+
 @pytest.mark.parametrize(
     "filename,expected",
     [
         pytest.param("puzzle-input-example.txt", 21),
-        #pytest.param("puzzle-input-full.txt", 7599),
+        pytest.param("puzzle-input-full.txt", 7599),
     ],    
 )
 def test_solution_part1_using_cache(filename, expected):
@@ -125,9 +125,8 @@ def test_solution_part1_using_cache(filename, expected):
     "filename,expected",
     [
         pytest.param("puzzle-input-example.txt", 525152),
-        #pytest.param("puzzle-input-full.txt", 0),
+        pytest.param("puzzle-input-full.txt", 15454556629917),
     ],    
 )
 def test_solution_part2(filename, expected):
     assert solution.solve_part2(filename) == expected
-"""
