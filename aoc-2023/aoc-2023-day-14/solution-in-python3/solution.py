@@ -12,11 +12,10 @@ def count_rounded_rocks_from(filename):
 
 def calculate_load_to_north(g):
     g = g.get_inverted_vertically()
-    #grid.display_grid(g)
 
     total_load = 0
     coords = g.get_matching_symbol_coords('O')
-    for c in  coords:
+    for c in coords:
         total_load += 1 + c.get_y()
     return total_load
 
@@ -104,48 +103,71 @@ def is_repeating_sequence_in(list_of_numbers):
         return True
     return False
 
+def get_sub_sequences(seq):
+    subseq_set = []
+    for window_size in range(2, len(seq)):
+        for i in range(len(seq) - window_size + 1):
+            entry = seq[i: i + window_size]
+            if not entry in subseq_set:
+                subseq_set.append(entry)
+    return subseq_set
+
+def get_repeating_sequences(seq):
+    subseq_set = []
+    repeating_set = []
+    for window_size in range(2, len(seq)):
+        for i in range(len(seq) - window_size + 1):
+            entry = seq[i: i + window_size]
+            if not entry in subseq_set:
+                subseq_set.append(entry)
+            elif not entry in repeating_set:
+                repeating_set.append(entry)
+    return repeating_set
+
+
 def solve_part2(filename):
     lines  = fileutils.get_file_lines(filename)
     g = grid.lines_to_grid(lines)
-    
+    print(f"Hash of original grid = {hash(g)}")
 
-    counts = []
+    map_grid_to_load = {}
+    load = 0
     max = 1000000000
-    found_repeating_sequence = False
     spin = 0
+    seq_list = []
     while spin < max:
-        spin += 1
-        count = 0
-        for i in range(g.get_height()-1):
-            count += shift_rounded_rocks_north(g)     
+      
+        for _ in range(g.get_height()-1):
+            shift_rounded_rocks_north(g)     
 
-        for i in range(g.get_width()-1):
-            count += shift_rounded_rocks_west(g)     
+        for _ in range(g.get_width()-1):
+            shift_rounded_rocks_west(g)     
 
-        for i in range(g.get_height()-1):
-            count += shift_rounded_rocks_south(g)     
+        for _ in range(g.get_height()-1):
+            shift_rounded_rocks_south(g)     
 
-        for i in range(g.get_width()-1):
-            count += shift_rounded_rocks_east(g)     
+        for _ in range(g.get_width()-1):
+            shift_rounded_rocks_east(g)  
 
-        #print(f"DEBUG: spin={spin} count={count}")
-        if not found_repeating_sequence:
-            repeating_sequence = get_repeating_sequence_in(counts)
-            repeating_sequence_length = len(repeating_sequence)
-        
-            if spin > 200 and repeating_sequence_length > 1:
-                load = calculate_load_to_north(g)
+        hash_g = hash(g)
+        load = calculate_load_to_north(g)
+        if hash_g in map_grid_to_load:
+            #print(f"DEBUG: spin={spin} load={load} hash_g={hash_g}")
+            if hash_g in seq_list:
                 remainder = max - spin
-                offset = remainder % repeating_sequence_length
-                print(f"DEBUG: cycle at spin: {spin} load={load} repeating_sequence_length={repeating_sequence_length} repeating_sequence={repeating_sequence} remainder={remainder} offset={offset}")
-                spin = max - offset
-                print(f"DEBUG: fast forward to spin={spin}!")
-                found_repeating_sequence = True
-
-            counts.append(count)
+                repeat_seq_length = len(seq_list)
+                offset = remainder % repeat_seq_length
+                offset = offset - 1 if offset > 1 else repeat_seq_length - 1
+                print(f"DEBUG: spin={spin} load={load} hash_g={hash_g} seq_list={seq_list} repeat_seq_length={repeat_seq_length} remainder={remainder} offset={offset}")
+                for s in seq_list:
+                    print(f"DEBUG: s={s} v={map_grid_to_load[s]}")
+                return map_grid_to_load[ seq_list[offset] ]
+            else:
+                seq_list.append(hash_g)
         else:
-            load = calculate_load_to_north(g)
-            print(f"DEBUG: spin={spin} load={load}")
-
-
-    return calculate_load_to_north(g)
+            map_grid_to_load[hash_g] = load
+            seq_list.clear()
+        spin += 1
+        
+    
+    return 0
