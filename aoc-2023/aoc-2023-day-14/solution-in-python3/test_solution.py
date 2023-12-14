@@ -45,13 +45,13 @@ def test_is_repeating_sequence_in(list_of_numbers, expected):
     assert solution.is_repeating_sequence_in(list_of_numbers) == expected
 
 
-
 @pytest.mark.parametrize(
     "filename,expected",
     [
         pytest.param("puzzle-input-example.txt", 64),
-        pytest.param("puzzle-input-full.txt", 0), # < 118755
+        pytest.param("puzzle-input-full.txt", 118747), # < 118755
     ],    
 )
-def test_solve_part1(filename, expected):
+def test_solve_part2(filename, expected):
+    # TODO: Find a more efficient (quicker!) currently ~ 5 mins for full data
     assert solution.solve_part2(filename) == expected
