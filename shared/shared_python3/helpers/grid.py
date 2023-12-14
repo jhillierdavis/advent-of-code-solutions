@@ -332,8 +332,8 @@ class Grid2D():
     def clone(self):
         cloned_grid = Grid2D(self.get_width(), self.get_height())
 
-        for w in range(self.get_width() -1):
-            for h in range(self.get_height() - 1):
+        for w in range(cloned_grid.get_width()):
+            for h in range(cloned_grid.get_height()):
                 p = point.Point2D(w,h)
                 cloned_grid.set_symbol(p, self.get_symbol(p))
 
@@ -343,8 +343,8 @@ class Grid2D():
         if other == None or self.get_width() != other.get_width() or self.get_height() != other.get_height():
             return False
         
-        for w in range(self.get_width() -1):
-            for h in range(self.get_height() - 1):
+        for w in range(self.get_width()):
+            for h in range(self.get_height()):
                 p = point.Point2D(w,h)
                 if self.get_symbol(p) != other.get_symbol(p):
                     return False
@@ -352,11 +352,9 @@ class Grid2D():
         return True
     
     def __hash__(self):
-        return hash(self.get_x()) + hash(self.get_y())
-
-        for w in range(self.get_width() -1):
-            for h in range(self.get_height() - 1):
+        value  = ""
+        for w in range(self.get_width()):
+            for h in range(self.get_height()):
                 p = point.Point2D(w,h)
-                hash += hash(p) + hash(self.get_symbol(p))
-        
-        return hash
+                value += str(w) + str(h) + self.get_symbol(p)
+        return hash(value)
