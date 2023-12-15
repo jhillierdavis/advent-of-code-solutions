@@ -1,4 +1,4 @@
-https://adventofcode.com/2023/day/?
+https://adventofcode.com/2023/day/16
 
 Other's solutions
 =================
