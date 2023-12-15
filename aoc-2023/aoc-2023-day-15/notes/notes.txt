@@ -1,4 +1,4 @@
-https://adventofcode.com/2023/day/?
+https://adventofcode.com/2023/day/15
 
 Other's solutions
 =================
@@ -8,14 +8,16 @@ Jonathan Paulson
 
 ( https://www.youtube.com/@jonathanpaulson5053/videos , https://github.com/jonathanpaulson/AdventOfCode/tree/master/2023 )
 
-TODO
-
+https://www.youtube.com/watch?v=xcVwTpeMEMM
+https://github.com/jonathanpaulson/AdventOfCode/blob/master/2023/15.py
 
 William Y. Feng
 ---------------
 
 ( https://www.youtube.com/@WilliamYFeng/videos , https://github.com/womogenes/AoC-2023-Solutions )
 
-TODO
-
+https://www.youtube.com/watch?v=zwK_Nw0GpKA
+https://github.com/womogenes/AoC-2023-Solutions/tree/main/day_15
+https://github.com/womogenes/AoC-2023-Solutions/blob/main/day_15/day_15_p1.py
+https://github.com/womogenes/AoC-2023-Solutions/blob/main/day_15/day_15_p2.py
 
