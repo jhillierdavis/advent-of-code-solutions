@@ -3,7 +3,7 @@ from collections import defaultdict
 
 from helpers import fileutils, grid, point
 
-sys.setrecursionlimit(5000)
+sys.setrecursionlimit(5000) # Allow greater recursion depth (than the 1K default)!
 
 def move_beam(g:grid.Grid2D, emap, cp:point.Point2D, direction:chr):
     es = emap[cp]
@@ -11,12 +11,12 @@ def move_beam(g:grid.Grid2D, emap, cp:point.Point2D, direction:chr):
 
     # Terminating case    
     if direction in es:
-        grid.display_grid(g)
-        print(f"DEBUG: Move beam: Terminating at cp={cp} with es={es} direction={direction}")
+        #grid.display_grid(g)
+        #print(f"DEBUG: Move beam: Terminating at cp={cp} with es={es} direction={direction}")
         return
     
     emap[cp] = es + direction # Store coords and their direction traversed
-    print(f"DEBUG: Move beam: cp={cp} direction={direction} es={es}")    
+    #print(f"DEBUG: Move beam: cp={cp} direction={direction} es={es}")    
 
     if direction == '>':
         # Move right
@@ -99,8 +99,62 @@ def get_energised_coords(g:grid.Grid2D):
         move_beam(g, emap, cp, '^')
         move_beam(g, emap, cp, 'v')
 
-    print(f"DEBUG: emap={emap}")
+    #print(f"DEBUG: emap={emap}")
     return emap.keys()
+
+def get_energised_coords_from(g:grid.Grid2D, cp, starting_direction):
+    emap = defaultdict(str)
+    cs = g.get_symbol(cp)
+
+    if starting_direction == '>':
+        if cs == '.' or cs == '-':    
+            move_beam(g, emap, cp, '>')
+        elif cs == '\\':
+            move_beam(g, emap, cp, 'v')
+        elif cs == '/':
+            move_beam(g, emap, cp, '^')
+        elif cs == '|':
+            move_beam(g, emap, cp, '^')
+            move_beam(g, emap, cp, 'v')
+
+    elif starting_direction == '<':
+        if cs == '.' or cs == '-':    
+            move_beam(g, emap, cp, '<')
+        elif cs == '\\':
+            move_beam(g, emap, cp, '^')
+        elif cs == '/':
+            move_beam(g, emap, cp, 'v')
+        elif cs == '|':
+            move_beam(g, emap, cp, '^')
+            move_beam(g, emap, cp, 'v')
+
+
+    elif starting_direction == 'v':
+        if cs == '.' or cs == '|':    
+            move_beam(g, emap, cp, 'v')
+        elif cs == '\\':
+            move_beam(g, emap, cp, '>')
+        elif cs == '/':
+            move_beam(g, emap, cp, '<')
+        elif cs == '-':
+            move_beam(g, emap, cp, '>')
+            move_beam(g, emap, cp, '<')
+
+    elif starting_direction == '^':
+        if cs == '.' or cs == '|':    
+            move_beam(g, emap, cp, '^')
+        elif cs == '\\':
+            move_beam(g, emap, cp, '<')
+        elif cs == '/':
+            move_beam(g, emap, cp, '>')
+        elif cs == '-':
+            move_beam(g, emap, cp, '>')
+            move_beam(g, emap, cp, '<')
+
+
+    #print(f"DEBUG: emap={emap}")
+    return emap.keys()
+
 
 def solve_part1(filename):
     lines = fileutils.get_file_lines(filename)
@@ -119,5 +173,38 @@ def solve_part1(filename):
 
 def solve_part2(filename):
     lines = fileutils.get_file_lines(filename)
-    return 0 # TODO
+    g = grid.lines_to_grid(lines)
+
+    max_energised = 0
+    gh = g.get_height()
+    gw = g.get_width()
+    for h in range(gh):
+        current_point = point.Point2D(0, h)
+        energised = get_energised_coords_from(g, current_point, '>')
+        value = len(energised)
+        if value > max_energised:
+            max_energised = value
+
+        current_point = point.Point2D(gh-1, h)
+        energised = get_energised_coords_from(g, current_point, '<')
+        value = len(energised)
+        if value > max_energised:
+            max_energised = value
+
+
+    for w in range(gw):
+        current_point = point.Point2D(w, 0)
+        energised = get_energised_coords_from(g, current_point, 'v')
+        value = len(energised)
+        if value > max_energised:
+            max_energised = value
+
+        current_point = point.Point2D(w, gw-1)
+        energised = get_energised_coords_from(g, current_point, '^')
+        value = len(energised)
+        if value > max_energised:
+            max_energised = value
+
+
+    return max_energised
 
