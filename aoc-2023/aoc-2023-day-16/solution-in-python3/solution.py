@@ -1,6 +1,9 @@
+import sys
 from collections import defaultdict
 
 from helpers import fileutils, grid, point
+
+sys.setrecursionlimit(5000)
 
 def move_beam(g:grid.Grid2D, emap, cp:point.Point2D, direction:chr):
     es = emap[cp]
@@ -85,7 +88,16 @@ def get_energised_coords(g:grid.Grid2D):
     emap = defaultdict(str)
     cp = point.Point2D(0,0)
 
-    move_beam(g, emap, cp, '>')
+    cs = g.get_symbol(cp)
+    if cs == '.' or cs == '-':    
+        move_beam(g, emap, cp, '>')
+    elif cs == '\\':
+        move_beam(g, emap, cp, 'v')
+    elif cs == '/':
+        move_beam(g, emap, cp, '^')
+    elif cs == '|':
+        move_beam(g, emap, cp, '^')
+        move_beam(g, emap, cp, 'v')
 
     print(f"DEBUG: emap={emap}")
     return emap.keys()
