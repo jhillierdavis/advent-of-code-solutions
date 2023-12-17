@@ -113,6 +113,46 @@ class Grid2D():
                 neightbours.add(np)
         return neightbours  
     
+    def get_neighbour_east(self, p:point.Point2D) -> point.Point2D:
+        x = p.get_x()
+        y = p.get_y()
+
+        np = point.Point2D(x+1 , y)
+
+        if self.contains(np):
+                return np
+        return None  
+
+    def get_neighbour_west(self, p:point.Point2D) -> point.Point2D:
+        x = p.get_x()
+        y = p.get_y()
+
+        np = point.Point2D(x-1 , y)
+
+        if self.contains(np):
+                return np
+        return None  
+
+    def get_neighbour_north(self, p:point.Point2D) -> point.Point2D:
+        x = p.get_x()
+        y = p.get_y()
+
+        np = point.Point2D(x , y-1)
+
+        if self.contains(np):
+                return np
+        return None  
+
+    def get_neighbour_south(self, p:point.Point2D) -> point.Point2D:
+        x = p.get_x()
+        y = p.get_y()
+
+        np = point.Point2D(x , y+1)
+
+        if self.contains(np):
+                return np
+        return None  
+
     def get_matching_symbol_coords(self, symbol:chr):
         locations = []
         for x in range(self.get_width()):
