@@ -15,8 +15,9 @@ def test_solve_part1(filename, expected):
 @pytest.mark.parametrize(
     "filename,expected",
     [
-        #pytest.param("puzzle-input-example.txt", -1),
-        #pytest.param("puzzle-input-full.txt", -1),
+        pytest.param("puzzle-input-example.txt", 94),
+        #pytest.param("puzzle-input-example-part2.txt", 71), # 47?
+        pytest.param("puzzle-input-full.txt", -1), # 902 too low! #987 too high!
     ],    
 )
 def test_solve_part2(filename, expected):
