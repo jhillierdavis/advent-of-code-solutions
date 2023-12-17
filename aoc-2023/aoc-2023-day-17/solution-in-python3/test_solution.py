@@ -16,8 +16,8 @@ def test_solve_part1(filename, expected):
     "filename,expected",
     [
         pytest.param("puzzle-input-example.txt", 94),
-        #pytest.param("puzzle-input-example-part2.txt", 71), # 47?
-        pytest.param("puzzle-input-full.txt", -1), # 902 too low! #987 too high!
+        pytest.param("puzzle-input-example-part2.txt", 71), # 47?
+        pytest.param("puzzle-input-full.txt", 904), # 902 too low! #987 too high!
     ],    
 )
 def test_solve_part2(filename, expected):

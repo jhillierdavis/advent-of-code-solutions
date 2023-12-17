@@ -8,7 +8,24 @@ import heapq
 
 from helpers import fileutils, grid, point
 
-def create_low_risk_path_grid(g:grid.Grid2D, min_consecutive:int=-1, max_consecutive:int=3):
+def is_valid_point(p:point.Point2D, stop_point:point.Point2D, min_consecutive:int=0) -> bool:
+    if not p:
+        return False
+    
+    if min_consecutive == 0:
+        return True
+    
+    if p == stop_point:
+        return True
+    
+    if stop_point.get_x() - p.get_x() < min_consecutive and stop_point.get_y() - p.get_y() < min_consecutive:
+        return p.get_y() == stop_point.get_y() or p.get_x() == stop_point.get_x()
+
+    return True
+
+    
+
+def create_low_risk_path_grid(g:grid.Grid2D, min_consecutive:int=0, max_consecutive:int=3):
     start_point = point.Point2D(0, 0)
     stop_point = point.Point2D(g.get_width() -1, g.get_height() -1)
 
@@ -41,25 +58,25 @@ def create_low_risk_path_grid(g:grid.Grid2D, min_consecutive:int=-1, max_consecu
 
         # Process cardial point (north, south, east, west) immediate neighbours, adding combined risk
         np = g.get_neighbour_east(p)
-        if np and direction != '<':
+        if is_valid_point(np, stop_point, min_consecutive) and direction != '<':
             if direction == '?' or (direction in '^v' and direction_count >= min_consecutive) or (direction == '>' and direction_count < max_consecutive):
                 value = int(g.get_symbol(np))
                 heapq.heappush(pq, (c + value, np, '>', 1 + direction_count if direction == '>' else 1))
 
         np = g.get_neighbour_west(p)
-        if np and direction != '>':
+        if is_valid_point(np, stop_point, min_consecutive) and direction != '>':
             if direction == '?' or (direction in '^v' and direction_count >= min_consecutive) or (direction == '<' and direction_count < max_consecutive):
                 value = int(g.get_symbol(np))
                 heapq.heappush(pq, (c + value, np, '<', 1 + direction_count if direction == '<' else 1))
 
         np = g.get_neighbour_north(p)
-        if np and direction != 'v':
+        if is_valid_point(np, stop_point, min_consecutive) and direction != 'v':
             if direction == '?' or (direction in '<>' and direction_count >= min_consecutive) or (direction == '^' and direction_count < max_consecutive):
                 value = int(g.get_symbol(np))
                 heapq.heappush(pq, (c + value, np, '^', 1 + direction_count if direction == '^' else 1))
 
         np = g.get_neighbour_south(p)
-        if np and direction != '^':
+        if is_valid_point(np, stop_point, min_consecutive) and direction != '^':
             if direction == '?' or (direction in '<>' and direction_count >= min_consecutive) or (direction == 'v' and direction_count < max_consecutive):
                 value = int(g.get_symbol(np))
                 heapq.heappush(pq, (c + value, np, 'v', 1 + direction_count if direction == 'v' else 1))            
@@ -81,9 +98,9 @@ def solve_part2(filename):
     lines = fileutils.get_file_lines(filename)
     g = grid.lines_to_grid(lines)
 
-    grid.display_grid(g)
+    #grid.display_grid(g)
 
     pg = create_low_risk_path_grid(g, 4, 10)
-    grid.display_grid(pg, " ")
+    ##grid.display_grid(pg, " ")
     return int(pg.get_symbol(point.Point2D(pg.get_width()-1, pg.get_height()-1)))
 
