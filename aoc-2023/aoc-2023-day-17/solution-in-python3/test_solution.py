@@ -5,8 +5,8 @@ import solution
 @pytest.mark.parametrize(
     "filename,expected",
     [
-        pytest.param("puzzle-input-example.txt", -1),
-        #pytest.param("puzzle-input-full.txt", -1),
+        pytest.param("puzzle-input-example.txt", 102),
+        pytest.param("puzzle-input-full.txt", -1), # 748 too low!
     ],    
 )
 def test_solve_part1(filename, expected):
