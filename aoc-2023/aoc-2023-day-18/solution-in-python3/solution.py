@@ -238,6 +238,7 @@ def count_contained_grid_squares(line):
     return total_count
 
 def grid_with_looping_path_from(lines, grid_size, path):
+    # Create a grid using format from AOC 2023 Day 10
     g = grid.Grid2D(grid_size, grid_size)
     sp = point.Point2D(grid_size // 2, grid_size // 2)    
 
