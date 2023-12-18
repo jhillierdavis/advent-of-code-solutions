@@ -1,6 +1,6 @@
 import pytest
 
-import solution
+import solution, solution_part2
 """
 @pytest.mark.parametrize(
     "filename,expected",
@@ -26,7 +26,10 @@ def test_count_interior(filename, expected):
     ],    
 )
 def test_solve_part1(filename, grid_size, expected):
-    assert solution.solve_part1(filename, grid_size) == expected
+    assert solution.solve_using_fjl7_grid_from(filename, grid_size) == expected
+
+    # Alternative area calculation approach (used for part2)
+    assert solution_part2.solve_part1_using_area_calculation_from(filename)
 
 
 @pytest.mark.parametrize(
@@ -48,7 +51,7 @@ def test_solve_part1(filename, grid_size, expected):
     ],    
 )
 def test_get_direction_and_distance_from(input, expected):
-    assert solution.get_direction_and_distance_from(input) == expected
+    assert solution_part2.get_direction_and_distance_from(input) == expected
 
 @pytest.mark.parametrize(
     "filename,expected",
@@ -58,4 +61,4 @@ def test_get_direction_and_distance_from(input, expected):
     ],    
 )
 def test_solve_part2(filename,expected):
-    assert solution.solve_part2(filename) == expected    
+    assert solution_part2.solve_part2(filename) == expected    
