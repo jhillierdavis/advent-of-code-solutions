@@ -1,8 +1,6 @@
-from collections import defaultdict
+#from collections import defaultdict
 
 from helpers import fileutils, grid, point
-
-
 
 """
 count ← 0
@@ -239,27 +237,21 @@ def count_contained_grid_squares(line):
             tmp_count += 1
     return total_count
 
-
-def solve_part1(filename, grid_size=100):
-    lines = fileutils.get_file_lines(filename)
-
-    #g = grid.Grid2D(500, 500)
-    #cp = point.Point2D(200,400)
+def grid_with_looping_path_from(lines, grid_size, path):
     g = grid.Grid2D(grid_size, grid_size)
-    sp = point.Point2D(grid_size // 2, grid_size // 2)
-    
+    sp = point.Point2D(grid_size // 2, grid_size // 2)    
 
     cp = sp
     last_move = '?'
 
-    path = set()
+    #path = set()
     path.add(cp)
     last_move = '?'
 
     for l in lines:
         m,d,c = l.split()
         d = int(d)        
-        print(f"DEBUG: m={m} d={d}, c={c} l={l} cp={cp}")
+        #print(f"DEBUG: m={m} d={d}, c={c} l={l} cp={cp}")
         for _ in range(d):            
             if m == 'R':                            
                 if last_move == 'D':
@@ -300,10 +292,19 @@ def solve_part1(filename, grid_size=100):
             last_move = m
 
     g.set_symbol(sp, 'S')
+    return g
+
+
+
+def solve_part1(filename, grid_size=100):
+    lines = fileutils.get_file_lines(filename)
 
     #print()
     #grid.display_grid(g)
     #print()
+
+    path = set()
+    g = grid_with_looping_path_from(lines, grid_size, path)
 
     lines = grid.grid_to_lines(g)
     ans = 0
