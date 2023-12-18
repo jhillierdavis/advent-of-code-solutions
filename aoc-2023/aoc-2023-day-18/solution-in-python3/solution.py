@@ -318,7 +318,7 @@ def solve_part1(filename, grid_size=100):
 def get_direction_and_distance_from(hexcode):
     hex_distance = "0x" + hexcode[2:-2]
     hex_direction = int(hexcode[-2:-1])
-    print(f"DEBUG: {hexcode} {hex_distance} {hex_direction}")
+    #print(f"DEBUG: {hexcode} {hex_distance} {hex_direction}")
 
     direction = '?'
     if hex_direction == 0:
@@ -332,20 +332,60 @@ def get_direction_and_distance_from(hexcode):
 
     return (direction, int(hex_distance, 16))
 
+
+def calculate_polygon_area_from(coords:list) -> float:
+    # Calculate the area from the x axis between sequential coords for polygon corners
+    if coords[0] != coords[-1]:
+        # First and last item in the list are the same coordinates
+        coords.append(coords[0]) 
+    
+    total_diff = 0
+    length = len(coords)
+    for i in range(length-1):        
+        y_diff = coords[i+1][1] + coords[i][1]
+        x_diff = coords[i+1][0] - coords[i][0]
+        area_diff = y_diff * x_diff
+        total_diff += area_diff
+    return abs(total_diff / 2.0)
+
 def solve_part2(filename):
     lines = fileutils.get_file_lines(filename)
 
     #instructions = []
-    distances = []
+    coords = []
+    x = 0
+    y = 0
+    coords.append((x,y))
+    distance = 0
+    perimeter = 0
     for l in lines:
-        m,d,c = l.split()
+        _,_,c = l.split()
         direction, distance = get_direction_and_distance_from(c)
-        #instructions.append((direction, distance))
-        distances.append(distance)
+        if direction == 'R':
+            x += distance
+        if direction == 'L':
+            x -= distance
+        if direction == 'D':
+            y += distance
+        if direction == 'U':
+            y -= distance
+        coords.append((x,y))
+        perimeter += int(distance)
 
-    greatest_common_divisor = math.gcd(150, 30)
-    print(f"DEBUG: distances={distances}")
-    print(f"DEBUG: greatest_common_divisor={greatest_common_divisor}")
+    #print(f"DEBUG: perimeter={perimeter}")
+    #print(f"DEBUG: coords={coords}")
 
+    area = int(calculate_polygon_area_from(coords))
+    interior_points = int(area - (perimeter / 2) + 1)               
+    return perimeter + interior_points
 
-    return 0 # TODO
+"""
+#coords = [(1,1), (4,1), (4,4), (1,4), (1,1)]
+#perimeter = 12
+coords = [(0,0), (4,0), (4,5), (0,5), (0,0)]
+perimeter = 14
+area = calculate_polygon_area_from(coords)
+interior = int(area - (perimeter/2)+1) 
+size = perimeter + interior
+print(f"DEBUG: size={size} area={area} perimeter={perimeter} interior={interior}")
+"""

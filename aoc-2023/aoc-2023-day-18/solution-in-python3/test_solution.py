@@ -54,7 +54,7 @@ def test_get_direction_and_distance_from(input, expected):
     "filename,expected",
     [
         pytest.param("puzzle-input-example.txt", 952408144115),
-        #pytest.param("puzzle-input-full.txt", -1),
+        pytest.param("puzzle-input-full.txt", 122103860427465),
     ],    
 )
 def test_solve_part2(filename,expected):
