@@ -314,6 +314,23 @@ def solve_part1(filename, grid_size=100):
     return len(path) + ans
 
 
+def get_direction_and_distance_from(hexcode):
+    hex_distance = "0x" + hexcode[2:-2]
+    hex_direction = int(hexcode[-2:-1])
+    print(f"DEBUG: {hexcode} {hex_distance} {hex_direction}")
+
+    direction = '?'
+    if hex_direction == 0:
+        direction = 'R'
+    elif hex_direction == 1:
+        direction = 'D'
+    elif hex_direction == 2:
+        direction = 'L'
+    elif hex_direction == 3:
+        direction = 'U'
+
+    return (direction, int(hex_distance, 16))
+
 def solve_part2(filename):
     lines = fileutils.get_file_lines(filename)
     return 0 # TODO

@@ -28,6 +28,28 @@ def test_count_interior(filename, expected):
 def test_solve_part1(filename, grid_size, expected):
     assert solution.solve_part1(filename, grid_size) == expected
 
+
+@pytest.mark.parametrize(
+    "input,expected",
+    [
+        pytest.param("(#70c710)", ('R', 461937)),
+        pytest.param("(#5713f0)", ('R', 356671)),
+        pytest.param("(#d2c081)", ('D', 863240)),
+        pytest.param("(#59c680)", ('R', 367720)),
+        pytest.param("(#411b91)", ('D', 266681 )),
+        pytest.param("(#8ceee2)", ('L', 577262)),
+        pytest.param("(#caa173)", ('U', 829975)),
+        pytest.param("(#1b58a2)", ('L', 112010)),
+        pytest.param("(#caa171)", ('D', 829975)),
+        pytest.param("(#7807d2)", ('L', 491645)),
+        pytest.param("(#a77fa3)", ('U', 686074)),
+        pytest.param("(#015232)", ('L', 5411)),
+        pytest.param("(#7a21e3)", ('U', 500254)),
+    ],    
+)
+def test_get_direction_and_distance_from(input, expected):
+    assert solution.get_direction_and_distance_from(input) == expected
+
 @pytest.mark.parametrize(
     "filename,expected",
     [
