@@ -5,7 +5,8 @@ def get_file_lines(filename):
     # Retrieve lines & return via an array (of strings)
     array_lines = []
     for line in data_file:
-        array_lines.append(line.strip('\n'))
+        content = line.strip('\n').strip() # Remove leading/trailing spaces & newlines
+        array_lines.append(content)
 
     # Close file handle
     data_file.close()    
