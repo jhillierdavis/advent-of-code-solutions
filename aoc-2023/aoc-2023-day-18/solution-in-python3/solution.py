@@ -1,4 +1,5 @@
 #from collections import defaultdict
+import math
 
 from helpers import fileutils, grid, point
 
@@ -333,4 +334,18 @@ def get_direction_and_distance_from(hexcode):
 
 def solve_part2(filename):
     lines = fileutils.get_file_lines(filename)
+
+    #instructions = []
+    distances = []
+    for l in lines:
+        m,d,c = l.split()
+        direction, distance = get_direction_and_distance_from(c)
+        #instructions.append((direction, distance))
+        distances.append(distance)
+
+    greatest_common_divisor = math.gcd(150, 30)
+    print(f"DEBUG: distances={distances}")
+    print(f"DEBUG: greatest_common_divisor={greatest_common_divisor}")
+
+
     return 0 # TODO

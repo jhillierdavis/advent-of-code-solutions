@@ -53,7 +53,7 @@ def test_get_direction_and_distance_from(input, expected):
 @pytest.mark.parametrize(
     "filename,expected",
     [
-        #pytest.param("puzzle-input-example.txt", -1),
+        pytest.param("puzzle-input-example.txt", 952408144115),
         #pytest.param("puzzle-input-full.txt", -1),
     ],    
 )
