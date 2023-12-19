@@ -107,8 +107,8 @@ def solve_part2(filename):
 
         if step == 'A':
             possibilities = (x_max - x_min) * (m_max - m_min) * (a_max - m_min) * (s_max - s_min)
-            assert possibilities >= 0
-            combos += possibilities
+            if possibilities > 0:
+                combos += possibilities
         elif step == 'R':
             pass
         else:
@@ -120,13 +120,21 @@ def solve_part2(filename):
                     value = int(value)
 
                     if category == 'x':
-                        add_state(todo_queue, d, x_min, value, m_min, m_max, a_min, a_max, s_min, s_max)
+                        if x_max > value:
+                            add_state(todo_queue, d, value+1, x_max, m_min, m_max, a_min, a_max, s_min, s_max)
+                        x_max = max(x_min, value)
                     if category == 'm':
-                        add_state(todo_queue, d, x_min, x_max, m_min, value, a_min, a_max, s_min, s_max)
+                        if m_max > value:
+                            add_state(todo_queue, d, x_min, x_max, value+1, m_max, a_min, a_max, s_min, s_max)
+                        m_max = max(m_min, value)
                     if category == 'a':
-                        add_state(todo_queue, d, x_min, x_max, m_min, m_max, a_min, value, s_min, s_max)
+                        if a_max > value:
+                            add_state(todo_queue, d, x_min, x_max, m_min, m_max, value+1, x_max, s_min, s_max)
+                        a_max = max(a_min, value)
                     if category == 's':
-                        add_state(todo_queue, d, x_min, x_max, m_min, m_max, a_min, a_max, s_min, value)                    
+                        if s_max > value:
+                            add_state(todo_queue, d, x_min, x_max, m_min, m_max, a_min, a_max, value+1, s_max)   
+                        s_max = max(s_min, value)                
                     
                 elif '<' in ins:
                     w,d = ins.split(':')
@@ -134,13 +142,21 @@ def solve_part2(filename):
                     value = int(value)
 
                     if category == 'x':
-                        add_state(todo_queue, d, x_min, value-1, m_min, m_max, a_min, a_max, s_min, s_max)
+                        if x_min < value:
+                            add_state(todo_queue, d, x_min, value-1, m_min, m_max, a_min, a_max, s_min, s_max)
+                        x_min = min(value, x_max)
                     if category == 'm':
-                        add_state(todo_queue, d, x_min, x_max, m_min, value-1, a_min, a_max, s_min, s_max)
+                        if m_min < value-1:
+                            add_state(todo_queue, d, x_min, x_max, m_min, value-1, a_min, a_max, s_min, s_max)
+                        m_min = min(value, m_max)
                     if category == 'a':
-                        add_state(todo_queue, d, x_min, x_max, m_min, m_max, a_min, value-1, s_min, s_max)
+                        if a_min < value-1:
+                            add_state(todo_queue, d, x_min, x_max, m_min, m_max, a_min, value-1, s_min, s_max)
+                        a_min = min(value, a_max)
                     if category == 's':
-                        add_state(todo_queue, d, x_min, x_max, m_min, m_max, a_min, a_max, s_min, value-1)
+                        if s_min < value-1:
+                            add_state(todo_queue, d, x_min, x_max, m_min, m_max, a_min, a_max, s_min, value-1)
+                        s_min = min(value, s_max)  
                 else:
                     add_state(todo_queue, ins, x_min, x_max, m_min, m_max, a_min, a_max, s_min, s_max)
     return combos
