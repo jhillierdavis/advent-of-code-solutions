@@ -23,7 +23,7 @@ def test_workflow_processing_for_part(filename, part, expected):
     "filename,expected",
     [
         pytest.param("puzzle-input-example.txt", 19114),
-        pytest.param("puzzle-input-full.txt", -1),
+        pytest.param("puzzle-input-full.txt", 446517),
     ],    
 )
 def test_solve_part1(filename, expected):
@@ -32,9 +32,9 @@ def test_solve_part1(filename, expected):
 @pytest.mark.parametrize(
     "filename,expected",
     [
-        #pytest.param("puzzle-input-example.txt", -1),
+        pytest.param("puzzle-input-example.txt", 167409079868000),
         #pytest.param("puzzle-input-full.txt", -1),
     ],    
 )
 def test_solve_part2(filename, expected):
-    assert solution.solve_part2(filename) == expected    
+    assert solution.solve_part2(filename) == expected
