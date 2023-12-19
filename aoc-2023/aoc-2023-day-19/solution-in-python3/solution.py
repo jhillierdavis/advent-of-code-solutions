@@ -98,17 +98,20 @@ def solve_part2(filename):
     # Determine the valid ranges for part categories (to then determine possible valid combinations)
 
     # Maintain a queue to process of workflow step and valid ranges of each category (for categories 'x','m','a','s')
-    todo_queue = deque([('in',1,9999,1,9999,1,9999,1,9999)])
+    rating_min:int = 1
+    rating_max:int = 4000
+    todo_queue = deque([('in',rating_min,rating_max,rating_min,rating_max,rating_min,rating_max,rating_min,rating_max)])
 
     combos = 0
     while todo_queue:
         step, x_min, x_max, m_min, m_max, a_min, a_max, s_min, s_max = todo_queue.pop() 
-        print(f"DEBUG: Process step={step} x_min={x_min} x_max={x_max} m_min={m_min} m_max={m_max} a_min={a_min} a_max={a_max} s_min={s_min} s_max={s_max}")
+        #print(f"DEBUG: Process step={step} x_min={x_min} x_max={x_max} m_min={m_min} m_max={m_max} a_min={a_min} a_max={a_max} s_min={s_min} s_max={s_max}")
 
-        if step == 'A':
-            possibilities = (x_max - x_min) * (m_max - m_min) * (a_max - m_min) * (s_max - s_min)
-            if possibilities > 0:
-                combos += possibilities
+        if step == 'A':            
+            possibilities = (1 + x_max - x_min) * (1 + m_max - m_min) * (1 + a_max - a_min) * (1 + s_max - s_min)
+            print(f"DEBUG: At step={step} x_min={x_min} x_max={x_max} m_min={m_min} m_max={m_max} a_min={a_min} a_max={a_max} s_min={s_min} s_max={s_max} possibilies={possibilities}")
+            assert possibilities > 0, f"possiblities={possibilities}"
+            combos += possibilities
         elif step == 'R':
             pass
         else:
@@ -119,45 +122,50 @@ def solve_part2(filename):
                     category,value = w.split('>')
                     value = int(value)
 
+                    # e.g. x > 1000 -> True: (1001, 4000) & False: (1,1000)
+
                     if category == 'x':
-                        if x_max > value:
-                            add_state(todo_queue, d, value+1, x_max, m_min, m_max, a_min, a_max, s_min, s_max)
-                        x_max = max(x_min, value)
-                    if category == 'm':
-                        if m_max > value:
-                            add_state(todo_queue, d, x_min, x_max, value+1, m_max, a_min, a_max, s_min, s_max)
-                        m_max = max(m_min, value)
+                        add_state(todo_queue, d, max(value+1, x_min), x_max, m_min, m_max, a_min, a_max, s_min, s_max)
+                        x_max = min(x_max, value)
+                        #x_max = value
+                    if category == 'm':                        
+                        add_state(todo_queue, d, x_min, x_max, max(value+1, m_min), m_max, a_min, a_max, s_min, s_max)
+                        m_max = min(m_max, value)
+                        #m_max = value
                     if category == 'a':
-                        if a_max > value:
-                            add_state(todo_queue, d, x_min, x_max, m_min, m_max, value+1, x_max, s_min, s_max)
-                        a_max = max(a_min, value)
+                        add_state(todo_queue, d, x_min, x_max, m_min, m_max, max(value+1, a_min), a_max, s_min, s_max)
+                        a_max = min(a_max, value)
+                        #a_max = value
                     if category == 's':
-                        if s_max > value:
-                            add_state(todo_queue, d, x_min, x_max, m_min, m_max, a_min, a_max, value+1, s_max)   
-                        s_max = max(s_min, value)                
+                        add_state(todo_queue, d, x_min, x_max, m_min, m_max, a_min, a_max, max(value+1, s_min), s_max)   
+                        s_max = min(s_max, value)                
+                        #s_max = value
                     
                 elif '<' in ins:
                     w,d = ins.split(':')
                     category,value = w.split('<')
                     value = int(value)
 
+                    # e.g. x < 1000 -> True: (1, 9999) & False: (1000,4000)
+
                     if category == 'x':
-                        if x_min < value:
-                            add_state(todo_queue, d, x_min, value-1, m_min, m_max, a_min, a_max, s_min, s_max)
-                        x_min = min(value, x_max)
+                        add_state(todo_queue, d, x_min, min(value-1, x_max), m_min, m_max, a_min, a_max, s_min, s_max)
+                        #x_min = min(value, x_max)
+                        x_min = max(value, x_min)
                     if category == 'm':
-                        if m_min < value-1:
-                            add_state(todo_queue, d, x_min, x_max, m_min, value-1, a_min, a_max, s_min, s_max)
-                        m_min = min(value, m_max)
+                        add_state(todo_queue, d, x_min, x_max, m_min, min(value-1, m_max), a_min, a_max, s_min, s_max)
+                        #m_min = min(value, m_max)
+                        m_min = max(value, m_min)
                     if category == 'a':
-                        if a_min < value-1:
-                            add_state(todo_queue, d, x_min, x_max, m_min, m_max, a_min, value-1, s_min, s_max)
-                        a_min = min(value, a_max)
+                        add_state(todo_queue, d, x_min, x_max, m_min, m_max, a_min, min(value-1, a_max), s_min, s_max)
+                        #a_min = min(value, a_max)
+                        a_min = max(value, a_min)
                     if category == 's':
-                        if s_min < value-1:
-                            add_state(todo_queue, d, x_min, x_max, m_min, m_max, a_min, a_max, s_min, value-1)
-                        s_min = min(value, s_max)  
+                        add_state(todo_queue, d, x_min, x_max, m_min, m_max, a_min, a_max, s_min, min(value-1, s_max))
+                        #s_min = min(value, s_max)  
+                        s_min = max(value, s_min)
                 else:
-                    add_state(todo_queue, ins, x_min, x_max, m_min, m_max, a_min, a_max, s_min, s_max)
+                    d = ins
+                    add_state(todo_queue, d, x_min, x_max, m_min, m_max, a_min, a_max, s_min, s_max)
     return combos
 

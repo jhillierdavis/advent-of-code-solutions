@@ -33,7 +33,7 @@ def test_solve_part1(filename, expected):
     "filename,expected",
     [
         pytest.param("puzzle-input-example.txt", 167409079868000),
-        #pytest.param("puzzle-input-full.txt", -1),
+        pytest.param("puzzle-input-full.txt", 130090458884662),
     ],    
 )
 def test_solve_part2(filename, expected):
