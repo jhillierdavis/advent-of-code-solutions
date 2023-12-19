@@ -1,10 +1,10 @@
-from collections import defaultdict
+from collections import defaultdict, deque
 
 from helpers import fileutils
 
 
 def get_workflow_mappings_from(filename):
-    workflow_mapping = {}
+    workflow_mappings = {}
 
     workflow_lines = fileutils.get_lines_before_empty_from_file(filename)
 
@@ -13,10 +13,10 @@ def get_workflow_mappings_from(filename):
         name, instructions = wl.split('{')
         #print(f"DEBUG: name={name} instructions={instructions}")
         instruction_list = instructions[:-1].split(',')
-        workflow_mapping[name] = instruction_list
+        workflow_mappings[name] = instruction_list
     
-    print(f"DEBUG: workflow_mapping={workflow_mapping}")
-    return workflow_mapping
+    print(f"DEBUG: workflow_mappings={workflow_mappings}")
+    return workflow_mappings
 
 def get_part_mapping_from(part_input):
     part_mapping = defaultdict(int)
@@ -88,7 +88,60 @@ def solve_part1(filename):
 
     return sum
 
+def add_state(queue, step, x_min, x_max, m_min, m_max, a_min, a_max, s_min, s_max):
+    queue.append((step, x_min, x_max, m_min, m_max, a_min, a_max, s_min, s_max))
+
+
 def solve_part2(filename):
-    lines = fileutils.get_file_lines(filename)
-    return 0 # TODO
+    workflow_mappings = get_workflow_mappings_from(filename)
+
+    # Determine the valid ranges for part categories (to then determine possible valid combinations)
+
+    # Maintain a queue to process of workflow step and valid ranges of each category (for categories 'x','m','a','s')
+    todo_queue = deque([('in',1,9999,1,9999,1,9999,1,9999)])
+
+    combos = 0
+    while todo_queue:
+        step, x_min, x_max, m_min, m_max, a_min, a_max, s_min, s_max = todo_queue.pop() 
+        print(f"DEBUG: Process step={step} x_min={x_min} x_max={x_max} m_min={m_min} m_max={m_max} a_min={a_min} a_max={a_max} s_min={s_min} s_max={s_max}")
+
+        if step == 'A':
+            possibilities = (x_max - x_min) * (m_max - m_min) * (a_max - m_min) * (s_max - s_min)
+            assert possibilities >= 0
+            combos += possibilities
+        elif step == 'R':
+            pass
+        else:
+            instructions = workflow_mappings[step]
+            for ins in instructions:
+                if '>' in ins:
+                    w,d = ins.split(':')
+                    category,value = w.split('>')
+                    value = int(value)
+
+                    if category == 'x':
+                        add_state(todo_queue, d, x_min, value, m_min, m_max, a_min, a_max, s_min, s_max)
+                    if category == 'm':
+                        add_state(todo_queue, d, x_min, x_max, m_min, value, a_min, a_max, s_min, s_max)
+                    if category == 'a':
+                        add_state(todo_queue, d, x_min, x_max, m_min, m_max, a_min, value, s_min, s_max)
+                    if category == 's':
+                        add_state(todo_queue, d, x_min, x_max, m_min, m_max, a_min, a_max, s_min, value)                    
+                    
+                elif '<' in ins:
+                    w,d = ins.split(':')
+                    category,value = w.split('<')
+                    value = int(value)
+
+                    if category == 'x':
+                        add_state(todo_queue, d, x_min, value-1, m_min, m_max, a_min, a_max, s_min, s_max)
+                    if category == 'm':
+                        add_state(todo_queue, d, x_min, x_max, m_min, value-1, a_min, a_max, s_min, s_max)
+                    if category == 'a':
+                        add_state(todo_queue, d, x_min, x_max, m_min, m_max, a_min, value-1, s_min, s_max)
+                    if category == 's':
+                        add_state(todo_queue, d, x_min, x_max, m_min, m_max, a_min, a_max, s_min, value-1)
+                else:
+                    add_state(todo_queue, ins, x_min, x_max, m_min, m_max, a_min, a_max, s_min, s_max)
+    return combos
 
