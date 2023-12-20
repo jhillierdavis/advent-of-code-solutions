@@ -108,21 +108,16 @@ def solve_part1(filename, loops=1):
     for _ in range(loops):
         #print()
         queue_to_process = deque()
-        initial_state = ('button', 'broadcaster', 0)
+        initial_state = ('broadcaster', 0)
         low_pulse_count += 1
         queue_to_process.append(initial_state)
 
         while(queue_to_process):
             
-            current, destination, pulse = queue_to_process.popleft()
-
-            #print(f"DEBUG: current={current} destination={destination} pulse={pulse}")
-
-            #print(f"DEBUG: {current} {pulse} -> {destination}")
+            destination, pulse = queue_to_process.popleft()
 
             children = module_config_map[destination]
             for child in children:
-                #print(f"DEBUG: {destination} {pulse} -> {child}")
                 if pulse == 0:
                     low_pulse_count += 1
                 else:
@@ -132,9 +127,9 @@ def solve_part1(filename, loops=1):
                     module = module_map[child]
                     updated_pulse = module.process(destination, pulse)
                     if None != updated_pulse:
-                        queue_to_process.append((destination, child, updated_pulse))
+                        queue_to_process.append((child, updated_pulse))
                 else:
-                    queue_to_process.append((destination, child, pulse))
+                    queue_to_process.append((child, pulse))
     #print()
     #print(f"DEBUG: low_pulse_count={low_pulse_count} high_pulse_count={high_pulse_count} loops={loops}")
     return low_pulse_count * high_pulse_count
@@ -166,15 +161,15 @@ def solve_part2(filename):
         conjuction_to_steps_map[k] == 0
     
     press_count  = 0
-    for _ in range(100000):
+    for _ in range(9999):
         press_count += 1
         queue_to_process = deque()
-        initial_state = ('button', 'broadcaster', 0)
+        initial_state = ('broadcaster', 0)
         queue_to_process.append(initial_state)
 
         while(queue_to_process):
             
-            current, destination, pulse = queue_to_process.popleft()
+            destination, pulse = queue_to_process.popleft()
 
             children = module_config_map[destination]
             for child in children:
@@ -186,8 +181,8 @@ def solve_part2(filename):
                             #print(f"DEBUG: press_count={press_count} child={child} updated_pulse={updated_pulse}")
                             conjuction_to_steps_map[child] = press_count
                     if None != updated_pulse:
-                        queue_to_process.append((destination, child, updated_pulse))
+                        queue_to_process.append((child, updated_pulse))
                 else:
-                    queue_to_process.append((destination, child, pulse))
+                    queue_to_process.append((child, pulse))
     
     return math.lcm(*conjuction_to_steps_map.values())
