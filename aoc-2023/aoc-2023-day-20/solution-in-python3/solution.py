@@ -148,11 +148,17 @@ def solve_part2(filename):
     #print(f"DEBUG: module_map={module_map}")
     #print()
 
+
     for k, v in module_config_map.items():
         if 'rx' in v:
             print(f"DEBUG: k={k}")
 
+
+
     
+
+
+    """
     press_count  = 0
     for _ in range(100000):
         press_count += 1
@@ -179,5 +185,5 @@ def solve_part2(filename):
                         queue_to_process.append((destination, child, updated_pulse))
                 else:
                     queue_to_process.append((destination, child, pulse))
-    
-    return math.lcm(4073, 4091, 4093, 3853)
+    """
+    return -1 #math.lcm(4073, 4091, 4093, 3853)
