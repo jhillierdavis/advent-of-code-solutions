@@ -1,5 +1,6 @@
 from collections import defaultdict, deque
 from abc import ABC, abstractmethod
+import math
 
 from helpers import fileutils
 
@@ -83,11 +84,7 @@ def get_keys_with_values_including(module_config_map, target):
             matches.append(k)
     return matches
 
-def solve_part1(filename, loops=1):
-    lines = fileutils.get_file_lines(filename)
-    module_config_map = get_module_config_map_from(lines)
-    #print(f"DEBUG: module_config_map={module_config_map}")
-
+def get_module_map_from_config(module_config_map):
     module_map = {}
     for k in module_config_map.keys():
         if k.startswith('%'):
@@ -95,6 +92,14 @@ def solve_part1(filename, loops=1):
         if k.startswith('&'):
             matches = get_keys_with_values_including(module_config_map, k)
             module_map[k] = ConjunctionModule(k, matches)
+    return module_map
+
+def solve_part1(filename, loops=1):
+    lines = fileutils.get_file_lines(filename)
+    module_config_map = get_module_config_map_from(lines)
+    #print(f"DEBUG: module_config_map={module_config_map}")
+
+    module_map = get_module_map_from_config(module_config_map)
     #print(f"DEBUG: module_map={module_map}")
     #print()
 
@@ -136,5 +141,43 @@ def solve_part1(filename, loops=1):
 
 def solve_part2(filename):
     lines = fileutils.get_file_lines(filename)
-    return 0 # TODO
+    module_config_map = get_module_config_map_from(lines)
+    print(f"DEBUG: module_config_map={module_config_map}")
 
+    module_map = get_module_map_from_config(module_config_map)
+    #print(f"DEBUG: module_map={module_map}")
+    #print()
+
+    for k, v in module_config_map.items():
+        if 'rx' in v:
+            print(f"DEBUG: k={k}")
+
+    
+    press_count  = 0
+    for _ in range(100000):
+        press_count += 1
+        queue_to_process = deque()
+        initial_state = ('button', 'broadcaster', 0)
+        queue_to_process.append(initial_state)
+
+        while(queue_to_process):
+            
+            current, destination, pulse = queue_to_process.popleft()
+
+            #print(f"DEBUG: current={current} destination={destination} pulse={pulse}")
+
+            #print(f"DEBUG: {current} {pulse} -> {destination}")
+
+            children = module_config_map[destination]
+            for child in children:
+                if child.startswith('%') or child.startswith('&'):
+                    module = module_map[child]
+                    updated_pulse = module.process(destination, pulse)
+                    if (child == '&sz' or child == '&cm' or child == '&xf' or child == '&gc') and updated_pulse == 1:
+                        print(f"DEBUG: press_count={press_count} child={child} updat ed_pulse={updated_pulse}")
+                    if None != updated_pulse:
+                        queue_to_process.append((destination, child, updated_pulse))
+                else:
+                    queue_to_process.append((destination, child, pulse))
+    
+    return math.lcm(4073, 4091, 4093, 3853)
