@@ -139,26 +139,32 @@ def solve_part1(filename, loops=1):
     #print(f"DEBUG: low_pulse_count={low_pulse_count} high_pulse_count={high_pulse_count} loops={loops}")
     return low_pulse_count * high_pulse_count
 
+
+def get_prior_conjuctions(module_config_map, target):
+    values = []
+    for k, v in module_config_map.items():
+        if target in v:
+            values.append(k)
+    if len(values) == 1:
+        return get_prior_conjuctions(module_config_map, values[0])
+    return values
+
 def solve_part2(filename):
     lines = fileutils.get_file_lines(filename)
     module_config_map = get_module_config_map_from(lines)
-    print(f"DEBUG: module_config_map={module_config_map}")
+    #print(f"DEBUG: module_config_map={module_config_map}")
 
     module_map = get_module_map_from_config(module_config_map)
     #print(f"DEBUG: module_map={module_map}")
     #print()
 
+    values = get_prior_conjuctions(module_config_map, 'rx')            
+    #print(f"DEBUG: values={values}")
 
-    for k, v in module_config_map.items():
-        if 'rx' in v:
-            print(f"DEBUG: k={k}")
-
-
-
+    conjuction_to_steps_map = defaultdict(int)
+    for k in values:
+        conjuction_to_steps_map[k] == 0
     
-
-
-    """
     press_count  = 0
     for _ in range(100000):
         press_count += 1
@@ -170,20 +176,18 @@ def solve_part2(filename):
             
             current, destination, pulse = queue_to_process.popleft()
 
-            #print(f"DEBUG: current={current} destination={destination} pulse={pulse}")
-
-            #print(f"DEBUG: {current} {pulse} -> {destination}")
-
             children = module_config_map[destination]
             for child in children:
                 if child.startswith('%') or child.startswith('&'):
                     module = module_map[child]
                     updated_pulse = module.process(destination, pulse)
-                    if (child == '&sz' or child == '&cm' or child == '&xf' or child == '&gc') and updated_pulse == 1:
-                        print(f"DEBUG: press_count={press_count} child={child} updat ed_pulse={updated_pulse}")
+                    if (child in conjuction_to_steps_map.keys()) and updated_pulse == 1:                        
+                        if conjuction_to_steps_map[child] == 0:
+                            #print(f"DEBUG: press_count={press_count} child={child} updated_pulse={updated_pulse}")
+                            conjuction_to_steps_map[child] = press_count
                     if None != updated_pulse:
                         queue_to_process.append((destination, child, updated_pulse))
                 else:
                     queue_to_process.append((destination, child, pulse))
-    """
-    return -1 #math.lcm(4073, 4091, 4093, 3853)
+    
+    return math.lcm(*conjuction_to_steps_map.values())
