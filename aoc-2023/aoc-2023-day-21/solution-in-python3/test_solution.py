@@ -16,11 +16,17 @@ def test_solve_part1(filename, steps, expected):
     assert solution.solve_part1(filename, steps) == expected
 
 @pytest.mark.parametrize(
-    "filename,expected",
+    "filename, steps, expected",
     [
-        #pytest.param("puzzle-input-example.txt", -1),
-        #pytest.param("puzzle-input-full.txt", -1),
+        pytest.param("puzzle-input-example.txt", 6, 16),
+        pytest.param("puzzle-input-example.txt", 10, 50),
+        #pytest.param("puzzle-input-example.txt", 50, 1594),
+        #pytest.param("puzzle-input-example.txt", 100, 6536),
+        #pytest.param("puzzle-input-example.txt", 500, 167004),
+        #pytest.param("puzzle-input-example.txt", 1000, 668697),
+        #pytest.param("puzzle-input-example.txt", 1000, 16733044),
+        #pytest.param("puzzle-input-full.txt", 26501365, -1),
     ],    
 )
-def test_solve_part2(filename, expected):
-    assert solution.solve_part2(filename) == expected    
+def test_solve_part2(filename, steps, expected):
+    assert solution.solve_part2(filename, steps) == expected    
