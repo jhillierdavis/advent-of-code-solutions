@@ -20,8 +20,8 @@ def test_solve_part1(filename, steps, expected):
     [
         pytest.param("puzzle-input-example.txt", 6, 16),
         pytest.param("puzzle-input-example.txt", 10, 50),
-        #pytest.param("puzzle-input-example.txt", 50, 1594),
-        #pytest.param("puzzle-input-example.txt", 100, 6536),
+        pytest.param("puzzle-input-example.txt", 50, 1594),
+        pytest.param("puzzle-input-example.txt", 100, 6536),
         #pytest.param("puzzle-input-example.txt", 500, 167004),
         #pytest.param("puzzle-input-example.txt", 1000, 668697),
         #pytest.param("puzzle-input-example.txt", 1000, 16733044),
