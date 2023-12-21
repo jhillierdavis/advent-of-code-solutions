@@ -9,7 +9,7 @@ import solution
         pytest.param("puzzle-input-example.txt", 2, 4),
         #pytest.param("puzzle-input-example.txt", 3, 6),
         pytest.param("puzzle-input-example.txt", 6, 16),
-        pytest.param("puzzle-input-full.txt", 64, -1), # 241 too low
+        pytest.param("puzzle-input-full.txt", 64, 3814), # 241 too low
     ],    
 )
 def test_solve_part1(filename, steps, expected):
