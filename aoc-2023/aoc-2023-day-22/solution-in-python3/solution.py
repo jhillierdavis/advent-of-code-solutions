@@ -8,25 +8,19 @@ class Block():
         self.end=end
 
     def is_grounded(self) -> bool:
-        return True if self.begin[2] <= 1 or self.end[2] <= 1 else False
-    
-    """
+        #return True if self.begin[2] <= 1 or self.end[2] <= 1 else False
+        return True if self.begin[2] <= 1 else False
+        
     def is_supporting(self, other) -> bool:
-        if 1 != other.begin[2] - self.end[2]:
-            print(f"DEBUG: Not directly above: {self} {other}")
+        if self.end[2] != other.begin[2] - 1:
             return False
 
-        is_x_overlap = (other.begin[0] <= self.begin[0] and other.begin[0] <= self.end[0]) or (other.end[0] >= self.begin[0] and other.end[0] >= self.end[0])
-        is_y_overlap = (other.begin[1] >= self.begin[1] and other.begin[1] <= self.end[1]) or (other.end[1] >= self.begin[1] and other.end[1] <= self.end[1])
-        print(f"DEBUG: Overlap x {is_x_overlap}: y {is_y_overlap} for {self} {other}")
-
-        return True if is_x_overlap and is_y_overlap else False
-    """
-
-    def is_supporting(self, other) -> bool:
-
         cloned_other = other.clone()
+        other = None
         cloned_other.decrement_z()
+
+        if self.end[2] != cloned_other.begin[2]:
+            return False        
 
         cubes_self = self.get_set_of_cubes()
         cubes_cloned_other = cloned_other.get_set_of_cubes()
@@ -37,7 +31,7 @@ class Block():
     
     def is_neighbour(self, other) -> bool:
         # Coords at same height (z axis values) ?
-        if self.begin[2] == other.begin[2] and self.end[2] == other.end[2]:
+        if self.end[2] == other.end[2]:
             return True
         return False
 
@@ -108,7 +102,7 @@ def get_supporting(blocks, cb):
 
     return supporting
 
-
+"""
 def count_supporting(blocks, cb):
     count = 0
     for ob in blocks:
@@ -119,7 +113,7 @@ def count_supporting(blocks, cb):
             count += 1
 
     return count
-
+"""
 def get_neighbours(blocks, cb):
     neighbours = set()
     for ob in blocks:
@@ -130,8 +124,9 @@ def get_neighbours(blocks, cb):
             neighbours.add(ob)
     return neighbours
 
-
+"""
 def count_neighbours(blocks, cb):
+    
     count = 0
     for ob in blocks:
         if ob == cb:
@@ -141,6 +136,7 @@ def count_neighbours(blocks, cb):
             count += 1
 
     return count
+ """
 
 
 def can_fall(blocks:[Block], cb:Block):
@@ -148,8 +144,8 @@ def can_fall(blocks:[Block], cb:Block):
         return False
     
     count = count_supporting(blocks, cb)
-    print(f"DEBUG: Supporting count={count} for {cb}")
-    return False if count == 1 else True
+    #print(f"DEBUG: Supporting count={count} for {cb}")
+    return True if count == 0 else False
 
 def get_blocks_from(filename):
     lines = fileutils.get_file_lines(filename)
@@ -173,9 +169,11 @@ def solve_part1(filename):
         if b.is_grounded():
             continue
 
-        while not (b.is_grounded() or b.is_supported_by_any_of(blocks)):
+        while not b.is_supported_by_any_of(blocks):
             #print(f"DEBUG: Moving down: {b}")
             b.decrement_z()
+            if b.is_grounded():
+                break
 
     #print(f"DEBUG: Final blocks={blocks} ")
 
@@ -197,14 +195,27 @@ def solve_part1(filename):
             count += 1
         elif neighbours_count == 0:
             continue
-        else:
+        elif is_sole_supporter(blocks, supporting, neighbours):
+            """
             for n in neighbours:
                 ns = get_supporting(blocks, n)
                 intersect = supporting.intersection(ns)
                 if len(intersect) > 0:
                     count += 1
                     break
+            """
+            count += 1
+
+
     return count
+
+def is_sole_supporter(blocks, supporting, neighbours):
+    for s in supporting:
+        for n in neighbours:
+            ns = get_supporting(blocks, n)
+            if s not in ns:    
+                return False
+    return True
 
 def solve_part2(filename):
     lines = fileutils.get_file_lines(filename)
