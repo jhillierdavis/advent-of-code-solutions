@@ -44,7 +44,7 @@ def test_block_is_supporting(input1, input2, expected):
     "filename,expected",
     [
         pytest.param("puzzle-input-example.txt", 5),
-        pytest.param("puzzle-input-full.txt", -1), # 1235 too high!
+        pytest.param("puzzle-input-full.txt", -1), # 754 too high! # 1235 too high!
     ],    
 )
 def test_solve_part1(filename, expected):

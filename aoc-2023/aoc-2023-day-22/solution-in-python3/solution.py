@@ -8,7 +8,7 @@ class Block():
         self.end=end
 
     def is_grounded(self) -> bool:
-        return True if self.begin[2] == 1 or self.end[2] == 1 else False
+        return True if self.begin[2] <= 1 or self.end[2] <= 1 else False
     
     """
     def is_supporting(self, other) -> bool:
@@ -24,6 +24,7 @@ class Block():
     """
 
     def is_supporting(self, other) -> bool:
+
         cloned_other = other.clone()
         cloned_other.decrement_z()
 
@@ -35,6 +36,7 @@ class Block():
         return len(intersection) > 0
     
     def is_neighbour(self, other) -> bool:
+        # Coords at same height (z axis values) ?
         if self.begin[2] == other.begin[2] and self.end[2] == other.end[2]:
             return True
         return False
@@ -85,7 +87,7 @@ class Block():
         return self.begin == other.begin and self.end == other.end
     
     def __hash__(self):
-        return hash(self.begin * 17) + hash(self.end * 19)
+        return hash(self.begin[0] * 17) + hash(self.begin[1] * 19) + hash(self.begin[2] * 23) + hash(self.end[0] * 17) + hash(self.end[1] * 19) + hash(self.end[2] * 23)
     
     def __lt__(self, other) -> bool:
         # E.g. for Heapq: to handle "Handle duplicate point values -> TypeError: '<' not supported between instances of 'Point2D' and 'Point2D'"
@@ -94,6 +96,17 @@ class Block():
     def clone(self):
         cloned_block = Block((self.begin[0], self.begin[1], self.begin[2]), (self.end[0], self.end[1], self.end[2]))
         return cloned_block
+
+def get_supporting(blocks, cb):
+    supporting = set()
+    for ob in blocks:
+        if ob == cb:
+            continue
+
+        if cb.is_supporting(ob):
+            supporting.add(ob)
+
+    return supporting
 
 
 def count_supporting(blocks, cb):
@@ -106,6 +119,17 @@ def count_supporting(blocks, cb):
             count += 1
 
     return count
+
+def get_neighbours(blocks, cb):
+    neighbours = set()
+    for ob in blocks:
+        if ob == cb:
+            continue
+
+        if cb.is_neighbour(ob):
+            neighbours.add(ob)
+    return neighbours
+
 
 def count_neighbours(blocks, cb):
     count = 0
@@ -143,17 +167,17 @@ def get_blocks_from(filename):
 
 def solve_part1(filename):
     blocks = get_blocks_from(filename)
-    print(f"DEBUG: Initial blocks={blocks} ")
+    #print(f"DEBUG: Initial blocks={blocks} ")
 
     for b in blocks:
         if b.is_grounded():
             continue
 
         while not (b.is_grounded() or b.is_supported_by_any_of(blocks)):
-            print(f"DEBUG: Moving down: {b}")
+            #print(f"DEBUG: Moving down: {b}")
             b.decrement_z()
 
-    print(f"DEBUG: Final blocks={blocks} ")
+    #print(f"DEBUG: Final blocks={blocks} ")
 
     count = 0
     
@@ -161,13 +185,25 @@ def solve_part1(filename):
         if b.is_grounded():
             continue
 
-        supporting_count = count_supporting(blocks, b)
-        neighbour_count = count_neighbours(blocks, b)
-        print(f"DEBUG: {supporting_count} {neighbour_count} {b}")
+        supporting = get_supporting(blocks, b)
+        supporting_count = len(supporting)
+        neighbours = get_neighbours(blocks, b)
+        neighbours_count = len(neighbours)
+        #print(f"DEBUG: {supporting_count} {neighbour_count} {b}")
 
-        if supporting_count == 0 or (supporting_count > 0 and neighbour_count > 0):
+
+        if supporting_count == 0:
             #print(f"DEBUG: Block can be disintegrated: {b}")
             count += 1
+        elif neighbours_count == 0:
+            continue
+        else:
+            for n in neighbours:
+                ns = get_supporting(blocks, n)
+                intersect = supporting.intersection(ns)
+                if len(intersect) > 0:
+                    count += 1
+                    break
     return count
 
 def solve_part2(filename):
