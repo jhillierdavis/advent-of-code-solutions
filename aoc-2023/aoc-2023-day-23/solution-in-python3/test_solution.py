@@ -16,7 +16,7 @@ def test_solve_part1(filename, expected):
     "filename,expected",
     [
         pytest.param("puzzle-input-example.txt", 154),
-        #pytest.param("puzzle-input-full.txt", -1),
+        #pythopytest.param("puzzle-input-full.txt", 6470), # Too slow! # TODO: Improve performance!
     ],    
 )
 def test_solve_part2(filename, expected):
