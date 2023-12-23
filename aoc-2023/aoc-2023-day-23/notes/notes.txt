@@ -1,5 +1,10 @@
 https://adventofcode.com/2023/day/23
 
+Directed Acyclic Graph (DAG): https://en.wikipedia.org/wiki/Directed_acyclic_graph
+
+Python nonlocal keyword: https://www.w3schools.com/python/ref_keyword_nonlocal.asp
+
+
 Other's solutions
 =================
 
@@ -8,7 +13,8 @@ Jonathan Paulson
 
 ( https://www.youtube.com/@jonathanpaulson5053/videos , https://github.com/jonathanpaulson/AdventOfCode/tree/master/2023 )
 
-TODO
+https://www.youtube.com/watch?v=T-mLlWdw_io
+https://github.com/jonathanpaulson/AdventOfCode/blob/master/2023/23.py
 
 
 William Y. Feng
@@ -17,5 +23,3 @@ William Y. Feng
 ( https://www.youtube.com/@WilliamYFeng/videos , https://github.com/womogenes/AoC-2023-Solutions )
 
 TODO
-
-
