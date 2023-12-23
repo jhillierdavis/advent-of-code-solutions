@@ -5,21 +5,21 @@ import solution
 @pytest.mark.parametrize(
     "input,expected",
     [
-        pytest.param([(1,0,1),(1,2,1)], True),
-        pytest.param([(0,0,2),(2,0,2)], False),
+        pytest.param([solution.Point3D(1,0,1), solution.Point3D(1,2,1)], True),
+        pytest.param([solution.Point3D(0,0,2), solution.Point3D(2,0,2)], False),
     ],    
 )
 def test_block_is_grounded(input, expected):
     b = solution.Block(input[0], input[1])
     assert b.is_grounded() == expected
 
-BLOCK_A = [(1,0,1),(1,2,1)]
-BLOCK_B = [(0,0,2),(2,0,2)]
-BLOCK_C = [(0,2,3),(2,2,3)]
-BLOCK_D = [(0,0,4),(0,2,4)]
-BLOCK_E = [(2,0,5),(2,2,5)]
-BLOCK_F = [(0,1,6),(2,1,6)]
-BLOCK_G = [(1,1,8),(1,1,9)]
+BLOCK_A = [solution.Point3D(1,0,1), solution.Point3D(1,2,1)]
+BLOCK_B = [solution.Point3D(0,0,2), solution.Point3D(2,0,2)]
+BLOCK_C = [solution.Point3D(0,2,3), solution.Point3D(2,2,3)]
+BLOCK_D = [solution.Point3D(0,0,4), solution.Point3D(0,2,4)]
+BLOCK_E = [solution.Point3D(2,0,5), solution.Point3D(2,2,5)]
+BLOCK_F = [solution.Point3D(0,1,6), solution.Point3D(2,1,6)]
+BLOCK_G = [solution.Point3D(1,1,8), solution.Point3D(1,1,9)]
 
 @pytest.mark.parametrize(
     "input1,input2,expected",
