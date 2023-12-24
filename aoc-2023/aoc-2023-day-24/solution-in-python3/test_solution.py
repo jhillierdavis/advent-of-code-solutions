@@ -24,27 +24,33 @@ def test_get_hailstone_from(input, expected):
 
 
 @pytest.mark.parametrize(
-    "input_a, input_b, expected",
+    "input_a, input_b, expected_intersection_point, expected_future_intersection_with_a, , expected_future_intersection_with_b",
     [
-        pytest.param("19, 13, 30 @ -2, 1, -2", "18, 19, 22 @ -1, -1, -2", (14.333, 15.333)),
-        pytest.param("19, 13, 30 @ -2, 1, -2", "20, 25, 34 @ -2, -2, -4", (11.667, 16.667)),
-        pytest.param("19, 13, 30 @ -2, 1, -2", "12, 31, 28 @ -1, -2, -1", (6.2, 19.4)),
-        pytest.param("19, 13, 30 @ -2, 1, -2", "20, 19, 15 @ 1, -5, -3", (21.444, 11.778)),
-        pytest.param("18, 19, 22 @ -1, -1, -2", "20, 25, 34 @ -2, -2, -4", None), # Parallel lines!
-        pytest.param("18, 19, 22 @ -1, -1, -2", "12, 31, 28 @ -1, -2, -1", (-6, -5)),
-        pytest.param("18, 19, 22 @ -1, -1, -2", "20, 19, 15 @ 1, -5, -3", (19.667, 20.667)),
-        pytest.param("20, 25, 34 @ -2, -2, -4", "12, 31, 28 @ -1, -2, -1", (-2.0, 3.0)),
-        pytest.param("20, 25, 34 @ -2, -2, -4", "20, 19, 15 @ 1, -5, -3", (19.0, 24.0)),
-        pytest.param("12, 31, 28 @ -1, -2, -1", "20, 19, 15 @ 1, -5, -3", (16.0, 39.0)),
+        pytest.param("19, 13, 30 @ -2, 1, -2", "18, 19, 22 @ -1, -1, -2", (14.333, 15.333), True, True),
+        pytest.param("19, 13, 30 @ -2, 1, -2", "20, 25, 34 @ -2, -2, -4", (11.667, 16.667), True, True),
+        pytest.param("19, 13, 30 @ -2, 1, -2", "12, 31, 28 @ -1, -2, -1", (6.2, 19.4), True, True),
+        pytest.param("19, 13, 30 @ -2, 1, -2", "20, 19, 15 @ 1, -5, -3", (21.444, 11.778), False, True),
+        pytest.param("18, 19, 22 @ -1, -1, -2", "20, 25, 34 @ -2, -2, -4", None, False, False), # Parallel lines!
+        pytest.param("18, 19, 22 @ -1, -1, -2", "12, 31, 28 @ -1, -2, -1", (-6, -5), True, True),
+        pytest.param("18, 19, 22 @ -1, -1, -2", "20, 19, 15 @ 1, -5, -3", (19.667, 20.667), False, False),
+        pytest.param("20, 25, 34 @ -2, -2, -4", "12, 31, 28 @ -1, -2, -1", (-2.0, 3.0), True, True),
+        pytest.param("20, 25, 34 @ -2, -2, -4", "20, 19, 15 @ 1, -5, -3", (19.0, 24.0), True, False),
+        pytest.param("12, 31, 28 @ -1, -2, -1", "20, 19, 15 @ 1, -5, -3", (16.0, 39.0), False, False),
     ],    
 )
-def test_get_hailstone_from(input_a, input_b, expected):
+def test_get_hailstone_from(input_a, input_b, expected_intersection_point, expected_future_intersection_with_a, expected_future_intersection_with_b):
     ha = solution.get_hailstone_from(input_a)
     hb = solution.get_hailstone_from(input_b)
 
-    assert solution.get_hailstone_intersection_point(ha, hb) == expected
+    # Check intersection point as expected
+    ip = solution.get_hailstone_intersection_point(ha, hb)
+    assert ip == expected_intersection_point
 
+    # Check intersection point is in future (or not), as expected
+    assert ha.is_future_xy_position(ip) == expected_future_intersection_with_a
+    assert hb.is_future_xy_position(ip) == expected_future_intersection_with_b
 
+"""
 @pytest.mark.parametrize(
     "input_a, input_b, expected",
     [
@@ -65,7 +71,7 @@ def test_have_future_intersection(input_a, input_b, expected):
     hb = solution.get_hailstone_from(input_b)
 
     assert solution.have_future_intersection(ha, hb) == expected
-
+"""
 
 @pytest.mark.parametrize(
     "filename, target_min, target_max, expected",

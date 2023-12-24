@@ -18,6 +18,30 @@ class Hailstone():
 
     def get_next_position(self):
         return point.Point2D(self.position.get_x() + self.velocity.get_x(), self.position.get_y() + self.velocity.get_y())
+    
+
+    def is_future_xy_position(self, p):
+        if not p:
+            return False
+        
+        x = p[0]
+        y = p[1]
+
+        if self.velocity.get_x() > 0:
+            if x <= self.position.get_x():
+                return False
+        else:
+            if x >= self.position.get_x():
+                return False
+
+        if self.velocity.get_y() > 0:
+            if y <= self.position.get_y():
+                return False
+        else:
+            if y >= self.position.get_y():
+                return False
+            
+        return True
 
 
     def get_xy_intersection_point_with(self, other):
