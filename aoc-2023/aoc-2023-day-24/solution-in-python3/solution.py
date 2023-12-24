@@ -1,7 +1,4 @@
-#from collections import defaultdict
-
 from helpers import fileutils, point, strutils
-
 
 class Hailstone():
 
@@ -51,12 +48,12 @@ class Hailstone():
         o1 = point.Point2D(other.position.get_x(), other.position.get_y())
         o2 = other.get_next_position()
 
-        # Line AB represented as a1x + b1y = c1
+        # Line 'self' (with xy positions s1 & s2) represented as a1x + b1y = c1
         a1 = s2.get_y() - s1.get_y()
         b1 = s1.get_x() - s2.get_x()
         c1 = a1*(s1.get_x()) + b1*(s1.get_y())
     
-        # Line CD represented as a2x + b2y = c2
+        # Line 'other' (with xy positions o1 & o2) represented as a2x + b2y = c2
         a2 = o2.get_y() - o1.get_y()
         b2 = o1.get_x() - o2.get_x()
         c2 = a2*(o1.get_x()) + b2*(o1.get_y())
@@ -69,7 +66,7 @@ class Hailstone():
         
         x = (b2*c1 - b1*c2) / determinant
         y = (a1*c2 - a2*c1) / determinant
-        return round(x,3), round(y,3)
+        return (round(x,3), round(y,3)) # Use a tuple rather than Point2D as can be float values
 
     def __str__(self) -> str:
         return f"Hailstone(id={id(self)} , position: {self.position}, end: {self.velocity})"
@@ -92,48 +89,9 @@ class Hailstone():
         return cloned_instance
     
 
-def get_hailstone_intersection_point(ha, hb):
+def get_hailstone_intersection_point(ha, hb) -> point.Point2D:
     return ha.get_xy_intersection_point_with(hb)
     
-
-def have_future_intersection(ha, hb):
-    ip = ha.get_xy_intersection_point_with(hb)
-    if not ip:
-        return False
-    
-    ix = ip[0]
-    iy = ip[1]
-
-    if ha.velocity.get_x() > 0:
-        if ix <= ha.position.get_x():
-            return False
-    else:
-        if ix >= ha.position.get_x():
-            return False
-
-    if ha.velocity.get_y() > 0:
-        if iy <= ha.position.get_y():
-            return False
-    else:
-        if iy >= ha.position.get_y():
-            return False
-
-    if hb.velocity.get_x() > 0:
-        if ix <= hb.position.get_x():
-            return False
-    else:
-        if ix >= hb.position.get_x():
-            return False
-
-    if hb.velocity.get_y() > 0:
-        if iy <= hb.position.get_y():
-            return False
-    else:
-        if iy >= hb.position.get_y():
-            return False
-
-    return True
-
 
 def get_hailstone_from(input):
     p, v = input.split(' @ ')
@@ -158,8 +116,9 @@ def solve_part1(filename, target_min, target_max):
             if h1 == h2:
                 continue
 
-            if have_future_intersection(h1,h2):
-                intersection = get_hailstone_intersection_point(h1,h2)
+            intersection = get_hailstone_intersection_point(h1, h2)
+            if h1.is_future_xy_position(intersection) and h2.is_future_xy_position(intersection):
+                
                 ix = intersection[0]
                 iy = intersection[1]
                 #print(f"DEBUG: {intersection}")
@@ -168,7 +127,7 @@ def solve_part1(filename, target_min, target_max):
 
     return count // 2
 
+
 def solve_part2(filename):
     lines = fileutils.get_file_lines(filename)
     return 0 # TODO
-

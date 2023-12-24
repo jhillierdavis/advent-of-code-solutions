@@ -50,28 +50,6 @@ def test_get_hailstone_from(input_a, input_b, expected_intersection_point, expec
     assert ha.is_future_xy_position(ip) == expected_future_intersection_with_a
     assert hb.is_future_xy_position(ip) == expected_future_intersection_with_b
 
-"""
-@pytest.mark.parametrize(
-    "input_a, input_b, expected",
-    [
-        pytest.param("19, 13, 30 @ -2, 1, -2", "18, 19, 22 @ -1, -1, -2", True),
-        pytest.param("19, 13, 30 @ -2, 1, -2", "20, 25, 34 @ -2, -2, -4", True),
-        pytest.param("19, 13, 30 @ -2, 1, -2", "12, 31, 28 @ -1, -2, -1", True),
-        pytest.param("19, 13, 30 @ -2, 1, -2", "20, 19, 15 @ 1, -5, -3", False),
-        pytest.param("18, 19, 22 @ -1, -1, -2", "20, 25, 34 @ -2, -2, -4", False), # Parallel lines!
-        pytest.param("18, 19, 22 @ -1, -1, -2", "12, 31, 28 @ -1, -2, -1", True),
-        pytest.param("18, 19, 22 @ -1, -1, -2", "20, 19, 15 @ 1, -5, -3", False),
-        pytest.param("20, 25, 34 @ -2, -2, -4", "12, 31, 28 @ -1, -2, -1", True),
-        pytest.param("20, 25, 34 @ -2, -2, -4", "20, 19, 15 @ 1, -5, -3", False),
-        pytest.param("12, 31, 28 @ -1, -2, -1", "20, 19, 15 @ 1, -5, -3", False),
-    ],    
-)
-def test_have_future_intersection(input_a, input_b, expected):
-    ha = solution.get_hailstone_from(input_a)
-    hb = solution.get_hailstone_from(input_b)
-
-    assert solution.have_future_intersection(ha, hb) == expected
-"""
 
 @pytest.mark.parametrize(
     "filename, target_min, target_max, expected",
