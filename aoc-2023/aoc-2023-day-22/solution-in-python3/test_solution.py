@@ -3,57 +3,93 @@ import pytest
 import solution
 
 @pytest.mark.parametrize(
-    "input,expected",
+    "cube_a, cube_b, expected",
     [
-        pytest.param([solution.Point3D(1,0,1), solution.Point3D(1,2,1)], True),
-        pytest.param([solution.Point3D(0,0,2), solution.Point3D(2,0,2)], False),
+        pytest.param((0,0,0), (0,0,0), True),
+        pytest.param((1,2,3), (1,2,3), True),
+        pytest.param((1,0,0), (0,0,0), False),
+        pytest.param((1,1,1), (0,0,0), False),
+        pytest.param((1,2,3), (3,2,1), False),
     ],    
 )
-def test_block_is_grounded(input, expected):
-    b = solution.Block(input[0], input[1])
-    assert b.is_grounded() == expected
+def test_is_same_cube(cube_a, cube_b, expected):
+    assert solution.is_same_cube(cube_a, cube_b) == expected
 
-BLOCK_A = [solution.Point3D(1,0,1), solution.Point3D(1,2,1)]
-BLOCK_B = [solution.Point3D(0,0,2), solution.Point3D(2,0,2)]
-BLOCK_C = [solution.Point3D(0,2,3), solution.Point3D(2,2,3)]
-BLOCK_D = [solution.Point3D(0,0,4), solution.Point3D(0,2,4)]
-BLOCK_E = [solution.Point3D(2,0,5), solution.Point3D(2,2,5)]
-BLOCK_F = [solution.Point3D(0,1,6), solution.Point3D(2,1,6)]
-BLOCK_G = [solution.Point3D(1,1,8), solution.Point3D(1,1,9)]
 
 @pytest.mark.parametrize(
-    "input1,input2,expected",
+    "block, expected",
     [
-        pytest.param(BLOCK_A, BLOCK_B, True), # Block A supports B        
-        pytest.param(BLOCK_E, BLOCK_F, True), 
-        pytest.param(BLOCK_F, BLOCK_G, False),
-        pytest.param(BLOCK_B, BLOCK_A, False), 
-        pytest.param(BLOCK_C, BLOCK_A, False), 
-        pytest.param(BLOCK_C, BLOCK_B, False), 
-        pytest.param(BLOCK_D, BLOCK_E, False), 
+        pytest.param([(0,0,0), (1,0,0), (2,0,0)], True),
+        pytest.param([(0,0,1), (1,0,1), (2,0,1)], True),
+        pytest.param([(0,0,4), (1,0,3), (2,0,2)], False),
+        pytest.param([(1,1,9), (2,1,9), (3,1,9)], False),
     ],    
 )
-def test_block_is_supporting(input1, input2, expected):
-    b1 = solution.Block(input1[0], input1[1])
-    b2 = solution.Block(input2[0], input2[1])
+def test_is_block_grounded(block, expected):
+    assert solution.is_block_grounded(block) == expected
 
-    assert b1.is_supporting(b2) == expected
+
+@pytest.mark.parametrize(
+    "block_a, block_b, expected",
+    [
+        pytest.param([(0,0,0), (1,0,0), (2,0,0)], [(0,0,0), (0,1,0), (0,2,0)], True),
+        pytest.param([(1, 0, 1), (1, 1, 1), (1, 2, 1)], [(0, 0, 1), (1, 0, 1), (2, 0, 1)], True),
+        pytest.param([(0,0,0), (1,0,0), (2,0,0)], [(0,1,0), (1,1,0), (2,1,0)], False),
+        pytest.param([(1, 0, 1), (1, 1, 1), (1, 2, 1)], [(0, 0, 2), (1, 0, 2), (2, 0, 2)], False),
+    ],    
+)
+def test_has_block_intersection(block_a, block_b, expected):
+    assert solution.has_block_intersection(block_a, block_b) == expected
+
+
+@pytest.mark.parametrize(
+    "block, expected",
+    [
+        pytest.param([(0,0,2), (1,0,2), (2,0,2)], [(0,0,1), (1,0,1), (2,0,1)]),
+        pytest.param([(1,1,4), (1,1,3), (1,1,2)], [(1,1,3), (1,1,2), (1,1,1)]),        
+    ],    
+)
+def test_get_block_shifted_down(block, expected):
+    assert solution.get_block_shifted_down(block) == expected
+
+
+@pytest.mark.parametrize(
+    "filename,expected",
+    [
+        pytest.param("puzzle-input-example.txt", 9),
+    ],    
+)
+def test_get_max_height_from(filename, expected):
+    blocks = solution.get_blocks_from(filename)
+
+    assert solution.get_max_block_height_from(blocks) == expected
+
+
+@pytest.mark.parametrize(
+    "filename,expected",
+    [
+        pytest.param("puzzle-input-example.txt", [[(1, 0, 1), (1, 1, 1), (1, 2, 1)],[(0, 0, 2), (1, 0, 2), (2, 0, 2)],[(0, 2, 2), (1, 2, 2), (2, 2, 2)],[(0, 0, 3), (0, 1, 3), (0, 2, 3)],[(2, 0, 3), (2, 1, 3), (2, 2, 3)],[(0, 1, 4), (1, 1, 4), (2, 1, 4)],[(1, 1, 5), (1, 1, 6)]]),
+    ],    
+)
+def test_move_until_stable_from(filename, expected):
+    assert solution.move_until_stable_from(filename) == expected
 
 
 @pytest.mark.parametrize(
     "filename,expected",
     [
         pytest.param("puzzle-input-example.txt", 5),
-        pytest.param("puzzle-input-full.txt", -1), # 754 too high! # 1235 too high!
+        pytest.param("puzzle-input-full.txt", 434), # not 730! # 754 too high! # 1235 too high!
     ],    
 )
 def test_solve_part1(filename, expected):
     assert solution.solve_part1(filename) == expected
 
+
 @pytest.mark.parametrize(
     "filename,expected",
     [
-        #pytest.param("puzzle-input-example.txt", -1),
+        #pytest.param("puzzle-input-example.txt", 7),
         #pytest.param("puzzle-input-full.txt", -1),
     ],    
 )

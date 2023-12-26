@@ -1,237 +1,285 @@
-#from collections import defaultdict
+#from copy import deepcopy
+from collections import defaultdict
 
-from helpers import fileutils, strutils
-
-class Point3D():
-    def __init__(self, x:int, y:int, z:int):
-        if not isinstance(x, int):
-            raise TypeError("Non integer value provided for x")
-
-        if not isinstance(y, int):
-            raise TypeError("Non integer value provided for y")
-
-        if not isinstance(z, int):
-            raise TypeError("Non integer value provided for z")
-
-        self.x = x
-        self.y = y
-        self.z = z
-
-    def get_x(self) -> int:
-        return self.x
-    
-    def get_y(self) -> int:
-        return self.y
-    
-    def get_z(self) -> int:
-        return self.z
-    
-    def __str__(self) -> str:
-        return f"Point3D(id={id(self)} , x: {self.get_x()}, y: {self.get_y()}, z: {self.get_z()})"
-    
-    def __repr__(self) -> str:
-        return str(self)
-    
-    def __eq__(self,other) -> bool:
-        return self.get_x() == other.get_x() and self.get_y() == other.get_y() and self.get_z() == other.get_z()
-    
-    def __hash__(self):
-        return hash(self.get_x() * 17) + hash(self.get_y() * 19) + hash(self.get_z() * 23)
-    
-    def __lt__(self, other) -> bool:
-        # E.g. for Heapq: to handle "Handle duplicate point values -> TypeError: '<' not supported between instances of 'Point2D' and 'Point2D'"
-        return self.get_x() < other.get_x() or self.get_y() < other.get_y() or self.get_z() < other.get_z()
+from helpers.fileutils import get_file_lines_from
+from helpers.strutils import string_to_int_list
 
 
-
-class Block():
-    def __init__(self, begin:Point3D, end:Point3D):
-        if not isinstance(begin, Point3D):
-            raise TypeError("Non Point3D value provided for 'begin'")
-
-        if not isinstance(end, Point3D):
-            raise TypeError("Non Point3D value provided for 'end'")
-
-        self.begin = begin
-        self.end = end
-
-    def is_grounded(self) -> bool:
-        #return True if self.begin[2] <= 1 or self.end[2] <= 1 else False
-        return True if self.begin.get_z() <= 1 else False
-        
-    def is_supporting(self, other) -> bool:
-        if self.end.get_z() != other.begin.get_z() - 1:
-            return False
-
-        cloned_other = other.clone()
-        other = None
-        cloned_other.decrement_z()
-
-        if self.end.get_z() != cloned_other.begin.get_z():
-            return False        
-
-        cubes_self = self.get_set_of_cubes()
-        cubes_cloned_other = cloned_other.get_set_of_cubes()
-
-        intersection = cubes_self.intersection(cubes_cloned_other)
-        #print(f"DEBUG: {intersection} {self} {cloned_other} {other}")
-        return len(intersection) > 0
-    
-    def is_neighbour(self, other:Point3D) -> bool:
-        # Coords at same height (z axis values) ?
-        if self.end.get_z() == other.end.get_z():
-            return True
-        return False
+def is_same_cube(cube_a:(int,int,int), cube_b:(int,int,int)) -> bool:
+	for i in range(3):
+		if cube_a[i] != cube_b[i]:
+			return False
+	return True
 
 
-    def get_set_of_cubes(self):
-        cubes = set()
-
-        if self.begin.get_x() == self.end.get_x() and self.begin.get_y() == self.end.get_y():
-            for z in range(self.begin.get_z(), 1 + self.end.get_z()):
-                cubes.add(Point3D(self.begin.get_x(), self.begin.get_y(), z))
-        elif self.begin.get_x() == self.end.get_x() and self.begin.get_z() == self.end.get_z():
-            for y in range(self.begin.get_y(), 1 + self.end.get_y()):
-                cubes.add(Point3D(self.begin.get_x(), y, self.begin.get_z()))
-        elif self.begin.get_y() == self.end.get_y() and self.begin.get_z() == self.end.get_z():
-            for x in range(self.begin.get_x(), 1 + self.end.get_x()):
-                cubes.add(Point3D(x, self.begin.get_y(), self.begin.get_z()))
-        else:
-            assert False
-
-        return cubes
-        
-    
-    def is_supported_by(self, other) -> bool:
-        return other.is_supporting(self)
+def has_block_intersection(block_a:[(int,int,int)], block_b:[(int,int,int)]) -> bool:
+	for c_a in block_a:
+		for c_b in block_b:
+			if is_same_cube(c_a, c_b):
+				return True
+	return False
 
 
-    def is_supported_by_any_of(self, other_blocks) -> bool:
-        for other in other_blocks:
-            if self == other:
-                continue
-            if self.is_supported_by(other):
-                return True
-        return False
+def get_block_shifted_down(block:[(int,int,int)]) -> [(int,int,int)]:
+	return [(x,y,z-1) for (x,y,z) in block]
 
 
-    def decrement_z(self):
-        self.begin = Point3D(self.begin.get_x(), self.begin.get_y(), self.begin.get_z() -1)
-        self.end = Point3D(self.end.get_x(), self.end.get_y(), self.end.get_z() -1)
-    
-    def __str__(self) -> str:
-        return f"Block(id={id(self)} , begin: {self.begin}, end: {self.end})"
-    
-    def __repr__(self) -> str:
-        return str(self)
-    
-    def __eq__(self,other) -> bool:
-        return self.begin == other.begin and self.end == other.end
-    
-    def __hash__(self):
-        return hash(self.begin) + hash(self.end) 
-    
-    def __lt__(self, other) -> bool:
-        # E.g. for Heapq: to handle "Handle duplicate point values -> TypeError: '<' not supported between instances of 'Point2D' and 'Point2D'"
-        return self.begin < other.begin or self.end < other.end
-    
-    def clone(self):
-        cloned_block = Block(self.begin, self.end)
-        return cloned_block
+def get_block_shifted_up(block:[(int,int,int)]) -> [(int,int,int)]:
+	return [(x,y,z+1) for (x,y,z) in block]
 
-def get_supporting(blocks, cb):
-    supporting = set()
-    for ob in blocks:
-        if ob == cb:
-            continue
 
-        if cb.is_supporting(ob):
-            supporting.add(ob)
+def is_block_grounded(block:[(int,int,int)]) -> bool:
+	for _,_,z in block:
+		if z <= 1:
+			return True
+	return False
 
-    return supporting
 
-def get_neighbours(blocks, cb):
-    neighbours = set()
-    for ob in blocks:
-        if ob == cb:
-            continue
+def get_block_cubes_from(begin, end):
+	xb = begin[0]
+	xe = end[0]
+	yb = begin[1]
+	ye = end[1]
+	zb = begin[2]
+	ze = end[2]
 
-        if cb.is_neighbour(ob):
-            neighbours.add(ob)
-    return neighbours
+	cubes = []
+	if xb == xe and yb == ye and zb == ze:
+		cubes.append((xb,yb,zb))
+	elif xb == xe and yb == ye:          
+		for z in range(zb, 1 + ze):                
+			cubes.append((xb,yb,z))
+	elif xb == xe and zb == ze:          
+		for y in range(yb, 1 + ye):                
+			cubes.append((xb,y,zb))
+	elif zb == ze and yb == ye:          
+		for x in range(xb, 1 + xe):                
+			cubes.append((x,yb,zb))
+	else:
+		raise Exception(f"Unhandled type of block with begin={begin} end={end}")
+	return cubes
 
 
 def get_blocks_from(filename):
-    lines = fileutils.get_file_lines(filename)
+	lines = get_file_lines_from(filename)
 
-    blocks = []
-    for l in lines:
-        #print(f"DEBUG: l={l}")
-        p1,p2 = l.split('~')
-        begin = strutils.string_to_int_list(p1, ',')
-        end = strutils.string_to_int_list(p2, ',')
-        b = Block(Point3D(begin[0], begin[1], begin[2]), Point3D(end[0], end[1], end[2]))
-        #print(f"DEBUG: block={b} ")
-        blocks.append(b) 
-    return blocks
+	blocks = []
+	for l in lines:
+		b,e = l.split('~')
+
+		begin = string_to_int_list(b, ',')
+		end = string_to_int_list(e, ',')
+
+		block_cubes = get_block_cubes_from(begin, end)
+		blocks.append(block_cubes)
+	return blocks
+
+
+def get_max_block_height_from(blocks):
+	max_height = 0
+	for b in blocks:
+		for (_,_,z) in b:
+			if z > max_height:
+				max_height = z
+	return max_height
+
+"""
+def is_grounded_block(block):
+	for (_,_,z) in block:
+		if z == 1:
+			return True
+	return False
+"""
+"""
+def is_overlapping_block(blocks, target_block, target_index, ignore_index=-1):	
+	for i, other_block in enumerate(blocks):
+		if i == target_index or i == ignore_index:
+			print(f"DEBUG: [is_overlapping_block] ignoring {i} {ignore_index}")
+			continue
+
+		# Check block cubes
+		for other_cube in other_block:
+			for target_cube in target_block:
+				if other_cube == target_cube:					
+					return True
+	return False
+
+def get_decended_block_cubes(block):
+	return [(x,y,z-1) for (x,y,z) in block]
+
+def get_moved_blocks(blocks):
+	moved_blocks = []
+	for i, b in enumerate(blocks):
+		if is_grounded_block(b):
+			moved_blocks.append(b)
+			continue
+	   
+		is_mutated = False
+		mutated_block = [(x,y,z-1) for (x,y,z) in b]
+		while not is_grounded_block(mutated_block) and not is_overlapping_block(blocks, mutated_block, i):
+			mutated_block = get_decended_block_cubes(mutated_block)
+			#print(f"DEBUG: mutated_block={mutated_block}")
+			is_mutated = True
+
+		if is_mutated:
+			moved_blocks.append(mutated_block)
+		else:
+			moved_blocks.append(b)
+	return moved_blocks
+"""
+"""
+def can_block_move_down(blocks, target_index, target_block, ignore_index=-1):
+	#print(f"DEBUG: [can_block_move_down] target_index={target_index} target_block={target_block} ignore_index={ignore_index}")
+#	if is_block_grounded(target_block):
+#		print(f"DEBUG: [can_block_move_down] Grounded {target_block}")
+#		return False
+
+	block_down = get_block_shifted_down(target_block)
+	for i, b in enumerate(blocks):
+		if i == target_index or i == ignore_index:
+			continue
+
+		# Check block cubes
+		if has_block_intersection(block_down, b):
+			print(f"DEBUG: [can_block_move_down] Block intersection between {block_down} and {b}")
+			return False
+	return True
+"""
+
+"""
+def can_block_be_disintegrated(blocks, target_index, target_block):	
+	print(f"DEBUG: [can_block_be_disintegrated] target_index={target_index} target_block={target_block}")
+#	if is_block_grounded(target_block):
+#		print(f"DEBUG: [can_block_be_disintegrated] Grounded target_index={target_index} target_block={target_block}")
+#		return False
+
+	#movable_blocks = []
+	for i, b in enumerate(blocks):
+		if i == target_index:
+			continue
+
+		if not can_block_move_down(blocks, i, b, target_index):
+			return False
+	return True
+"""
+def move_down(blocks):
+	count = 0
+	length = len(blocks)
+	for i in range(length):
+		if is_block_grounded(blocks[i]):
+			continue
+
+		can_shift_down = True
+		
+		while can_shift_down:
+			block_below = [(x,y,z-1) for (x,y,z) in blocks[i]]
+
+			for j in range(length):
+				if i == j:
+					break
+
+				if has_block_intersection(block_below, blocks[j]):
+					can_shift_down = False
+					break
+
+			if can_shift_down:
+				blocks[i] = block_below
+				count +=1
+				if is_block_grounded(block_below):
+					can_shift_down = False		
+
+	return count
+
+"""
+def get_blocks_at_height(blocks, z):
+	matches = []
+	for b in blocks:
+		if b[0][2] == z:
+			matches.append(b)
+	return matches
+"""
+
+def get_blocks_sorted_by_height_ascending_from(blocks):
+	max_height = get_max_block_height_from(blocks)
+
+	sorted_blocks = []
+	for h in range(max_height):
+		for b in blocks:
+			if b[0][2] == h + 1:
+				sorted_blocks.append(b)
+
+	assert len(sorted_blocks) == len(blocks)
+	return sorted_blocks
+
+
+
+def display_blocks(blocks):
+	for b in blocks:
+		print(f"{sorted(b)}")  
+
+
+def move_until_stable_from(filename):
+	blocks = get_blocks_from(filename)
+	#print(f"DEBUG: Initial blocks={blocks}")
+	
+	sorted_blocks = get_blocks_sorted_by_height_ascending_from(blocks)
+	move_down(sorted_blocks)
+
+	#display_blocks(blocks)
+	#print(f"DEBUG: Final blocks={blocks}")
+	return sorted_blocks
+
+
+
+def get_support_map(blocks):
+	support_map = defaultdict(set)
+
+	for i,bi in enumerate(blocks):
+		block_above = [(x,y,z+1) for (x,y,z) in bi]
+
+		for j,bj in enumerate(blocks):
+			if i == j:
+				continue
+
+			if has_block_intersection(block_above, bj):
+				support_map[i].add(j)
+	return support_map
+
+
+def is_support_by_other_block(support_map, i, s):
+	for k in support_map.keys():
+		if k == i:
+			continue
+
+		if s in support_map[k]:
+			return True
+	return False
+
+
+def are_all_supported_by_other_block(support_map, i):
+	supporting = support_map[i]
+
+	for s in supporting:
+		if not is_support_by_other_block(support_map, i, s):
+			return False
+	return True
+
 
 def solve_part1(filename):
-    blocks = get_blocks_from(filename)
-    #print(f"DEBUG: Initial blocks={blocks} ")
+	blocks = move_until_stable_from(filename)
 
-    for b in blocks:
-        if b.is_grounded():
-            continue
+	count = 0
+	support_map = get_support_map(blocks)
+	#print(f"DEBUG: support_map={support_map}")
 
-        while not b.is_supported_by_any_of(blocks):
-            #print(f"DEBUG: Moving down: {b}")
-            b.decrement_z()
-            if b.is_grounded():
-                break
+	for i, b in enumerate(blocks):
+		supporting = support_map[i]
 
-    #print(f"DEBUG: Final blocks={blocks} ")
+		if len(supporting) == 0:
+			#print(f"DEBUG: Can disintegrate (not supporting): index={i} block={b}" )
+			count +=1
+		elif are_all_supported_by_other_block(support_map, i):
+			#print(f"DEBUG: Can disintegrate (others supporting): index={i} block={b}" )				
+			count +=1
 
-    count = 0
-    
-    for b in blocks:
-        if b.is_grounded():
-            continue
-
-        supporting = get_supporting(blocks, b)
-        supporting_count = len(supporting)
-        neighbours = get_neighbours(blocks, b)
-        neighbours_count = len(neighbours)
-        #print(f"DEBUG: {supporting_count} {neighbour_count} {b}")
-
-
-        if supporting_count == 0:
-            #print(f"DEBUG: Block can be disintegrated: {b}")
-            count += 1
-        elif neighbours_count == 0:
-            continue
-        elif is_sole_supporter(blocks, supporting, neighbours):
-            """
-            for n in neighbours:
-                ns = get_supporting(blocks, n)
-                intersect = supporting.intersection(ns)
-                if len(intersect) > 0:
-                    count += 1
-                    break
-            """
-            count += 1
-
-
-    return count
-
-def is_sole_supporter(blocks, supporting, neighbours):
-    for s in supporting:
-        for n in neighbours:
-            ns = get_supporting(blocks, n)
-            if s not in ns:    
-                return False
-    return True
-
-
-def solve_part2(filename):
-    lines = fileutils.get_file_lines(filename)
-    return 0 # TODO
+	return count
