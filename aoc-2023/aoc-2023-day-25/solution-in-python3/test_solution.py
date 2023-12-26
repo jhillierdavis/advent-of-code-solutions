@@ -5,19 +5,10 @@ import solution
 @pytest.mark.parametrize(
     "filename,expected",
     [
-        pytest.param("puzzle-input-example.txt", -1),
-        #pytest.param("puzzle-input-full.txt", -1),
+        pytest.param("puzzle-input-example.txt", 54),
+        pytest.param("puzzle-input-full.txt", 562978), # > 510120 (as too low!)
     ],    
 )
-def test_solve_part1(filename, expected):
-    assert solution.solve_part1(filename) == expected
-
-@pytest.mark.parametrize(
-    "filename,expected",
-    [
-        #pytest.param("puzzle-input-example.txt", -1),
-        #pytest.param("puzzle-input-full.txt", -1),
-    ],    
-)
-def test_solve_part2(filename, expected):
-    assert solution.solve_part2(filename) == expected    
+def test_solve(filename, expected):
+    #assert solution.solve_using_kargers_algorithm_from(filename) == expected
+    assert solution.solve_using_networkx_graph_from(filename) == expected
