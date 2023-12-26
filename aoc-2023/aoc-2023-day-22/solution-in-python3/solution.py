@@ -1,4 +1,3 @@
-#from copy import deepcopy
 from collections import defaultdict
 
 from helpers.fileutils import get_file_lines_from
@@ -83,85 +82,7 @@ def get_max_block_height_from(blocks):
 				max_height = z
 	return max_height
 
-"""
-def is_grounded_block(block):
-	for (_,_,z) in block:
-		if z == 1:
-			return True
-	return False
-"""
-"""
-def is_overlapping_block(blocks, target_block, target_index, ignore_index=-1):	
-	for i, other_block in enumerate(blocks):
-		if i == target_index or i == ignore_index:
-			print(f"DEBUG: [is_overlapping_block] ignoring {i} {ignore_index}")
-			continue
 
-		# Check block cubes
-		for other_cube in other_block:
-			for target_cube in target_block:
-				if other_cube == target_cube:					
-					return True
-	return False
-
-def get_decended_block_cubes(block):
-	return [(x,y,z-1) for (x,y,z) in block]
-
-def get_moved_blocks(blocks):
-	moved_blocks = []
-	for i, b in enumerate(blocks):
-		if is_grounded_block(b):
-			moved_blocks.append(b)
-			continue
-	   
-		is_mutated = False
-		mutated_block = [(x,y,z-1) for (x,y,z) in b]
-		while not is_grounded_block(mutated_block) and not is_overlapping_block(blocks, mutated_block, i):
-			mutated_block = get_decended_block_cubes(mutated_block)
-			#print(f"DEBUG: mutated_block={mutated_block}")
-			is_mutated = True
-
-		if is_mutated:
-			moved_blocks.append(mutated_block)
-		else:
-			moved_blocks.append(b)
-	return moved_blocks
-"""
-"""
-def can_block_move_down(blocks, target_index, target_block, ignore_index=-1):
-	#print(f"DEBUG: [can_block_move_down] target_index={target_index} target_block={target_block} ignore_index={ignore_index}")
-#	if is_block_grounded(target_block):
-#		print(f"DEBUG: [can_block_move_down] Grounded {target_block}")
-#		return False
-
-	block_down = get_block_shifted_down(target_block)
-	for i, b in enumerate(blocks):
-		if i == target_index or i == ignore_index:
-			continue
-
-		# Check block cubes
-		if has_block_intersection(block_down, b):
-			print(f"DEBUG: [can_block_move_down] Block intersection between {block_down} and {b}")
-			return False
-	return True
-"""
-
-"""
-def can_block_be_disintegrated(blocks, target_index, target_block):	
-	print(f"DEBUG: [can_block_be_disintegrated] target_index={target_index} target_block={target_block}")
-#	if is_block_grounded(target_block):
-#		print(f"DEBUG: [can_block_be_disintegrated] Grounded target_index={target_index} target_block={target_block}")
-#		return False
-
-	#movable_blocks = []
-	for i, b in enumerate(blocks):
-		if i == target_index:
-			continue
-
-		if not can_block_move_down(blocks, i, b, target_index):
-			return False
-	return True
-"""
 def move_down(blocks):
 	count = 0
 	length = len(blocks)
@@ -177,6 +98,10 @@ def move_down(blocks):
 			for j in range(length):
 				if i == j:
 					break
+				
+				if j > i:
+					can_shift_down = False
+					break
 
 				if has_block_intersection(block_below, blocks[j]):
 					can_shift_down = False
@@ -190,14 +115,6 @@ def move_down(blocks):
 
 	return count
 
-"""
-def get_blocks_at_height(blocks, z):
-	matches = []
-	for b in blocks:
-		if b[0][2] == z:
-			matches.append(b)
-	return matches
-"""
 
 def get_blocks_sorted_by_height_ascending_from(blocks):
 	max_height = get_max_block_height_from(blocks)
@@ -210,7 +127,6 @@ def get_blocks_sorted_by_height_ascending_from(blocks):
 
 	assert len(sorted_blocks) == len(blocks)
 	return sorted_blocks
-
 
 
 def display_blocks(blocks):
@@ -228,7 +144,6 @@ def move_until_stable_from(filename):
 	#display_blocks(blocks)
 	#print(f"DEBUG: Final blocks={blocks}")
 	return sorted_blocks
-
 
 
 def get_support_map(blocks):
