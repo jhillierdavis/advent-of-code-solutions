@@ -99,20 +99,49 @@ class Grid2D():
 
         return True
     
-    def get_cardinal_point_neighbours(self, p:point.Point2D) -> set:
+    def get_cardinal_point_neighbours(self, p:point.Point2D, wrapping:bool=False) -> set:
         neightbours = set()
 
         x = p.get_x()
         y = p.get_y()
-
+        """
+        cardinal_points = []
+        if wrapping:
+            x_max = self.get_width() -1
+            y_max = self.get_height() -1
+            cardinal_points.append((x-1 if x > 0 else x_max, y))
+            cardinal_points.append((x+1 if x < x_max else 0, y))
+            cardinal_points.append((x, y-1 if y > 0 else y_max))
+            cardinal_points.append((x, y+1 if y < y_max else 0))
+        else:
+            cardinal_points = [(x-1,y), (x+1,y), (x,y-1), (x,y+1)]
+        """
         cardinal_points = [(x-1,y), (x+1,y), (x,y-1), (x,y+1)]
 
         for (a,b) in cardinal_points:
             np = point.Point2D(a,b)
-            if self.contains(np):
+            if self.contains(np) or wrapping:
                 neightbours.add(np)
         return neightbours  
-    
+
+
+    def get_unwrapped_coord(self, p:point.Point2D) -> set:
+        x_max = self.get_width()
+        y_max = self.get_height()
+        x = p.get_x()
+        y = p.get_y()
+        x_unwrapped = x % x_max
+        if x_unwrapped < 0:
+            x_unwrapped = x_max - x_unwrapped
+        y_unwrapped = y % y_max
+        if y_unwrapped < 0:
+            y_unwrapped = y_max - y_unwrapped
+        #if x != x_unwrapped or y != y_unwrapped:
+        #    print(f"DEBUG: x={x} x_unwrapped={x_unwrapped} x_max={x_max} y={y} y_unwrapped={y_unwrapped} y_max={y_max}")
+        unwrapped_point = point.Point2D(x_unwrapped, y_unwrapped)
+        return unwrapped_point
+
+
     def get_neighbour_east(self, p:point.Point2D) -> point.Point2D:
         x = p.get_x()
         y = p.get_y()
