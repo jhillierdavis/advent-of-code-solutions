@@ -1,6 +1,9 @@
 Todo (soon)
 -----------
 
+* AOC 2023 Day 21 -> Solve Part 2
+* AOC 2023 Day 22 -> Improve speed of parts 1 & 2
+* AOC 2023 Day 24 -> Solve Part 2 without use of Z3?
 * AOC 2023 Day 05 -> Refactor Part 2
 * AOC 2023 Day 06 -> Part 2 - try binary search approach
 * AOC 2021 Day 18 -> Solve Part 1
