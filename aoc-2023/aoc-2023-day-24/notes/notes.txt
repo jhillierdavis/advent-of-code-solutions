@@ -1,5 +1,20 @@
 https://adventofcode.com/2023/day/24
 
+Z3:
+
+https://microsoft.github.io/z3guide/docs/logic/intro/
+
+Python Z3 : 
+
+https://github.com/Z3Prover/z3
+https://z3prover.github.io/api/html/namespacez3py.html
+
+pip install z3-solver
+
+https://ericpony.github.io/z3py-tutorial/guide-examples.htm
+https://github.com/exercism/z3/blob/main/docs/INSTALLATION.md
+https://github.com/Z3Prover/z3
+
 Other's solutions
 =================
 
@@ -8,8 +23,8 @@ Jonathan Paulson
 
 ( https://www.youtube.com/@jonathanpaulson5053/videos , https://github.com/jonathanpaulson/AdventOfCode/tree/master/2023 )
 
-TODO
-
+https://www.youtube.com/watch?v=vZa2jErpSg8
+https://github.com/jonathanpaulson/AdventOfCode/blob/master/2023/24.py
 
 William Y. Feng
 ---------------

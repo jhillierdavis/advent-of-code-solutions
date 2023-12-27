@@ -1,3 +1,5 @@
+from z3 import *
+
 from helpers import fileutils, point, strutils
 
 class Hailstone():
@@ -128,6 +130,30 @@ def solve_part1(filename, target_min, target_max):
     return count // 2
 
 
+def solve_part2_using_z3_from(hailstones):
+    n = len(hailstones)
+
+    x,y,z,vx,vy,vz = Int('x'),Int('y'),Int('z'),Int('vx'),Int('vy'),Int('vz')
+    T = [Int(f'T{i}') for i in range(n)]
+    z3_solver = Solver()
+    for i in range(n):
+        z3_solver.add(x + T[i]*vx - hailstones[i].position.get_x() - T[i]*hailstones[i].velocity.get_x() == 0)
+        z3_solver.add(y + T[i]*vy - hailstones[i].position.get_y() - T[i]*hailstones[i].velocity.get_y() == 0)
+        z3_solver.add(z + T[i]*vz - hailstones[i].position.get_z() - T[i]*hailstones[i].velocity.get_z() == 0)
+    res = z3_solver.check()
+    z3_model = z3_solver.model()
+
+    return z3_model.eval(x+y+z)
+
+
 def solve_part2(filename):
+    # Use Z3, see: https://microsoft.github.io/z3guide/docs/logic/intro/ , https://github.com/Z3Prover/z3
+
     lines = fileutils.get_file_lines(filename)
-    return 0 # TODO
+
+    hailstones = []
+    for l in lines:
+        h = get_hailstone_from(l)
+        hailstones.append(h)
+
+    return solve_part2_using_z3_from(hailstones)

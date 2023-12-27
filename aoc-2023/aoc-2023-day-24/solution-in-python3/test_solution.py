@@ -64,8 +64,8 @@ def test_solve_part1(filename, target_min, target_max, expected):
 @pytest.mark.parametrize(
     "filename,expected",
     [
-        #pytest.param("puzzle-input-example.txt", -1),
-        #pytest.param("puzzle-input-full.txt", -1),
+        pytest.param("puzzle-input-example.txt", 47),
+        pytest.param("puzzle-input-full.txt", 566373506408017),
     ],    
 )
 def test_solve_part2(filename, expected):
