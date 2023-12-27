@@ -200,17 +200,6 @@ def solve_part1(filename):
 	return count
 
 
-"""
-def get_all_unsupported_by_other_block(support_map, i):
-	supporting = support_map[i]
-
-	unsupported = set()
-	for s in supporting:
-		if not is_support_by_other_block(support_map, i, s):
-			unsupported.add(s)
-	return unsupported
-"""
-
 def get_other_supporters(support_map, i, s):
 	supporters = set()
 	for k in support_map.keys():
