@@ -199,15 +199,8 @@ def solve_part1(filename):
 
 	return count
 
-"""
-def count_falls_with_chain_reaction(support_map, i, fall):	
-	#print(f"DEBUG: [count_falls_with_chain_reaction] Block {i}")
-	supporting = support_map[i]	
-	for s in supporting:
-		fall.add(s)
-		count_falls_with_chain_reaction(support_map, s, fall)	
-"""
 
+"""
 def get_all_unsupported_by_other_block(support_map, i):
 	supporting = support_map[i]
 
@@ -216,14 +209,6 @@ def get_all_unsupported_by_other_block(support_map, i):
 		if not is_support_by_other_block(support_map, i, s):
 			unsupported.add(s)
 	return unsupported
-
-
-"""
-def count_falls_with_chain_reaction_old(support_map, i, fall):	
-	#print(f"DEBUG: [count_falls_with_chain_reaction] Block {i}")
-	for s in get_all_unsupported_by_other_block(support_map, i):
-		fall.add(s)
-		count_falls_with_chain_reaction(support_map, s, fall)	
 """
 
 def get_other_supporters(support_map, i, s):
@@ -269,27 +254,8 @@ def calculate_falls_for_block_disintegrations(support_map:defaultdict):
 def solve_part2(filename):
 	blocks = move_until_stable_from(filename)
 
-
 	support_map = get_support_map(blocks)
 	#print(f"DEBUG: support_map={support_map}")
 
-	
 	count = calculate_falls_for_block_disintegrations(support_map)
-	"""
-	for i, _ in enumerate(blocks):
-
-		supporting =  support_map[i]
-		if 0 == len(supporting):		
-			continue
-		elif are_all_supported_by_other_block(support_map, i):
-			continue
-
-		
-		fall = set()
-		count_falls_with_chain_reaction(support_map, i, fall)
-		fall_count = len(fall)
-		print(f"DEBUG: Block {i} fall_count={fall_count} fall={fall}")
-		fall.clear()
-		count += fall_count
-	"""
 	return count
