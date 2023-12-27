@@ -81,3 +81,8 @@ class Point3D():
     def __lt__(self, other) -> bool:
         # E.g. for Heapq: to handle "Handle duplicate point values -> TypeError: '<' not supported between instances of 'Point2D' and 'Point2D'"
         return self.get_x() < other.get_x() or self.get_y() < other.get_y() or self.get_z() < other.get_z()
+    
+    def clone(self):
+        cloned = Point3D(self.get_x(), self.get_y(), self.get_z())
+        return cloned
+
