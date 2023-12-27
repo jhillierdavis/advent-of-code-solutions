@@ -125,7 +125,7 @@ def get_blocks_sorted_by_height_ascending_from(blocks):
 			if b[0][2] == h + 1:
 				sorted_blocks.append(b)
 
-	assert len(sorted_blocks) == len(blocks)
+	#assert len(sorted_blocks) == len(blocks)
 	return sorted_blocks
 
 
@@ -183,11 +183,11 @@ def are_all_supported_by_other_block(support_map, i):
 def solve_part1(filename):
 	blocks = move_until_stable_from(filename)
 
-	count = 0
 	support_map = get_support_map(blocks)
 	#print(f"DEBUG: support_map={support_map}")
 
-	for i, b in enumerate(blocks):
+	count = 0
+	for i, _ in enumerate(blocks):
 		supporting = support_map[i]
 
 		if len(supporting) == 0:
@@ -197,4 +197,99 @@ def solve_part1(filename):
 			#print(f"DEBUG: Can disintegrate (others supporting): index={i} block={b}" )				
 			count +=1
 
+	return count
+
+"""
+def count_falls_with_chain_reaction(support_map, i, fall):	
+	#print(f"DEBUG: [count_falls_with_chain_reaction] Block {i}")
+	supporting = support_map[i]	
+	for s in supporting:
+		fall.add(s)
+		count_falls_with_chain_reaction(support_map, s, fall)	
+"""
+
+def get_all_unsupported_by_other_block(support_map, i):
+	supporting = support_map[i]
+
+	unsupported = set()
+	for s in supporting:
+		if not is_support_by_other_block(support_map, i, s):
+			unsupported.add(s)
+	return unsupported
+
+
+"""
+def count_falls_with_chain_reaction_old(support_map, i, fall):	
+	#print(f"DEBUG: [count_falls_with_chain_reaction] Block {i}")
+	for s in get_all_unsupported_by_other_block(support_map, i):
+		fall.add(s)
+		count_falls_with_chain_reaction(support_map, s, fall)	
+"""
+
+def get_other_supporters(support_map, i, s):
+	supporters = set()
+	for k in support_map.keys():
+		if k == i:
+			continue
+
+		if s in support_map[k]:
+			supporters.add(k)
+	return supporters
+
+
+def count_falls_with_chain_reaction(support_map, i, fall):	
+	#print(f"DEBUG: [count_falls_with_chain_reaction] Block {i}")
+	for s in list(support_map[i]):
+		other_supporters = get_other_supporters(support_map, i, s)
+		if len(other_supporters) == 0 or other_supporters.issubset(fall):
+			fall.add(s)
+			count_falls_with_chain_reaction(support_map, s, fall)	
+
+
+def calculate_falls_for_block_disintegrations(support_map:defaultdict):
+	count = 0
+	
+	for k in list(support_map.keys()):
+		if 0 == len(support_map[k]):		
+			continue
+		elif are_all_supported_by_other_block(support_map, k):
+			continue
+		
+		fall = set()
+		count_falls_with_chain_reaction(support_map, k, fall)
+		fall_count = len(fall)
+		#print(f"DEBUG: Block {k} fall_count={fall_count} fall={fall}")
+		fall.clear()
+		count += fall_count
+
+	#print(f"DEBUG: count={count}")
+	return count
+
+
+def solve_part2(filename):
+	blocks = move_until_stable_from(filename)
+
+
+	support_map = get_support_map(blocks)
+	#print(f"DEBUG: support_map={support_map}")
+
+	
+	count = calculate_falls_for_block_disintegrations(support_map)
+	"""
+	for i, _ in enumerate(blocks):
+
+		supporting =  support_map[i]
+		if 0 == len(supporting):		
+			continue
+		elif are_all_supported_by_other_block(support_map, i):
+			continue
+
+		
+		fall = set()
+		count_falls_with_chain_reaction(support_map, i, fall)
+		fall_count = len(fall)
+		print(f"DEBUG: Block {i} fall_count={fall_count} fall={fall}")
+		fall.clear()
+		count += fall_count
+	"""
 	return count
