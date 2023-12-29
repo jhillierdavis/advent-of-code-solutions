@@ -3,6 +3,12 @@ https://adventofcode.com/2023/day/21
 Other's solutions
 =================
 
+Josiah Winslow
+--------------
+
+https://github.com/WinslowJosiah/adventofcode/blob/main/aoc2023/day21/__init__.py
+
+
 Jonathan Paulson
 ----------------
 
