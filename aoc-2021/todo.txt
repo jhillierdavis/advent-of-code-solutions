@@ -2,7 +2,7 @@ ToDo next
 ---------
 
 * aoc-2021-day-16 -> Solve part 1
-* Grid -> Refeactor to better support integer values
+* Grid -> Refactor to better support integer values
 
 
 Done recently
