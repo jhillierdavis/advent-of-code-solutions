@@ -1,1 +1,1 @@
-find . -type l | sed -e s'/^\.\///g'
+find . -type l | sed -e s'/^\.\///g' | sort
