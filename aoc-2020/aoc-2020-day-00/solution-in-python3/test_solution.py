@@ -14,7 +14,7 @@ input_full = "AOC-2020-Day-00_Puzzle-Input-Full.txt"
         #pytest.param(input_full, -1),
     ],    
 )
-def test_find_terms(filename, expected):
+def test_solve(filename, expected):
     value = solution.solve(filename)
     
     assert expected == value
