@@ -12,7 +12,7 @@ input_full = "AOC-2020-Day-03_Puzzle-Input-Full.txt"
         pytest.param(input_full, 228),
     ],    
 )
-def test_find_terms(filename, expected):
+def test_solve_part1(filename, expected):
     value = solution.solve(filename)
     
     assert expected == value
