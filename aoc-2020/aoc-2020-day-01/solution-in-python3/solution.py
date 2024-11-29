@@ -1,16 +1,16 @@
 from helpers import fileutils
 
 
-def int_lines_from(filename):
+def lines_to_int_array_from(filename):
     lines = fileutils.get_file_lines_from(filename)    
     values = [int(numeric_string) for numeric_string in lines]
     return values
 
 
 def find_two_terms_for_sum(filename, target_sum):
-    values = int_lines_from(filename)
+    values = lines_to_int_array_from(filename)
     #print(values)
-git 
+
     size = len(values)
     for i in range(size):
         #print(values[i])
