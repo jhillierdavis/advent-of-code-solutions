@@ -12,8 +12,16 @@ def get_file_lines(filename):
     data_file.close()    
     return array_lines
 
+
 def get_file_lines_from(filename):
     return get_file_lines(filename)
+
+
+def lines_to_int_array_from(filename):
+    lines = get_file_lines_from(filename)    
+    values = [int(numeric_string) for numeric_string in lines]
+    return values
+
 
 def get_file_first_line_to_int_array(filename):
     lines = get_file_lines(filename)

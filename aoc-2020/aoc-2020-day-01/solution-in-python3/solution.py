@@ -1,14 +1,8 @@
 from helpers import fileutils
 
 
-def lines_to_int_array_from(filename):
-    lines = fileutils.get_file_lines_from(filename)    
-    values = [int(numeric_string) for numeric_string in lines]
-    return values
-
-
 def find_two_terms_for_sum(filename, target_sum):
-    values = lines_to_int_array_from(filename)
+    values = fileutils.lines_to_int_array_from(filename)
     #print(values)
 
     size = len(values)
@@ -28,7 +22,7 @@ def find_two_terms_for_sum(filename, target_sum):
 
 
 def find_three_terms_for_sum(filename, target_sum):
-    values = int_lines_from(filename)
+    values = fileutils.lines_to_int_array_from(filename)
     #print(values)
 
     size = len(values)
