@@ -17,7 +17,7 @@ def get_file_lines_from(filename):
     return get_file_lines(filename)
 
 
-def lines_to_int_array_from(filename):
+def get_lines_to_int_array_from(filename):
     lines = get_file_lines_from(filename)    
     values = [int(numeric_string) for numeric_string in lines]
     return values

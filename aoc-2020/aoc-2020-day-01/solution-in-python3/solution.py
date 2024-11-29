@@ -2,7 +2,7 @@ from helpers import fileutils
 
 
 def find_two_terms_for_sum(filename, target_sum):
-    values = fileutils.lines_to_int_array_from(filename)
+    values = fileutils.get_lines_to_int_array_from(filename)
     #print(values)
 
     size = len(values)
@@ -22,7 +22,7 @@ def find_two_terms_for_sum(filename, target_sum):
 
 
 def find_three_terms_for_sum(filename, target_sum):
-    values = fileutils.lines_to_int_array_from(filename)
+    values = fileutils.get_lines_to_int_array_from(filename)
     #print(values)
 
     size = len(values)
