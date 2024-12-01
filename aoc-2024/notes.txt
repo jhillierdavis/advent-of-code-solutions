@@ -1,0 +1,5 @@
+Solutions from Others
+----------------------
+
+YouTube: Jonathan Paulson (solutions in Python)
+https://www.youtube.com/watch?v=ym1ae-vBy6g
