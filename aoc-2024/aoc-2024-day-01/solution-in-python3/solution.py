@@ -35,11 +35,8 @@ def solve_part1(filename):
 def get_sum_of_frequency_of_occurance_of_elements_of_first_list_in_second_list(a1, a2):
     count_freq = 0
     for i in range(len(a1)):
-        occurs = 0
-        for j in range(len(a2)):
-            if a1[i] == a2[j]:
-                occurs += 1
-        count_freq += a1[i] * occurs 
+        value = a1[i]
+        count_freq += value * a2.count(value) # Ref. https://www.w3schools.com/python/ref_list_count.asp
 
     return count_freq
 
