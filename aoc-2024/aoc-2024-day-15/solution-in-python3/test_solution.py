@@ -2,8 +2,8 @@ import pytest
 
 import solution
 
-input_example = "AOC-2024-Day-00_Puzzle-Input-Example.txt"
-input_full = "AOC-2024-Day-00_Puzzle-Input-Full.txt"
+input_example = "AOC-2024-Day-15_Puzzle-Input-Example.txt"
+input_full = "AOC-2024-Day-15_Puzzle-Input-Full.txt"
 
 
 @pytest.mark.skip(reason="TODO: Ignore until implemented")
