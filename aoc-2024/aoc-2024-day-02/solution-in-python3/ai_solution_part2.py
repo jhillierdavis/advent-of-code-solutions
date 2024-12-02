@@ -1,8 +1,11 @@
-# https://copilot.microsoft.com/chats
+# Solve using AI (e.g. Co-Pilot)
+# ------------------------------
+#
+# Ref. https://copilot.microsoft.com/chats
 #
 # Prompt:
 #
-# Create a python program to process each line of a file counting the number of lines as a set of integers, where a sub-set of each line of integers expect one is either always increasing or decreasing by at least 1 and up to 3.
+# "Create a python program to process each line of a file counting the number of lines as a set of integers, where a sub-set of each line of integers expect one is either always increasing or decreasing by at least 1 and up to 3."
 #
 
 def is_valid_subsequence_with_one_exception(numbers):
