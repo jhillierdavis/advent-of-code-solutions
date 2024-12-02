@@ -55,11 +55,12 @@ def solve_part2(filename):
         #print(f'DEBUG: l={l}')
         values = to_int_array_from(l.split(' '))
 
+        # Check each variant (with 1 element removed) for safety
         for i in range(len(values)):
             partial_copy = []
             for j in range(len(values)):
-                if i == j:
-                    continue
+                if i == j: 
+                    continue # Omit one element from copied array
                 partial_copy.append(values[j])
 
             diff = get_diff_array_from(partial_copy)
@@ -67,6 +68,6 @@ def solve_part2(filename):
             if is_safe_gradually_increasing(diff) or is_safe_gradually_decreasing(diff):
                 #print(f'DEBUG: Safe: diff={diff}')
                 count_safe += 1
-                break
+                break # Do not need to check any further variants (as found a safe one)
 
     return count_safe
