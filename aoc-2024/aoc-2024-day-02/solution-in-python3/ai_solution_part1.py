@@ -25,10 +25,10 @@ file_path_full = 'AOC-2024-Day-02_Puzzle-Input-Full.txt'
 
 # Counting the valid lines in example input
 valid_lines_count = count_consistently_changing_lines(file_path_example)
-print(f"Number of valid lines (in example input): {valid_lines_count}")
+print(f"Part 1: Number of valid lines (in example input): {valid_lines_count}")
 assert valid_lines_count == 2
 
 # Counting the valid lines in full input
 valid_lines_count = count_consistently_changing_lines(file_path_full) 
-print(f"Number of valid lines (in full input): {valid_lines_count}")
+print(f"Part 1: Number of valid lines (in full input): {valid_lines_count}")
 assert valid_lines_count == 516

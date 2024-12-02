@@ -29,7 +29,7 @@ file_path = 'AOC-2024-Day-02_Puzzle-Input-Example.txt'
 
 # Counting the valid lines
 valid_lines_count = count_valid_lines_with_one_exception(file_path)
-print(f"Number of valid lines (in example input): {valid_lines_count}")
+print(f"Part 2: Number of valid lines (in example input): {valid_lines_count}")
 assert valid_lines_count == 4
 
 # File path 
@@ -37,5 +37,5 @@ file_path = 'AOC-2024-Day-02_Puzzle-Input-Full.txt'
 
 # Counting the valid lines
 valid_lines_count = count_valid_lines_with_one_exception(file_path)
-print(f"Number of valid lines (in full input): {valid_lines_count}")
+print(f"Part 2: Number of valid lines (in full input): {valid_lines_count}")
 assert valid_lines_count == 561
