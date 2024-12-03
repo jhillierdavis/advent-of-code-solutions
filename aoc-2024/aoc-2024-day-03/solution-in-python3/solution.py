@@ -47,9 +47,14 @@ def count_multiplications_in(text, is_enabler_active=False):
 
     return count    
 
+
 def solve_part1(filename):
     text = fileutils.get_text_from(filename)
     return count_multiplications_in(text)
+
+    # Alt.: more succinct solution approach (from others following review after solved)
+    #return sum( int(x) * int(y) for x,y in re.findall(r"mul\((\d+),(\d+)\)", text))
+
 
 def solve_part2(filename):
     text = fileutils.get_text_from(filename)
