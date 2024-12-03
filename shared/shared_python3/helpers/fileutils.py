@@ -74,3 +74,8 @@ def get_contiguous_non_empty_lines_from(filename):
                 response.append(buffer)
                 buffer = []
     return response
+
+
+def get_text_from(filename):
+    text = open(filename).read().strip()
+    return text
