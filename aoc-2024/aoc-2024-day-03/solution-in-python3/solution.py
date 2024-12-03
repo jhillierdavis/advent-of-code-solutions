@@ -26,7 +26,8 @@ def solve_part1(filename):
 def solve_part2(filename):
     text = open(filename).read().strip()
 
-    pattern = re.compile(r'mul\(\d+,\d+\)')
+    # Match via groups (with sub-groups for integer values)
+    pattern = re.compile(r'mul\((\d+),(\d+)\)')
 
     count = 0    
     enabled = True
@@ -42,6 +43,6 @@ def solve_part2(filename):
 
         match = pattern.match(text[i:])
         if match is not None and enabled:
-            count += get_multiplication(match.group(0))
+            count += int(match.group(1)) * int(match.group(2)) 
 
     return count
