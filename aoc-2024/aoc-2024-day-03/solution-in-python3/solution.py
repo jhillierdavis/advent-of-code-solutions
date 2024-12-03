@@ -48,9 +48,9 @@ def count_multiplications_in(text, is_enabler_active=False):
     return count    
 
 def solve_part1(filename):
-    text = open(filename).read().strip()
+    text = fileutils.get_text_from(filename)
     return count_multiplications_in(text)
 
 def solve_part2(filename):
-    text = open(filename).read().strip()
+    text = fileutils.get_text_from(filename)
     return count_multiplications_in(text, True)
