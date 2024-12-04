@@ -1,14 +1,7 @@
 from helpers import fileutils, grid, point
 
-
-def solve_part1(filename):
-    lines = fileutils.get_file_lines_from(filename)
-    g = grid.lines_to_grid(lines)
-
-    #grid.display_grid(g)
-
-    target = 'XMAS'
-    target_length = len(target)
+def count_wordsearch_occurences_in_grid(g:grid, target_word:str):
+    target_word_length = len(target_word)
 
     count = 0
     height = g.get_height()
@@ -17,32 +10,41 @@ def solve_part1(filename):
         for w in range(width):
             p  = point.Point2D(w,h)
 
-            if g.get_symbol(p) == target[0]:
+            if g.get_symbol(p) == target_word[0]:
 
-                if target == g.get_symbols_in_direction_north(p, target_length):
+                if target_word == g.get_symbols_in_direction_north(p, target_word_length):
                     count += 1
 
-                if target == g.get_symbols_in_direction_northeast(p, target_length):
+                if target_word == g.get_symbols_in_direction_northeast(p, target_word_length):
                     count += 1
 
-                if target == g.get_symbols_in_direction_east(p, target_length):
+                if target_word == g.get_symbols_in_direction_east(p, target_word_length):
                     count += 1
 
-                if target == g.get_symbols_in_direction_southeast(p, target_length):
+                if target_word == g.get_symbols_in_direction_southeast(p, target_word_length):
                     count += 1
 
-                if target == g.get_symbols_in_direction_south(p, target_length):
+                if target_word == g.get_symbols_in_direction_south(p, target_word_length):
                     count += 1
 
-                if target == g.get_symbols_in_direction_southwest(p, target_length):
+                if target_word == g.get_symbols_in_direction_southwest(p, target_word_length):
                     count += 1
 
-                if target == g.get_symbols_in_direction_west(p, target_length):
+                if target_word == g.get_symbols_in_direction_west(p, target_word_length):
                     count += 1
 
-                if target == g.get_symbols_in_direction_northwest(p, target_length):
+                if target_word == g.get_symbols_in_direction_northwest(p, target_word_length):
                     count += 1
     return count
+
+
+def solve_part1(filename):
+    lines = fileutils.get_file_lines_from(filename)
+    g = grid.lines_to_grid(lines)
+
+    #grid.display_grid(g)
+
+    return count_wordsearch_occurences_in_grid(g, "XMAS")
 
 
 def solve_part2(filename):
