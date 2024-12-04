@@ -429,7 +429,7 @@ class Grid2D():
         return self.get_symbols_in_direction(current_point, offset, 1, -1)
 
     def get_symbols_in_direction_northwest(self, current_point:point.Point2D, offset:int):
-        return self.get_symbols_in_direction(current_point, offset, 1-, -1)
+        return self.get_symbols_in_direction(current_point, offset, -1, -1)
 
 
     def clone(self):
