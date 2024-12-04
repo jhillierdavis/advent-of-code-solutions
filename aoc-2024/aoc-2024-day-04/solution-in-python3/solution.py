@@ -7,79 +7,41 @@ def solve_part1(filename):
 
     #grid.display_grid(g)
 
+    target = 'XMAS'
+    target_length = len(target)
+
     count = 0
     height = g.get_height()
     width = g.get_width()
     for h in range(height):
         for w in range(width):
             p  = point.Point2D(w,h)
-            if g.get_symbol(p) == 'X':
 
-                # Forward
-                next = point.Point2D(p.get_x() + 1, p.get_y())
-                if g.contains(next) and g.get_symbol(next) == 'M':
-                    next = point.Point2D(p.get_x() + 2, p.get_y())
-                    if g.contains(next) and g.get_symbol(next) == 'A':
-                        next = point.Point2D(p.get_x() + 3, p.get_y())
-                        if g.contains(next) and g.get_symbol(next) == 'S':
-                             count += 1
+            if g.get_symbol(p) == target[0]:
 
-                next = point.Point2D(p.get_x() -1, p.get_y())
-                if g.contains(next) and g.get_symbol(next) == 'M':
-                    next = point.Point2D(p.get_x() -2, p.get_y())
-                    if g.contains(next) and g.get_symbol(next) == 'A':
-                        next = point.Point2D(p.get_x() -3, p.get_y())
-                        if g.contains(next) and g.get_symbol(next) == 'S':
-                             count += 1
+                if target == g.get_symbols_in_direction_north(p, target_length):
+                    count += 1
 
-                next = point.Point2D(p.get_x(), p.get_y() + 1)
-                if g.contains(next) and g.get_symbol(next) == 'M':
-                    next = point.Point2D(p.get_x(), p.get_y() + 2)
-                    if g.contains(next) and g.get_symbol(next) == 'A':
-                        next = point.Point2D(p.get_x(), p.get_y() + 3)
-                        if g.contains(next) and g.get_symbol(next) == 'S':
-                             count += 1
+                if target == g.get_symbols_in_direction_northeast(p, target_length):
+                    count += 1
 
-                next = point.Point2D(p.get_x(), p.get_y() - 1)
-                if g.contains(next) and g.get_symbol(next) == 'M':
-                    next = point.Point2D(p.get_x(), p.get_y() - 2)
-                    if g.contains(next) and g.get_symbol(next) == 'A':
-                        next = point.Point2D(p.get_x(), p.get_y() - 3)
-                        if g.contains(next) and g.get_symbol(next) == 'S':
-                             count += 1
+                if target == g.get_symbols_in_direction_east(p, target_length):
+                    count += 1
 
-                next = point.Point2D(p.get_x() +1, p.get_y() + 1)
-                if g.contains(next) and g.get_symbol(next) == 'M':
-                    next = point.Point2D(p.get_x() +2, p.get_y() + 2)
-                    if g.contains(next) and g.get_symbol(next) == 'A':
-                        next = point.Point2D(p.get_x() +3, p.get_y() + 3)
-                        if g.contains(next) and g.get_symbol(next) == 'S':
-                             count += 1
+                if target == g.get_symbols_in_direction_southeast(p, target_length):
+                    count += 1
 
-                next = point.Point2D(p.get_x() - 1, p.get_y() - 1)
-                if g.contains(next) and g.get_symbol(next) == 'M':
-                    next = point.Point2D(p.get_x() - 2, p.get_y() - 2)
-                    if g.contains(next) and g.get_symbol(next) == 'A':
-                        next = point.Point2D(p.get_x() - 3, p.get_y() - 3)
-                        if g.contains(next) and g.get_symbol(next) == 'S':
-                             count += 1
+                if target == g.get_symbols_in_direction_south(p, target_length):
+                    count += 1
 
-                next = point.Point2D(p.get_x() + 1, p.get_y() - 1)
-                if g.contains(next) and g.get_symbol(next) == 'M':
-                    next = point.Point2D(p.get_x() + 2, p.get_y() - 2)
-                    if g.contains(next) and g.get_symbol(next) == 'A':
-                        next = point.Point2D(p.get_x() + 3, p.get_y() - 3)
-                        if g.contains(next) and g.get_symbol(next) == 'S':
-                             count += 1
+                if target == g.get_symbols_in_direction_southwest(p, target_length):
+                    count += 1
 
-                next = point.Point2D(p.get_x() - 1, p.get_y() + 1)
-                if g.contains(next) and g.get_symbol(next) == 'M':
-                    next = point.Point2D(p.get_x() - 2, p.get_y() + 2)
-                    if g.contains(next) and g.get_symbol(next) == 'A':
-                        next = point.Point2D(p.get_x() - 3, p.get_y() + 3)
-                        if g.contains(next) and g.get_symbol(next) == 'S':
-                             count += 1
+                if target == g.get_symbols_in_direction_west(p, target_length):
+                    count += 1
 
+                if target == g.get_symbols_in_direction_northwest(p, target_length):
+                    count += 1
     return count
 
 

@@ -1,4 +1,4 @@
-from helpers import point, fileutils
+from helpers import point, fileutils, compass
 
 # TODO: Update to follow style conventions (e.g. for class & method names) https://peps.python.org/pep-0008/
 
@@ -396,6 +396,40 @@ class Grid2D():
                 col_locations.append(location)
             
         return col_locations 
+    
+
+    def get_symbols_in_direction(self, current_point:point.Point2D, offset:int, x_increment:int, y_increment:int):        
+        str = ""
+        for i in range(offset):            
+            next_point = point.Point2D(current_point.get_x() + (i * x_increment), current_point.get_y() + (i * y_increment))
+            if not self.contains(next_point):
+                break
+            str += self.get_symbol(next_point)
+        return str
+
+    def get_symbols_in_direction_north(self, current_point:point.Point2D, offset:int):
+        return self.get_symbols_in_direction(current_point, offset, 0, 1)
+
+    def get_symbols_in_direction_east(self, current_point:point.Point2D, offset:int):
+        return self.get_symbols_in_direction(current_point, offset, 1, 0)
+
+    def get_symbols_in_direction_south(self, current_point:point.Point2D, offset:int):
+        return self.get_symbols_in_direction(current_point, offset, 0, -1)
+
+    def get_symbols_in_direction_west(self, current_point:point.Point2D, offset:int):
+        return self.get_symbols_in_direction(current_point, offset, -1, 0)
+
+    def get_symbols_in_direction_northeast(self, current_point:point.Point2D, offset:int):
+        return self.get_symbols_in_direction(current_point, offset, -1, 1)
+
+    def get_symbols_in_direction_southeast(self, current_point:point.Point2D, offset:int):
+        return self.get_symbols_in_direction(current_point, offset, 1, 1)
+
+    def get_symbols_in_direction_southwest(self, current_point:point.Point2D, offset:int):
+        return self.get_symbols_in_direction(current_point, offset, 1, -1)
+
+    def get_symbols_in_direction_northwest(self, current_point:point.Point2D, offset:int):
+        return self.get_symbols_in_direction(current_point, offset, -1, -1)
 
 
     def clone(self):

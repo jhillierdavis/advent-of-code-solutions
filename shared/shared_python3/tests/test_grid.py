@@ -1,8 +1,10 @@
 import pytest # for parameterised tests etc.
 
 from helpers.grid import Grid2D, get_multiple_grids_from
-from helpers.grid import display_grid
+from helpers.grid import display_grid, lines_to_grid
 from helpers.point import Point2D
+
+from helpers.compass import Compass
 
 def test_grid_creation():
     grid = Grid2D(3,2)
@@ -304,3 +306,26 @@ def test_get_grids_from(filename, expected):
 
     # Then: the number of grids is as anticipated
     assert len(grids) == expected
+
+
+@pytest.mark.parametrize(
+    "x,y,offset,expected",
+    [
+        pytest.param(0,0,3,"ABC"),
+        pytest.param(1,1,4,"HIJK"),
+        pytest.param(1,1,10,"HIJKL"),
+        pytest.param(5,3,10,"X"),
+        pytest.param(10,10,10,""), # Off grid
+    ],    
+)
+def test_get_symbols_east(x,y,offset,expected):
+
+    g = lines_to_grid(['ABCDEF','GHIJKL','MNOPQR','STUVWX'])
+    display_grid(g)
+
+    assert g.get_width() == 6
+    assert g.get_height() == 4
+
+    p = Point2D(x,y)
+    str = g.get_symbols_in_direction_east(p, offset)
+    assert str == expected
