@@ -37,7 +37,7 @@ def test_solve_part1(filename, expected):
     "filename, expected",
     [
         pytest.param(input_example, 123),
-        pytest.param(input_full, -1), # 4713 # 4454 too low!, 4738 too high!
+        pytest.param(input_full, 4713), # 4713 # 4454 too low!, 4738 too high!
     ],    
 )
 def test_solve_part2(filename, expected):
