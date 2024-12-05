@@ -74,15 +74,14 @@ def get_list_of_page_numbers_from(iterable_lines:Iterable[str]) -> Iterable[int]
 
 
 def solve_part1(filename:str) -> int:
-    lines = fileutils.get_lines_before_empty_from_file(filename)
-
+    # Process 1st section of page processing rules
+    lines = fileutils.get_lines_before_empty_from_file(filename)  
     preceding_page_map = get_preceding_page_map(lines)
 
-    lines = fileutils.get_lines_after_empty_from_file(filename)
-
     answer:int = 0
-    for l in lines: # Process each input line of page numbers
-        list_of_pages = get_list_of_page_numbers_from(l)
+    # Process 2nd section of page number updates
+    for line in fileutils.get_lines_after_empty_from_file(filename): # Process each input line (string) of page numbers
+        list_of_pages = get_list_of_page_numbers_from(line)
 
         if is_valid_page_number_ordering(list_of_pages, preceding_page_map):
             answer += get_middle_value_from(list_of_pages)
@@ -113,16 +112,15 @@ def get_reprioritised_page_numbers(list_of_unprioritised_page_numbers:Iterable[i
         
 
 def solve_part2(filename:str) -> int:
+    # Process 1st section of page processing rules
     lines = fileutils.get_lines_before_empty_from_file(filename)
-
     preceding_page_map = get_preceding_page_map(lines)
     subsequent_page_map = get_preceding_page_map(lines)
 
-    lines = fileutils.get_lines_after_empty_from_file(filename)
-
     answer:int = 0
-    for l in lines: # Process each input line of page numbers
-        list_of_page_numbers = get_list_of_page_numbers_from(l)
+    # Process 2nd section of page number updates
+    for line in fileutils.get_lines_after_empty_from_file(filename): # Process each input line (string) of page numbers
+        list_of_page_numbers = get_list_of_page_numbers_from(line)
         
         if not is_valid_page_number_ordering(list_of_page_numbers, preceding_page_map):
             list_of_reprioritised_page_numbers = get_reprioritised_page_numbers(list_of_page_numbers, subsequent_page_map)
