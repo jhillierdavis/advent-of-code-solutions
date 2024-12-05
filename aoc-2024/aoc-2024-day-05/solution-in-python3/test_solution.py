@@ -7,16 +7,18 @@ input_full = "AOC-2024-Day-05_Puzzle-Input-Full.txt"
 
 
 @pytest.mark.parametrize(
-    "int_array, expected",
+    "array_of_integers, expected",
     [
         pytest.param([75,47,61,53,29], 61),
         pytest.param([97,61,53,29,13], 53),
         pytest.param([75,29,13], 29),
+        pytest.param([1,2,3,4], 2), # Even length
+        pytest.param([], None),
     ],    
 )
-def test_get_middle_int_array_value(int_array, expected):
+def test_get_middle_value_from(array_of_integers, expected):
     # When:
-    value = solution.get_middle_int_array_value(int_array)   
+    value = solution.get_middle_value_from(array_of_integers)   
 
     # Then:
     assert expected == value
