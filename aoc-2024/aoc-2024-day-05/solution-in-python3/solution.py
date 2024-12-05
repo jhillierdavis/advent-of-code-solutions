@@ -1,5 +1,5 @@
 from helpers import fileutils
-from collections import deque
+from collections import deque, defaultdict
 
 from typing import Callable, Any, Iterable
 
@@ -15,14 +15,14 @@ def get_middle_value_from(array_of_integers:Iterable[int]) -> int:
     return array_of_integers[middle_index]
 
 
-def is_valid_page_number_ordering(list_of_page_numbers:list[int], orderings:dict[int:Iterable[int]]) -> bool:
+def is_valid_page_number_ordering(list_of_page_numbers:list[int], preceding_page_map:dict[int:Iterable[int]]) -> bool:
     size = len(list_of_page_numbers)
     for i in range(size):
         current_page_number = list_of_page_numbers[i]
 
         for next in range((i+1), size):            
             subsequent_page_number = list_of_page_numbers[next]
-            list_of_higher_priority_page_numbers = orderings.get(subsequent_page_number)
+            list_of_higher_priority_page_numbers = preceding_page_map.get(subsequent_page_number)
             
             if list_of_higher_priority_page_numbers == None:
                 continue
@@ -31,38 +31,36 @@ def is_valid_page_number_ordering(list_of_page_numbers:list[int], orderings:dict
     return True
 
 
-def get_dictionary_of_page_orderings_before_from(lines:Iterable[str]) -> dict[int:Iterable[int]]:
-    lookup_priority_before = dict()
+def get_preceding_page_map(lines:Iterable[str]) -> dict[int:Iterable[int]]:
+    preceding_page_map = defaultdict(list)
 
     for l in lines:
         values = l.split('|')
         first:int = int(values[0])
         second:int = int(values[1])
 
-        list_of_pages_before = lookup_priority_before.get(first)
-        if None == list_of_pages_before:
-            list_of_pages_before = [] # Initalise
-        list_of_pages_before.append(second)
+        list_of_pages_before = preceding_page_map[first] # Avoid use of .get() as fails to initialise
+        list_of_pages_before.append(second) 
 
-        lookup_priority_before.update({first: list_of_pages_before})  
+        #preceding_page_map.update({first: list_of_pages_before})   # Unnecessary
 
-    return lookup_priority_before
+    return preceding_page_map
 
 
-def get_dictionary_of_page_orderings_after_from(lines:Iterable[str]) -> dict[int:Iterable[int]]:
-    lookup_priority_after = dict()
+def get_subssequent_page_map(lines:Iterable[str]) -> dict[int:Iterable[int]]:
+    subsequent_page_map = defaultdict(list)
 
     for l in lines:
         values = l.split('|')
         first:int = int(values[0])
-        second:int = int(values[1])        
-        list_of_pages_after = lookup_priority_after.get(second)
-        if None == list_of_pages_after:
-            list_of_pages_after = [] # Initialise
-        list_of_pages_after.append(first)
-        lookup_priority_after.update({second: list_of_pages_after})  
+        second:int = int(values[1])    
 
-    return lookup_priority_after
+        list_of_pages_after = subsequent_page_map[second] # Avoid use of .get() as fails to initialise
+        list_of_pages_after.append(first)
+        
+        #subsequent_page_map.update({second: list_of_pages_after})  # Unnecessary
+
+    return subsequent_page_map
 
 
 def get_list_of_page_numbers_from(iterable_lines:Iterable[str]) -> Iterable[int]:
@@ -78,7 +76,7 @@ def get_list_of_page_numbers_from(iterable_lines:Iterable[str]) -> Iterable[int]
 def solve_part1(filename:str) -> int:
     lines = fileutils.get_lines_before_empty_from_file(filename)
 
-    orderings = get_dictionary_of_page_orderings_before_from(lines)
+    preceding_page_map = get_preceding_page_map(lines)
 
     lines = fileutils.get_lines_after_empty_from_file(filename)
 
@@ -86,7 +84,7 @@ def solve_part1(filename:str) -> int:
     for l in lines: # Process each input line of page numbers
         list_of_pages = get_list_of_page_numbers_from(l)
 
-        if is_valid_page_number_ordering(list_of_pages, orderings):
+        if is_valid_page_number_ordering(list_of_pages, preceding_page_map):
             answer += get_middle_value_from(list_of_pages)
 
     return answer
@@ -100,8 +98,8 @@ def get_reprioritised_page_numbers(list_of_unprioritised_page_numbers:Iterable[i
         current_page_number = queue_of_unprioritised_page_numbers.popleft()
         is_priority_page_number = True
 
-        for pn in queue_of_unprioritised_page_numbers:
-            list_of_priority_pages_after = page_orderings_after.get(pn)
+        for page_number in queue_of_unprioritised_page_numbers:
+            list_of_priority_pages_after = page_orderings_after.get(page_number)
             if list_of_priority_pages_after is not None and current_page_number in list_of_priority_pages_after:
                 is_priority_page_number = False
                 break
@@ -117,8 +115,8 @@ def get_reprioritised_page_numbers(list_of_unprioritised_page_numbers:Iterable[i
 def solve_part2(filename:str) -> int:
     lines = fileutils.get_lines_before_empty_from_file(filename)
 
-    orderings_before = get_dictionary_of_page_orderings_before_from(lines)
-    orderings_after = get_dictionary_of_page_orderings_after_from(lines)
+    preceding_page_map = get_preceding_page_map(lines)
+    subsequent_page_map = get_preceding_page_map(lines)
 
     lines = fileutils.get_lines_after_empty_from_file(filename)
 
@@ -126,8 +124,8 @@ def solve_part2(filename:str) -> int:
     for l in lines: # Process each input line of page numbers
         list_of_page_numbers = get_list_of_page_numbers_from(l)
         
-        if not is_valid_page_number_ordering(list_of_page_numbers, orderings_before):
-            list_of_reprioritised_page_numbers = get_reprioritised_page_numbers(list_of_page_numbers, orderings_after)
+        if not is_valid_page_number_ordering(list_of_page_numbers, preceding_page_map):
+            list_of_reprioritised_page_numbers = get_reprioritised_page_numbers(list_of_page_numbers, subsequent_page_map)
             answer += get_middle_value_from(list_of_reprioritised_page_numbers)
 
     return answer
