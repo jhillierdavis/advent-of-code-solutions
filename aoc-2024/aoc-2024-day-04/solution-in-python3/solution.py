@@ -12,28 +12,28 @@ def count_wordsearch_occurences_in_grid(g:grid, target_word:str):
 
             if g.get_symbol(p) == target_word[0]:
 
-                if target_word == g.get_symbols_in_direction_north(p, target_word_length):
+                if target_word == g.get_symbols_in_direction_by_offset(p, grid.Compass.NORTH, target_word_length):
                     count += 1
 
-                if target_word == g.get_symbols_in_direction_northeast(p, target_word_length):
+                if target_word == g.get_symbols_in_direction_by_offset(p, grid.Compass.NORTHEAST, target_word_length):
                     count += 1
 
-                if target_word == g.get_symbols_in_direction_east(p, target_word_length):
+                if target_word == g.get_symbols_in_direction_by_offset(p, grid.Compass.EAST, target_word_length):
                     count += 1
 
-                if target_word == g.get_symbols_in_direction_southeast(p, target_word_length):
+                if target_word == g.get_symbols_in_direction_by_offset(p, grid.Compass.SOUTHEAST, target_word_length):
                     count += 1
 
-                if target_word == g.get_symbols_in_direction_south(p, target_word_length):
+                if target_word == g.get_symbols_in_direction_by_offset(p, grid.Compass.SOUTH, target_word_length):
                     count += 1
 
-                if target_word == g.get_symbols_in_direction_southwest(p, target_word_length):
+                if target_word == g.get_symbols_in_direction_by_offset(p, grid.Compass.SOUTHWEST, target_word_length):
                     count += 1
 
-                if target_word == g.get_symbols_in_direction_west(p, target_word_length):
+                if target_word == g.get_symbols_in_direction_by_offset(p, grid.Compass.WEST, target_word_length):
                     count += 1
 
-                if target_word == g.get_symbols_in_direction_northwest(p, target_word_length):
+                if target_word == g.get_symbols_in_direction_by_offset(p, grid.Compass.NORTHWEST, target_word_length):
                     count += 1
     return count
 

@@ -4,7 +4,7 @@ from helpers.grid import Grid2D, get_multiple_grids_from
 from helpers.grid import display_grid, lines_to_grid
 from helpers.point import Point2D
 
-from helpers.compass import Compass
+from helpers.grid import Compass
 
 def test_grid_creation():
     grid = Grid2D(3,2)
@@ -309,16 +309,23 @@ def test_get_grids_from(filename, expected):
 
 
 @pytest.mark.parametrize(
-    "x,y,offset,expected",
+    "x,y,direction,offset,expected",
     [
-        pytest.param(0,0,3,"ABC"),
-        pytest.param(1,1,4,"HIJK"),
-        pytest.param(1,1,10,"HIJKL"),
-        pytest.param(5,3,10,"X"),
-        pytest.param(10,10,10,""), # Off grid
+        pytest.param(0,0,Compass.EAST,3,"ABC"),
+        pytest.param(1,1,Compass.EAST,4,"HIJK"),
+        pytest.param(1,1,Compass.EAST,10,"HIJKL"),
+        pytest.param(5,3,Compass.EAST,10,"X"),
+        pytest.param(10,10,Compass.EAST,10,""), # Off grid
+        pytest.param(0,0,Compass.SOUTH,4,"AGMS"),
+        pytest.param(0,0,Compass.SOUTHEAST,4,"AHOV"),
+        pytest.param(4,1,Compass.SOUTHWEST,2,"KP"),
+        pytest.param(5,3,Compass.NORTH,4,"XRLF"),
+        pytest.param(5,3,Compass.WEST,6,"XWVUTS"),
+        pytest.param(5,3,Compass.NORTHWEST,4,"XQJC"),
+        pytest.param(1,2,Compass.NORTHEAST,3,"NID"),
     ],    
 )
-def test_get_symbols_east(x,y,offset,expected):
+def test_get_symbols_in_direction_by_offset(x,y,direction,offset,expected):
 
     g = lines_to_grid(['ABCDEF','GHIJKL','MNOPQR','STUVWX'])
     display_grid(g)
@@ -327,5 +334,5 @@ def test_get_symbols_east(x,y,offset,expected):
     assert g.get_height() == 4
 
     p = Point2D(x,y)
-    str = g.get_symbols_in_direction_east(p, offset)
+    str = g.get_symbols_in_direction_by_offset(p, direction, offset)
     assert str == expected

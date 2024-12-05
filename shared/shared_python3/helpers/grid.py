@@ -2,6 +2,9 @@ from helpers import point, fileutils
 
 # TODO: Update to follow style conventions (e.g. for class & method names) https://peps.python.org/pep-0008/
 
+from enum import Enum
+Compass = Enum('Compass', [('NORTH', 1), ('NORTHEAST', 2), ('EAST', 3), ('SOUTHEAST', 4), ('SOUTH', 5), ('SOUTHWEST', 6), ('WEST', 7), ('NORTHWEST', 8)])
+
 def lines_to_grid(input_lines):
     height = len(input_lines)
     width = len(input_lines[0])
@@ -398,6 +401,35 @@ class Grid2D():
         return col_locations 
     
 
+    def get_symbols_in_direction_by_offset(self, current_point:point.Point2D, direction:Compass, offset:int):        
+        match direction:
+            case Compass.NORTH:
+                return self.get_symbols_in_direction(current_point, offset, 0, -1)
+
+            case Compass.NORTHEAST:
+                return self.get_symbols_in_direction(current_point, offset, 1, -1)
+
+            case Compass.EAST:
+                return self.get_symbols_in_direction(current_point, offset, 1, 0)
+
+            case Compass.SOUTHEAST:
+                return self.get_symbols_in_direction(current_point, offset, 1, 1)
+
+            case Compass.SOUTH:
+                return self.get_symbols_in_direction(current_point, offset, 0, 1)
+
+            case Compass.SOUTHWEST:
+                return self.get_symbols_in_direction(current_point, offset, -1, 1)
+
+            case Compass.WEST:
+                return self.get_symbols_in_direction(current_point, offset, -1, 0)
+
+            case Compass.NORTHWEST:
+                return self.get_symbols_in_direction(current_point, offset, -1, -1)
+
+            case _:
+                raise Exception(f"Unhandled direction: {direction}")
+
     def get_symbols_in_direction(self, current_point:point.Point2D, offset:int, x_increment:int, y_increment:int):        
         str = ""
         for i in range(offset):            
@@ -406,30 +438,6 @@ class Grid2D():
                 break
             str += self.get_symbol(next_point)
         return str
-
-    def get_symbols_in_direction_north(self, current_point:point.Point2D, offset:int):
-        return self.get_symbols_in_direction(current_point, offset, 0, 1)
-
-    def get_symbols_in_direction_east(self, current_point:point.Point2D, offset:int):
-        return self.get_symbols_in_direction(current_point, offset, 1, 0)
-
-    def get_symbols_in_direction_south(self, current_point:point.Point2D, offset:int):
-        return self.get_symbols_in_direction(current_point, offset, 0, -1)
-
-    def get_symbols_in_direction_west(self, current_point:point.Point2D, offset:int):
-        return self.get_symbols_in_direction(current_point, offset, -1, 0)
-
-    def get_symbols_in_direction_northeast(self, current_point:point.Point2D, offset:int):
-        return self.get_symbols_in_direction(current_point, offset, -1, 1)
-
-    def get_symbols_in_direction_southeast(self, current_point:point.Point2D, offset:int):
-        return self.get_symbols_in_direction(current_point, offset, 1, 1)
-
-    def get_symbols_in_direction_southwest(self, current_point:point.Point2D, offset:int):
-        return self.get_symbols_in_direction(current_point, offset, 1, -1)
-
-    def get_symbols_in_direction_northwest(self, current_point:point.Point2D, offset:int):
-        return self.get_symbols_in_direction(current_point, offset, -1, -1)
 
 
     def clone(self):
