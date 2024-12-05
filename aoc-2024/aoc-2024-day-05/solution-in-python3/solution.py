@@ -15,7 +15,7 @@ def get_middle_value_from(array_of_integers:Iterable[int]) -> int:
     return array_of_integers[middle_index]
 
 
-def is_valid_page_number_ordering(list_of_page_numbers:list[int], orderings:dict[int:int]) -> bool:
+def is_valid_page_number_ordering(list_of_page_numbers:list[int], orderings:dict[int:Iterable[int]]) -> bool:
     size = len(list_of_page_numbers)
     for i in range(size):
         current_page_number = list_of_page_numbers[i]
@@ -31,7 +31,7 @@ def is_valid_page_number_ordering(list_of_page_numbers:list[int], orderings:dict
     return True
 
 
-def get_dictionary_of_page_orderings_before_from(lines:Iterable[str]) -> dict:
+def get_dictionary_of_page_orderings_before_from(lines:Iterable[str]) -> dict[int:Iterable[int]]:
     lookup_priority_before = dict()
 
     for l in lines:
@@ -49,7 +49,7 @@ def get_dictionary_of_page_orderings_before_from(lines:Iterable[str]) -> dict:
     return lookup_priority_before
 
 
-def get_dictionary_of_page_orderings_after_from(lines:Iterable[str]) -> dict:
+def get_dictionary_of_page_orderings_after_from(lines:Iterable[str]) -> dict[int:Iterable[int]]:
     lookup_priority_after = dict()
 
     for l in lines:
