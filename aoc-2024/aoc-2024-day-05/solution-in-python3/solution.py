@@ -2,125 +2,131 @@ from helpers import fileutils
 from collections import deque
 
 
-def get_middle_value(int_array):
-    middle = int(len(int_array)/2)
-    return int_array[middle]
+# Trying out: Variable naming prefix convention
+#
+# c_* = char
+# s_* = string
+# i_* = int
+# a?_* = array (subsequent char states type of contained elements)
+# l?_* = list (subsequent char states type of contained elements)
+# s?_* = set (subsequent char states type of contained elements) NB: At Least 2 chars before _ , so distinct from string
+# d??_* = dictionary (subsequent chars states types of key & value)
+#
 
-def is_valid_ordering(list_int, orderings):
-    length = len(list_int)
-    for i in range(length):
-        current = list_int[i]
-        for j in range((i+1),length):
-            next = list_int[j]
-            items = orderings.get(next)
-            #print(f"DEBUG: current={current} next={next} items={items}")
-            if items == None:
+
+def get_middle_int_array_value(a_int):
+    i_middle = len(a_int)//2
+    return a_int[i_middle]
+
+def is_valid_page_number_ordering(li_page_numbers, orderings):
+    i_length = len(li_page_numbers)
+    for i in range(i_length):
+        i_current_page_number = li_page_numbers[i]
+
+        for j in range((i+1), i_length):            
+            i_subsequent_page_number = li_page_numbers[j]
+            li_higher_priority_page_numbers = orderings.get(i_subsequent_page_number)
+            
+            if li_higher_priority_page_numbers == None:
                 continue
-            if current in items:
+            if i_current_page_number in li_higher_priority_page_numbers:
                 return False
     return True
 
-def get_page_orderings_before_from(lines):
-    orderings = dict()
+def get_dictionary_of_page_orderings_before_from(as_lines):
+    dili_page_orderings_before = dict()
 
-    for l in lines:
-        values = l.split('|')
-        key = int(values[0])
-        item = int(values[1])
-        items = orderings.get(key)
-        if None == items:
-            items = []
-        items.append(item)
-        orderings.update({key: items})  
+    for s_line in as_lines:
+        as_values = s_line.split('|')
+        i_key = int(as_values[0])
+        i_value = int(as_values[1])
+        ai_page_numbers_before = dili_page_orderings_before.get(i_key)
+        if None == ai_page_numbers_before:
+            ai_page_numbers_before = []
+        ai_page_numbers_before.append(i_value)
+        dili_page_orderings_before.update({i_key: ai_page_numbers_before})  
 
-    return orderings
-
-def get_page_orderings_after_from(lines):
-    page_orderings_afer = dict()
-
-    for l in lines:
-        values = l.split('|')
-        item = int(values[0])
-        key = int(values[1])
-        items = page_orderings_afer.get(key)
-        if None == items:
-            items = []
-        items.append(item)
-        page_orderings_afer.update({key: items})  
-
-    return page_orderings_afer
+    return dili_page_orderings_before
 
 
-def solve_part1(filename):
-    lines = fileutils.get_lines_before_empty_from_file(filename)
-    #print(f"DEBUG: Ordering lines={lines}")
+def get_dictionary_of_page_orderings_after_from(as_lines):
+    dili_page_orderings_afer = dict()
 
-    orderings = get_page_orderings_before_from(lines)
-    #print(f"DEBUG: Orderings={orderings}")
+    for s_line in as_lines:
+        as_values = s_line.split('|')
+        i_value = int(as_values[0])
+        i_key = int(as_values[1])
+        ai_page_numbers_after = dili_page_orderings_afer.get(i_key)
+        if None == ai_page_numbers_after:
+            ai_page_numbers_after = []
+        ai_page_numbers_after.append(i_value)
+        dili_page_orderings_afer.update({i_key: ai_page_numbers_after})  
 
-    lines = fileutils.get_lines_after_empty_from_file(filename)
-    #print(f"DEBUG: Updates={lines}")
+    return dili_page_orderings_afer
 
-    count = 0
-    for l in lines:
-        values = l.split(',')
-        list_int = []
-        for v in values:
-            entry = int(v)
-            list_int.append(entry)
-        #print(f"DEBUG: list_int={list_int}")   
-        if is_valid_ordering(list_int, orderings):
-             print(f"DEBUG: Valid list_int={list_int}")   
-             count += get_middle_value(list_int)
 
-    return count
+def get_list_of_page_numbers_from(s_line):
+    as_values = s_line.split(',')
+    li_pages = []
+    for s_value in as_values:
+        i_page_number = int(s_value)
+        li_pages.append(i_page_number)
+    return li_pages
 
-def reorder_invalid_list(list_int, page_orderings_before, page_orderings_after):
-    queue = deque(list_int)
-    #print(f"DEBUG: queue={queue}")
-    new_list = []
 
-    while len(queue) > 0:
-        item = queue.popleft()
-        priority = True
-        for other in queue:
-            #print(f"DEBUG: item={item} other={other}")
-            after = page_orderings_after.get(other)
-            if after is not None and item in after:
-                priority = False
+def solve_part1(s_filename):
+    as_lines = fileutils.get_lines_before_empty_from_file(s_filename)
+
+    dili_orderings = get_dictionary_of_page_orderings_before_from(as_lines)
+
+    as_lines = fileutils.get_lines_after_empty_from_file(s_filename)
+
+    i_answer = 0
+    for s_line in as_lines:
+        li_pages = get_list_of_page_numbers_from(s_line)
+
+        if is_valid_page_number_ordering(li_pages, dili_orderings):
+            i_answer += get_middle_int_array_value(li_pages)
+
+    return i_answer
+
+
+def get_reprioritised_page_list(li_pages, dili_page_orderings_after):
+    qi_page_numbers_to_sort = deque(li_pages) # Use a queue to hold yet to be sorted (by priority) page numbers
+    li_prioritised_pages = []
+
+    while len(qi_page_numbers_to_sort) > 0:
+        i_current_page_number = qi_page_numbers_to_sort.popleft()
+        b_is_priority_page_number = True
+
+        for i_unsorted_page_number in qi_page_numbers_to_sort:
+            li_priority_pages_after = dili_page_orderings_after.get(i_unsorted_page_number)
+            if li_priority_pages_after is not None and i_current_page_number in li_priority_pages_after:
+                b_is_priority_page_number = False
                 break
-        if priority:
-            new_list.append(item)
-        else:
-            queue.append(item)
 
-    return new_list
+        if b_is_priority_page_number: # Top-priority page amongst remaining page numbers
+            li_prioritised_pages.append(i_current_page_number)
+        else: # Return non-priority page number to queue for subsequent re-processing
+            qi_page_numbers_to_sort.append(i_current_page_number)
+
+    return li_prioritised_pages
         
 
-def solve_part2(filename):
-    lines = fileutils.get_lines_before_empty_from_file(filename)
-    #print(f"DEBUG: Ordering lines={lines}")
+def solve_part2(s_filename):
+    as_lines = fileutils.get_lines_before_empty_from_file(s_filename)
 
-    page_orderings_before = get_page_orderings_before_from(lines)
-    page_orderings_after = get_page_orderings_after_from(lines)
-    #print(f"DEBUG: Orderings={orderings}")
+    dili_page_orderings_before = get_dictionary_of_page_orderings_before_from(as_lines)
+    dili_page_orderings_after = get_dictionary_of_page_orderings_after_from(as_lines)
 
-    lines = fileutils.get_lines_after_empty_from_file(filename)
-    #print(f"DEBUG: Updates={lines}")
+    as_lines = fileutils.get_lines_after_empty_from_file(s_filename)
 
-    count = 0
-    for l in lines:
-        values = l.split(',')
-        list_int = []
-        for v in values:
-            entry = int(v)
-            list_int.append(entry)
-        #print(f"DEBUG: list_int={list_int}")   
-        if not is_valid_ordering(list_int, page_orderings_before):
-            #print(f"DEBUG: Invalid list_int={list_int}")   
+    i_answer = 0
+    for s_line in as_lines:
+        li_pages = get_list_of_page_numbers_from(s_line)
+        
+        if not is_valid_page_number_ordering(li_pages, dili_page_orderings_before):
+            l_reprioritised_pages = get_reprioritised_page_list(li_pages, dili_page_orderings_after)
+            i_answer += get_middle_int_array_value(l_reprioritised_pages)
 
-            new_list = reorder_invalid_list(list_int, page_orderings_before, page_orderings_after)
-            #print(f"DEBUG: Reordered new_list={new_list}")   
-            count += get_middle_value(new_list)
-
-    return count
+    return i_answer

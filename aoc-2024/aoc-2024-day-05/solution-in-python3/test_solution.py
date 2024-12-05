@@ -14,8 +14,11 @@ input_full = "AOC-2024-Day-05_Puzzle-Input-Full.txt"
         pytest.param([75,29,13], 29),
     ],    
 )
-def test_get_middle_value(int_array, expected):
-    value = solution.get_middle_value(int_array)   
+def test_get_middle_int_array_value(int_array, expected):
+    # When:
+    value = solution.get_middle_int_array_value(int_array)   
+
+    # Then:
     assert expected == value
 
 #@pytest.mark.skip(reason="TODO: Ignore until implemented")
@@ -27,8 +30,10 @@ def test_get_middle_value(int_array, expected):
     ],    
 )
 def test_solve_part1(filename, expected):
-    value = solution.solve_part1(filename)
-    
+    # When:
+    value = solution.solve_part1(filename)    
+
+    # Then:
     assert expected == value
 
 
@@ -41,6 +46,8 @@ def test_solve_part1(filename, expected):
     ],    
 )
 def test_solve_part2(filename, expected):
+    # When:
     value = solution.solve_part2(filename)
     
+    # Then:
     assert expected == value
