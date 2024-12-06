@@ -1,14 +1,9 @@
 from helpers import fileutils, grid, point
 
 def get_starting_point_from(g):
-    sp = None
-    for h in range(g.get_height()):
-        for w in range(g.get_width()):
-            p = point.Point2D(w,h)
-            if '^' == g.get_symbol(p):
-                sp = p
-                break
-    return sp
+    starting_points = g.get_points_matching('^')
+    assert len(starting_points) == 1
+    return starting_points.pop()
 
 
 def get_direction_when_turn_right_by_90(direction:grid.Compass) -> grid.Compass:
