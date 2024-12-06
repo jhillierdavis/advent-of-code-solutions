@@ -37,19 +37,11 @@ def get_next_movement_point(g:grid.Grid2D, cp:point.Point2D, direction:grid.Comp
         raise Exception(f"Unknown direction: {direction}")
 
 
-def solve_part1(filename):
-    lines = fileutils.get_file_lines_from(filename)
-    g = grid.lines_to_grid(lines)
-    sp = get_starting_point_from(g)
-
-    #print(f"DEBUG: starting point = {sp}")
-    
-    # Count movement steps
+def get_traversed_path_points(g, sp):
     direction = grid.Compass.NORTH
-    np = None
-    cp = sp
     gc = g.clone()
     gc.set_symbol(sp, 'X')
+    cp = sp
 
     while True:        
         np = get_next_movement_point(g, cp, direction)
@@ -66,7 +58,18 @@ def solve_part1(filename):
             gc.set_symbol(cp, 'X')
 
     #grid.display_grid(gc)
-    return gc.count_symbol('X')
+    #return gc.count_symbol('X')
+    return gc.get_points_matching('X')
+
+
+def solve_part1(filename):
+    lines = fileutils.get_file_lines_from(filename)
+    g = grid.lines_to_grid(lines)
+    sp = get_starting_point_from(g)
+    #print(f"DEBUG: starting point = {sp}")
+
+    traversed_path_points = get_traversed_path_points(g, sp)    
+    return len(traversed_path_points)
 
 
 def has_loop(g, cp, direction, np):

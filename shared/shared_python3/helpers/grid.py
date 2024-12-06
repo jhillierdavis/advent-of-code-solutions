@@ -313,6 +313,16 @@ class Grid2D():
                     count +=1
         return count
     
+    def get_points_matching(self, symbol):
+        matching_points = set()
+        for x in range(self.get_width()):
+            for y in range(self.get_height()):
+                p = point.Point2D(x,y)
+                value = self.get_symbol(p)
+                if value == symbol:
+                    matching_points.add(p)
+        return matching_points
+    
     def merge_symbol(self, grid, symbol):
         min_w = min(self.get_width(), grid.get_width())
         min_h = min(self.get_height(), grid.get_height())
