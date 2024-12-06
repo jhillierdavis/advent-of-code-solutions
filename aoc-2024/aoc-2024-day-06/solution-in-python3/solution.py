@@ -11,6 +11,31 @@ def get_starting_point_from(g):
     return sp
 
 
+def get_direction_when_turn_right_by_90(direction:grid.Compass) -> grid.Compass:
+    if direction == grid.Compass.NORTH:
+        return grid.Compass.EAST
+    elif direction == grid.Compass.EAST:
+        return grid.Compass.SOUTH
+    elif direction == grid.Compass.SOUTH:
+        return grid.Compass.WEST
+    elif direction == grid.Compass.WEST:
+        return grid.Compass.NORTH
+    else:
+        raise Exception(f"Unknown direction: {direction}")
+
+
+def get_next_movement_point(g:grid.Grid2D, cp:point.Point2D, direction:grid.Compass) -> point.Point2D:
+    if direction == grid.Compass.NORTH:
+        return g.get_neighbour_north(cp)
+    elif direction == grid.Compass.EAST:
+        return g.get_neighbour_east(cp)
+    elif direction == grid.Compass.SOUTH:
+        return g.get_neighbour_south(cp)
+    elif direction == grid.Compass.WEST:
+        return g.get_neighbour_west(cp)
+    else:
+        raise Exception(f"Unknown direction: {direction}")
+
 
 def solve_part1(filename):
     lines = fileutils.get_file_lines_from(filename)
@@ -18,9 +43,7 @@ def solve_part1(filename):
     sp = get_starting_point_from(g)
 
     #print(f"DEBUG: starting point = {sp}")
-
-    ans = 0
-
+    
     # Count movement steps
     direction = grid.Compass.NORTH
     np = None
@@ -28,35 +51,18 @@ def solve_part1(filename):
     gc = g.clone()
     gc.set_symbol(sp, 'X')
 
-    for i in range(10000):
-        
-        if direction == grid.Compass.NORTH:
-            np = g.get_neighbour_north(cp)
-        elif direction == grid.Compass.EAST:
-            np = g.get_neighbour_east(cp)
-        elif direction == grid.Compass.SOUTH:
-            np = g.get_neighbour_south(cp)
-        elif direction == grid.Compass.WEST:
-            np = g.get_neighbour_west(cp)
-
-        #print(f"DEBUG: i={i} cp={cp} np={np} direction={direction}")
+    while True:        
+        np = get_next_movement_point(g, cp, direction)
+        #print(f"DEBUG: cp={cp} np={np} direction={direction}")
         
         if None == np or not g.contains(np): # Off grid
             break
         
         ns = g.get_symbol(np)
-        if '#' == ns: # Change direction
-            if direction == grid.Compass.NORTH:
-                direction = grid.Compass.EAST
-            elif direction == grid.Compass.EAST:
-                direction = grid.Compass.SOUTH
-            elif direction == grid.Compass.SOUTH:
-                direction = grid.Compass.WEST
-            elif direction == grid.Compass.WEST:
-                direction = grid.Compass.NORTH
+        if '#' == ns: # Change direction (as movement blocked)
+            direction = get_direction_when_turn_right_by_90(direction)
         else: # Move a step
             cp = np
-            ans += 1
             gc.set_symbol(cp, 'X')
 
     #grid.display_grid(gc)
@@ -67,15 +73,7 @@ def has_loop(g, cp, direction, np):
     visited = set()
 
     while True:
-        
-        if direction == grid.Compass.NORTH:
-            np = g.get_neighbour_north(cp)
-        elif direction == grid.Compass.EAST:
-            np = g.get_neighbour_east(cp)
-        elif direction == grid.Compass.SOUTH:
-            np = g.get_neighbour_south(cp)
-        elif direction == grid.Compass.WEST:
-            np = g.get_neighbour_west(cp)
+        np = get_next_movement_point(g, cp, direction)
 
         #print(f"DEBUG: i={i} cp={cp} np={np} direction={direction}")
         
@@ -84,22 +82,12 @@ def has_loop(g, cp, direction, np):
 
         ns = g.get_symbol(np)
         if '#' == ns: # Change direction
-            if direction == grid.Compass.NORTH:
-                direction = grid.Compass.EAST
-            elif direction == grid.Compass.EAST:
-                direction = grid.Compass.SOUTH
-            elif direction == grid.Compass.SOUTH:
-                direction = grid.Compass.WEST
-            elif direction == grid.Compass.WEST:
-                direction = grid.Compass.NORTH
+            direction = get_direction_when_turn_right_by_90(direction)
         else: # Move a step
             if (np, direction) in visited: 
                 return True
             visited.add((np, direction)) 
             cp = np
-
-    return False
-
 
 
 def solve_part2(filename): # Wrong answer!
@@ -114,32 +102,16 @@ def solve_part2(filename): # Wrong answer!
     cp = sp
     g_ans = g.clone()
     
-    while True:
-        
-        if direction == grid.Compass.NORTH:
-            np = g.get_neighbour_north(cp)
-        elif direction == grid.Compass.EAST:
-            np = g.get_neighbour_east(cp)
-        elif direction == grid.Compass.SOUTH:
-            np = g.get_neighbour_south(cp)
-        elif direction == grid.Compass.WEST:
-            np = g.get_neighbour_west(cp)
-
-        #print(f"DEBUG: i={i} cp={cp} np={np} direction={direction}")
+    while True:        
+        np = get_next_movement_point(g, cp, direction)
+        #print(f"DEBUG: cp={cp} np={np} direction={direction}")
         
         if None == np or not g.contains(np): # Off grid
             break
         
         ns = g.get_symbol(np)
         if '#' == ns: # Change direction
-            if direction == grid.Compass.NORTH:
-                direction = grid.Compass.EAST
-            elif direction == grid.Compass.EAST:
-                direction = grid.Compass.SOUTH
-            elif direction == grid.Compass.SOUTH:
-                direction = grid.Compass.WEST
-            elif direction == grid.Compass.WEST:
-                direction = grid.Compass.NORTH
+            direction = get_direction_when_turn_right_by_90(direction)
         else: # Move a step
             
             gc = g.clone()
@@ -156,32 +128,16 @@ def solve_part2(filename): # Wrong answer!
 def goes_off_grid_or_loops(g, cp, direction):
     visited = set()
 
-    while True:
-        
-        if direction == grid.Compass.NORTH:
-            np = g.get_neighbour_north(cp)
-        elif direction == grid.Compass.EAST:
-            np = g.get_neighbour_east(cp)
-        elif direction == grid.Compass.SOUTH:
-            np = g.get_neighbour_south(cp)
-        elif direction == grid.Compass.WEST:
-            np = g.get_neighbour_west(cp)
-
-        #print(f"DEBUG: i={i} cp={cp} np={np} direction={direction}")
+    while True:        
+        np = get_next_movement_point(g, cp, direction)
+        #print(f"DEBUG: cp={cp} np={np} direction={direction}")
         
         if None == np or not g.contains(np): # Off grid
             return False
 
         ns = g.get_symbol(np)
         if '#' == ns: # Change direction
-            if direction == grid.Compass.NORTH:
-                direction = grid.Compass.EAST
-            elif direction == grid.Compass.EAST:
-                direction = grid.Compass.SOUTH
-            elif direction == grid.Compass.SOUTH:
-                direction = grid.Compass.WEST
-            elif direction == grid.Compass.WEST:
-                direction = grid.Compass.NORTH
+            direction = get_direction_when_turn_right_by_90(direction)
         else: # Move a step
             if (np, direction) in visited: 
                 return True
