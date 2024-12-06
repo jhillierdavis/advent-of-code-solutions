@@ -28,6 +28,8 @@ class Point2D():
         return str(self)
     
     def __eq__(self,other) -> bool:
+        if other == None:
+            return False
         return self.get_x() == other.get_x() and self.get_y() == other.get_y()
     
     def __hash__(self):
