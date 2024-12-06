@@ -1,7 +1,16 @@
 from helpers import fileutils, grid, point
 
+
+# Grid positions character symbols
+EMPTY_POSITION = '.'
+STARTING_POSITION = '^'
+EXISTING_OBSTRUCTION = '#'
+VISITED_POSITION = 'X'
+PLACED_OBSTRUCTION = 'O'
+
+
 def get_starting_point_from(g):
-    starting_points = g.get_points_matching('^')
+    starting_points = g.get_points_matching(STARTING_POSITION)
     assert len(starting_points) == 1
     return starting_points.pop()
 
@@ -35,7 +44,7 @@ def get_next_movement_point(g:grid.Grid2D, cp:point.Point2D, direction:grid.Comp
 def get_traversed_path_points(g, sp):
     direction = grid.Compass.NORTH
     gc = g.clone()
-    gc.set_symbol(sp, 'X')
+    gc.set_symbol(sp, VISITED_POSITION)
     cp = sp
 
     while True:        
@@ -46,15 +55,14 @@ def get_traversed_path_points(g, sp):
             break
         
         ns = g.get_symbol(np)
-        if '#' == ns: # Change direction (as movement blocked)
+        if EXISTING_OBSTRUCTION == ns: # Change direction (as movement blocked)
             direction = get_direction_when_turn_right_by_90(direction)
-        else: # Move a step
+        else: # Move a step (and record current point as visited)
             cp = np
-            gc.set_symbol(cp, 'X')
+            gc.set_symbol(cp, VISITED_POSITION)
 
     #grid.display_grid(gc)
-    #return gc.count_symbol('X')
-    return gc.get_points_matching('X')
+    return gc.get_points_matching(VISITED_POSITION)
 
 
 def solve_part1(filename):
@@ -65,62 +73,6 @@ def solve_part1(filename):
 
     traversed_path_points = get_traversed_path_points(g, sp)    
     return len(traversed_path_points)
-
-
-def has_loop(g, cp, direction, np):
-    visited = set()
-
-    while True:
-        np = get_next_movement_point(g, cp, direction)
-
-        #print(f"DEBUG: i={i} cp={cp} np={np} direction={direction}")
-        
-        if None == np or not g.contains(np): # Off grid
-            return False
-
-        ns = g.get_symbol(np)
-        if '#' == ns: # Change direction
-            direction = get_direction_when_turn_right_by_90(direction)
-        else: # Move a step
-            if (np, direction) in visited: 
-                return True
-            visited.add((np, direction)) 
-            cp = np
-
-
-def solve_part2(filename): # Wrong answer!
-    lines = fileutils.get_file_lines_from(filename)
-    g = grid.lines_to_grid(lines)
-    sp = get_starting_point_from(g)
-    #print(f"DEBUG: starting point = {sp}")
-
-    # Count movement steps
-    direction = grid.Compass.NORTH
-    np = None
-    cp = sp
-    g_ans = g.clone()
-    
-    while True:        
-        np = get_next_movement_point(g, cp, direction)
-        #print(f"DEBUG: cp={cp} np={np} direction={direction}")
-        
-        if None == np or not g.contains(np): # Off grid
-            break
-        
-        ns = g.get_symbol(np)
-        if '#' == ns: # Change direction
-            direction = get_direction_when_turn_right_by_90(direction)
-        else: # Move a step
-            
-            gc = g.clone()
-            gc.set_symbol(np, '#')
-            if has_loop(gc, cp, direction, np):
-                if g_ans.get_symbol(np) == '.':
-                    g_ans.set_symbol(np, '0')   
-            cp = np
-
-    grid.display_grid(g_ans)
-    return g_ans.count_symbol('0')
 
 
 def goes_off_grid_or_loops(g, cp, direction):
@@ -134,33 +86,31 @@ def goes_off_grid_or_loops(g, cp, direction):
             return False
 
         ns = g.get_symbol(np)
-        if '#' == ns: # Change direction
+        if EXISTING_OBSTRUCTION == ns: # Change direction
             direction = get_direction_when_turn_right_by_90(direction)
         else: # Move a step
             if (np, direction) in visited: 
-                return True
+                return True # Loop detected (as point visited with same direction)
             visited.add((np, direction)) 
             cp = np
 
 
-def brute_force(filename):
+def solve_part2(filename):
     lines = fileutils.get_file_lines_from(filename)
     g = grid.lines_to_grid(lines)
     sp = get_starting_point_from(g)
-    #print(f"DEBUG: starting point = {sp}")
+
+    traversed_path_points = get_traversed_path_points(g, sp)    
 
     # Count movement steps
     direction = grid.Compass.NORTH
     g_ans = g.clone()
 
-    for h in range(g.get_height()):
-        for w in range(g.get_width()):
-            gc = g.clone()
-            p = point.Point2D(w,h)
-            if gc.get_symbol(p) == '.':
-                gc.set_symbol(p, '#')
-            
-                if goes_off_grid_or_loops(gc, sp, direction):
-                    g_ans.set_symbol(p, '0')
+    for p in traversed_path_points:
+        gc = g.clone()
+        gc.set_symbol(p, EXISTING_OBSTRUCTION)
+    
+        if goes_off_grid_or_loops(gc, sp, direction):
+            g_ans.set_symbol(p, PLACED_OBSTRUCTION)
 
-    return g_ans.count_symbol('0')
+    return g_ans.count_symbol(PLACED_OBSTRUCTION)
