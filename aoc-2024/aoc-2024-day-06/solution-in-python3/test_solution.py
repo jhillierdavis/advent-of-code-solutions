@@ -25,10 +25,11 @@ def test_solve_part1(filename, expected):
     "filename, expected",
     [
         pytest.param(input_example, 6),
-        #pytest.param(input_full, -1),
+        pytest.param(input_full, 1602), # 1771, 1664 too high!
     ],    
 )
 def test_solve_part2(filename, expected):
-    value = solution.solve_part2(filename)
+    #value = solution.solve_part2(filename)
+    value = solution.brute_force(filename) # TODO: Argh! Find a better way
     
     assert expected == value
