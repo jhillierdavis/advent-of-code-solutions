@@ -1,25 +1,10 @@
 from helpers import fileutils
 
+
 def to_int_array_from(array_str):
     #print(f"DEBUG: {array_str}")
     values = [int(numeric_string) for numeric_string in array_str]
     return values
-
-def is_possible_equation(values, result, subtotal=0):    
-    if subtotal > result:
-        return False
-    
-    addition = values[0] + subtotal
-    multiplication = values[0] if subtotal == 0 else values[0] * subtotal # Fix nasty bug (originally forgot to guard against multiplication by zero)!
-    
-    size = len(values)
-    if size == 1:
-        if result == addition or result == multiplication:
-            return True
-        return False
-
-    if is_possible_equation(values[1:], result, addition) or is_possible_equation(values[1:], result, multiplication):
-        return True  
 
 
 def concatonate(alpha:int, beta:int) -> int:
@@ -28,48 +13,32 @@ def concatonate(alpha:int, beta:int) -> int:
     return int(str(alpha) + str(beta))
 
 
-def is_possible_equation_with_concatonation(values, result, subtotal=0):
-    #print(f"DEBUG: subtotal={subtotal} values={values}")
-    
+def is_possible_equation(values, result, subtotal=0, use_concationation=False):    
     if subtotal > result:
         return False
     
     addition = values[0] + subtotal
-    multiplication = values[0] if subtotal == 0 else values[0] * subtotal # Fix nasty bug (originally forgot to guard against multiplication by zero)!
-    concatination = concatonate(subtotal, values[0])
-    
+    multiplication = values[0] if subtotal == 0 else values[0] * subtotal # Fix nasty bug! (Originally forgot to guard against multiplication by zero!)    
+    concatination = concatonate(subtotal, values[0]) if use_concationation else None
     
     size = len(values)
-    if size == 1: # Last value
-        if result == addition or result == multiplication or result == concatination:
-            #print(f"DEBUG: Valid subtotal={subtotal} values={values}")
+    if size == 1:
+        if result == addition or result == multiplication or (use_concationation and result == concatination):
             return True
         return False
 
-    if is_possible_equation_with_concatonation(values[1:], result, addition) \
-        or is_possible_equation_with_concatonation(values[1:], result, multiplication) \
-        or is_possible_equation_with_concatonation(values[1:], result, concatination):
+    if is_possible_equation(values[1:], result, addition, use_concationation) \
+        or is_possible_equation(values[1:], result, multiplication, use_concationation) \
+        or (use_concationation and is_possible_equation(values[1:], result, concatination, use_concationation)):
             return True
     return False
 
 
-"""
 def is_possible_equation_with_concatonation(values, result, subtotal=0):
-    print(f"DEBUG: subtotal={subtotal} values={values} result={result}")
-    
-    if subtotal > result:
-        return False
-    
-    size = len(values)
-    if size == 1:
-        if result == concatonate(subtotal, values[0]):
-            return True
-        return False
+    return is_possible_equation(values, result, subtotal, True)
 
-    return is_possible_equation(values[1:], result, concatonate(subtotal, values[0]))
-"""
 
-def solve_part1(filename):
+def count_valid_target_result_for_expression_values_from(filename, use_concationation=False):
     lines = fileutils.get_file_lines_from(filename)
     ans = 0
     for l in lines:
@@ -77,23 +46,15 @@ def solve_part1(filename):
         result = int(parts[0])
         values = to_int_array_from(parts[1].split(' '))
 
-        if is_possible_equation(values, result):
+        if is_possible_equation(values, result, 0, use_concationation):
             #print(f"DEBUG: Valid equation: {result} {values}")
             ans += result
-    return ans
+    return ans    
+
+
+def solve_part1(filename):
+    return count_valid_target_result_for_expression_values_from(filename)
 
 
 def solve_part2(filename):
-    lines = fileutils.get_file_lines_from(filename)
-    ans = 0
-    for l in lines:
-        parts = l.split(': ')
-        result = int(parts[0])
-        values = to_int_array_from(parts[1].split(' '))
-
-        if is_possible_equation_with_concatonation(values, result):
-            print(f"DEBUG: Valid equation: {result} {values}")
-            ans += result
-        #else:
-        #    print(f"DEBUG: Invalid equation: {result} {values}")
-    return ans
+    return count_valid_target_result_for_expression_values_from(filename, True)
