@@ -4,6 +4,21 @@ from collections import defaultdict
 
 import string
 
+def get_antennae_symbols():
+    return list(string.ascii_uppercase + string.ascii_lowercase + string.digits)
+
+
+
+def get_antennae_type_to_position_map(g):
+    antennae_map = defaultdict(set)
+    antennae_symbols = get_antennae_symbols()
+    for symbol in antennae_symbols:
+        ch = symbol
+        smp = g.get_points_matching(ch)
+        antennae_map[ch] = smp
+    return antennae_map
+
+
 def is_valid_antinode_position(g, p, k):
     return g.contains(p) and g.get_symbol(p) != k
         
@@ -14,18 +29,8 @@ def solve_part1(filename):
 
     #grid.display_grid(g)
 
-    # Generate array of characters
-    character_array = list(string.ascii_uppercase + string.ascii_lowercase + string.digits)
-
-    # Find antenane points for each antenane types
-    antennae_map = defaultdict(set)
-    for i in range(len(character_array)):
-        ch = character_array[i]
-        #print(f'DEBUG: i={i} ch={ch}')
-
-        smp = g.get_points_matching(ch)
-        antennae_map[ch] = smp
-
+    # Find antenane position points for each antenane types in grid
+    antennae_map = get_antennae_type_to_position_map(g)
 
     # For each antenane type point, find distance to next and mark antinodes
     #print(f'DEBUG: antennae_map={antennae_map}')
@@ -80,18 +85,8 @@ def solve_part2(filename):
 
     #grid.display_grid(g)
 
-    # Generate array of characters
-    character_array = list(string.ascii_uppercase + string.ascii_lowercase + string.digits)
-
-    # Find antenane points for each antenane types
-    antennae_map = defaultdict(set)
-    for i in range(len(character_array)):
-        ch = character_array[i]
-        #print(f'DEBUG: i={i} ch={ch}')
-
-        smp = g.get_points_matching(ch)
-        antennae_map[ch] = smp
-
+    # Find antenane position points for each antenane types in grid
+    antennae_map = get_antennae_type_to_position_map(g)
 
     # For each antenane type point, find distance to next and mark antinodes
     #print(f'DEBUG: antennae_map={antennae_map}')
@@ -103,7 +98,7 @@ def solve_part2(filename):
         if size <= 1:
             continue
         
-        print(f'DEBUG: k={k} v={v} size={size}')
+        #print(f'DEBUG: k={k} v={v} size={size}')
         
         for i in range(size):
             current = list(v)[i]
