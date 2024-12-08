@@ -5,6 +5,7 @@ import string
 # Own shared libraries
 from helpers import fileutils, grid, point
 
+
 antinode_symbol = '#'
 
 
@@ -29,15 +30,16 @@ def is_valid_antinode_position(g, p, k):
 def solve_part1(filename):
     lines = fileutils.get_file_lines_from(filename)
     g = grid.lines_to_grid(lines)
-
     #grid.display_grid(g)
 
     # Find antenane position points for each antenane types in grid
     antennae_map = get_antennae_type_to_position_map(g)
+    #print(f'DEBUG: antennae_map={antennae_map}')
+
+    # Grid to mark unique antinode positions  (and check against examples given)
+    g_ans = g.clone()
 
     # For each antenane type point, find distance to next and mark antinodes
-    #print(f'DEBUG: antennae_map={antennae_map}')
-    g_ans = g.clone()
     for k in antennae_map.keys():
         v = antennae_map[k]
         size = len(v)
@@ -73,15 +75,16 @@ def solve_part1(filename):
 def solve_part2(filename):
     lines = fileutils.get_file_lines_from(filename)
     g = grid.lines_to_grid(lines)
-
     #grid.display_grid(g)
 
     # Find antenane position points for each antenane types in grid
     antennae_map = get_antennae_type_to_position_map(g)
+    #print(f'DEBUG: antennae_map={antennae_map}')
+
+    # Grid to mark unique antinode positions  (and check against examples given)
+    g_ans = g.clone()
 
     # For each antenane type point, find distance to next and mark antinodes
-    #print(f'DEBUG: antennae_map={antennae_map}')
-    g_ans = g.clone()
     for k in antennae_map.keys():
         v = antennae_map[k]
         size = len(v)
