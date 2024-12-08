@@ -37,13 +37,12 @@ def solve_part1(filename):
 
     # For each antenane type point, find distance to next and mark antinodes
     #print(f'DEBUG: antennae_map={antennae_map}')
-    count = 0
     g_ans = g.clone()
     for k in antennae_map.keys():
         v = antennae_map[k]
         size = len(v)
         if size <= 1:
-            continue # Ignore single antennae
+            continue # Ignore single antennae types
         
         #print(f'DEBUG: k={k} v={v} size={size}')
         
@@ -57,7 +56,7 @@ def solve_part1(filename):
                 x_offset = current.get_x() - next.get_x()
                 y_offset = current.get_y() - next.get_y()
 
-                potentials = set() # Set of potential antinode positions
+                potentials = set() # Set of potential antinode positions for this particular antennae type
                 potentials.add( point.Point2D(current.get_x() + x_offset, current.get_y() + y_offset) )
                 potentials.add( point.Point2D(current.get_x() - x_offset, current.get_y() - y_offset) )
                 potentials.add( point.Point2D(next.get_x() + x_offset, next.get_y() + y_offset) )
@@ -66,11 +65,9 @@ def solve_part1(filename):
                 for p in potentials:
                     if is_valid_antinode_position(g, p, k):
                         g_ans.set_symbol(p, antinode_symbol)
-                        count += 1
 
     #grid.display_grid(g_ans)
     return g_ans.count_symbol(antinode_symbol)
-    #return count
 
 
 def solve_part2(filename):
@@ -84,13 +81,12 @@ def solve_part2(filename):
 
     # For each antenane type point, find distance to next and mark antinodes
     #print(f'DEBUG: antennae_map={antennae_map}')
-    count = 0
     g_ans = g.clone()
     for k in antennae_map.keys():
         v = antennae_map[k]
         size = len(v)
         if size <= 1:
-            continue
+            continue # Ignore single antennae types
         
         #print(f'DEBUG: k={k} v={v} size={size}')
         
@@ -102,32 +98,22 @@ def solve_part2(filename):
                     continue
                 
                 x_initial_offset = current.get_x() - next.get_x()
-                y_intial_offset = current.get_y() - next.get_y()
+                y_initial_offset = current.get_y() - next.get_y()
 
-                #print(f"DEBUG: compare {current} with {next} :  {x_offset} {y_offset}")
-                for z in range(1,g.get_height()):
+                potentials = set() # Set of potential antinode positions for this particular antennae type
+
+                for z in range(1, g.get_height()): # TODO: Use a smarter approach?
                     x_offset = z * x_initial_offset
-                    y_offset = z * y_intial_offset
+                    y_offset = z * y_initial_offset
 
-                    next_ap = point.Point2D(current.get_x() + x_offset, current.get_y() + y_offset)
-                    if g.contains(next_ap):
-                        g_ans.set_symbol(next_ap, antinode_symbol)
-                        count += 1
+                    potentials.add( point.Point2D(current.get_x() + x_offset, current.get_y() + y_offset) )
+                    potentials.add( point.Point2D(current.get_x() - x_offset, current.get_y() - y_offset) )
+                    potentials.add( point.Point2D(next.get_x() + x_offset, next.get_y() + y_offset) )
+                    potentials.add( point.Point2D(next.get_x() - x_offset, next.get_y() - y_offset) )
 
-                    next_ap = point.Point2D(current.get_x() - x_offset, current.get_y() - y_offset)
-                    if g.contains(next_ap):
-                        g_ans.set_symbol(next_ap, antinode_symbol)
-                        count += 1
-
-                    next_ap = point.Point2D(next.get_x() + x_offset, next.get_y() + y_offset)
-                    if g.contains(next_ap):
-                        g_ans.set_symbol(next_ap, antinode_symbol)
-                        count += 1
-
-                    next_ap = point.Point2D(next.get_x() - x_offset, next.get_y() - y_offset)
-                    if g.contains(next_ap):
-                        g_ans.set_symbol(next_ap, antinode_symbol)
-                        count += 1
+                for p in potentials:
+                    if g.contains(p):
+                        g_ans.set_symbol(p, antinode_symbol)
 
     #grid.display_grid(g_ans)
     return g_ans.count_symbol(antinode_symbol)
