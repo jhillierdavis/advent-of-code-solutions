@@ -6,7 +6,7 @@ https://adventofcode.com/2024
 
 * [Day 01](https://adventofcode.com/2024/day/1) -> Pair of number lists (comparison and frequency)
 * [Day 02](https://adventofcode.com/2024/day/2) -> Number sequence validity & sorting
-* [Day 03](https://adventofcode.com/2024/day/3) -> String parsing for contained mulitplication expression & enabled/disabled instruction
+* [Day 03](https://adventofcode.com/2024/day/3) -> String parsing for contained mulitplication expressions & enabled/disabled instructions
 * [Day 04](https://adventofcode.com/2024/day/4) -> 2D grid wordsearches
 * [Day 05](https://adventofcode.com/2024/day/5) -> Application of (page) number ordering rules 
 * [Day 06](https://adventofcode.com/2024/day/6) -> 2D grid traversal with loop detection
@@ -29,3 +29,10 @@ https://adventofcode.com/2024
 * [Day 23](https://adventofcode.com/2024/day/23) -> TODO
 * [Day 24](https://adventofcode.com/2024/day/24) -> TODO
 * [Day 25](https://adventofcode.com/2024/day/25) -> TODO
+
+
+## Solutions from others
+
+Jonathan Paulson (solutions in Python):
+* [YouTube videos](https://www.youtube.com/@jonathanpaulson5053/videos) @jonathanpaulson5053 
+* [GitHub code](https://github.com/jonathanpaulson/AdventOfCode/blob/master/2024) jonathanpaulson
