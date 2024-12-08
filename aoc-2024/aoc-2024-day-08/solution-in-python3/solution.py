@@ -1,12 +1,15 @@
+# Standard Python3 libraries
+from collections import defaultdict
+import string
+
+# Own shared libraries
 from helpers import fileutils, grid, point
 
-from collections import defaultdict
+antinode_symbol = '#'
 
-import string
 
 def get_antennae_symbols():
     return list(string.ascii_uppercase + string.ascii_lowercase + string.digits)
-
 
 
 def get_antennae_type_to_position_map(g):
@@ -40,7 +43,7 @@ def solve_part1(filename):
         v = antennae_map[k]
         size = len(v)
         if size <= 1:
-            continue
+            continue # Ignore single antennae
         
         #print(f'DEBUG: k={k} v={v} size={size}')
         
@@ -49,35 +52,26 @@ def solve_part1(filename):
             for j in range(i+1,):
                 next = list(v)[j]
                 if current == next:
-                    continue
+                    continue # Ignore antennae comparison to own position
                 
                 x_offset = current.get_x() - next.get_x()
                 y_offset = current.get_y() - next.get_y()
 
-                #print(f"DEBUG: compare {current} with {next} :  {x_offset} {y_offset}")
-                next_ap = point.Point2D(current.get_x() + x_offset, current.get_y() + y_offset)
-                if is_valid_antinode_position(g, next_ap, k):
-                    g_ans.set_symbol(next_ap, '#')
-                    count += 1
-
-                next_ap = point.Point2D(current.get_x() - x_offset, current.get_y() - y_offset)
-                if is_valid_antinode_position(g, next_ap, k):
-                    g_ans.set_symbol(next_ap, '#')
-                    count += 1
-
-                next_ap = point.Point2D(next.get_x() + x_offset, next.get_y() + y_offset)
-                if is_valid_antinode_position(g, next_ap, k):
-                    g_ans.set_symbol(next_ap, '#')
-                    count += 1
-
-                next_ap = point.Point2D(next.get_x() - x_offset, next.get_y() - y_offset)
-                if is_valid_antinode_position(g, next_ap, k):
-                    g_ans.set_symbol(next_ap, '#')
-                    count += 1
+                potentials = set() # Set of potential antinode positions
+                potentials.add( point.Point2D(current.get_x() + x_offset, current.get_y() + y_offset) )
+                potentials.add( point.Point2D(current.get_x() - x_offset, current.get_y() - y_offset) )
+                potentials.add( point.Point2D(next.get_x() + x_offset, next.get_y() + y_offset) )
+                potentials.add( point.Point2D(next.get_x() - x_offset, next.get_y() - y_offset) )
+                                
+                for p in potentials:
+                    if is_valid_antinode_position(g, p, k):
+                        g_ans.set_symbol(p, antinode_symbol)
+                        count += 1
 
     #grid.display_grid(g_ans)
-    return g_ans.count_symbol('#')
+    return g_ans.count_symbol(antinode_symbol)
     #return count
+
 
 def solve_part2(filename):
     lines = fileutils.get_file_lines_from(filename)
@@ -117,23 +111,23 @@ def solve_part2(filename):
 
                     next_ap = point.Point2D(current.get_x() + x_offset, current.get_y() + y_offset)
                     if g.contains(next_ap):
-                        g_ans.set_symbol(next_ap, '#')
+                        g_ans.set_symbol(next_ap, antinode_symbol)
                         count += 1
 
                     next_ap = point.Point2D(current.get_x() - x_offset, current.get_y() - y_offset)
                     if g.contains(next_ap):
-                        g_ans.set_symbol(next_ap, '#')
+                        g_ans.set_symbol(next_ap, antinode_symbol)
                         count += 1
 
                     next_ap = point.Point2D(next.get_x() + x_offset, next.get_y() + y_offset)
                     if g.contains(next_ap):
-                        g_ans.set_symbol(next_ap, '#')
+                        g_ans.set_symbol(next_ap, antinode_symbol)
                         count += 1
 
                     next_ap = point.Point2D(next.get_x() - x_offset, next.get_y() - y_offset)
                     if g.contains(next_ap):
-                        g_ans.set_symbol(next_ap, '#')
+                        g_ans.set_symbol(next_ap, antinode_symbol)
                         count += 1
 
     #grid.display_grid(g_ans)
-    return g_ans.count_symbol('#')
+    return g_ans.count_symbol(antinode_symbol)
