@@ -66,7 +66,7 @@ def get_extended_antinode_points(g:grid.Grid2D, current:point.Point2D, next:poin
     return actuals
 
 
-def get_count_of_antinotes_from(filename, fnc):
+def get_count_of_antinotes_from(filename:string, fnc:callable):
     lines = fileutils.get_file_lines_from(filename)
     g = grid.lines_to_grid(lines)
     #grid.display_grid(g)
@@ -102,8 +102,9 @@ def get_count_of_antinotes_from(filename, fnc):
     return g_ans.count_symbol(antinode_symbol)
 
 
-def solve_part1(filename):
+def solve_part1(filename:string):
     return get_count_of_antinotes_from(filename, get_antinode_points)
 
-def solve_part2(filename):
+
+def solve_part2(filename:string):
     return get_count_of_antinotes_from(filename, get_extended_antinode_points)
