@@ -64,52 +64,32 @@ def to_compacted_from(q_original:deque):
     return q_compacted
 
 
+def to_checksum_from(q_compacted:deque) -> int:
+    q = deque(q_compacted)
+    ans = 0
+    i = 0
+    while len(q) >= 1:
+        file_id = q.popleft()
+        multiple = file_id * i
+        #print(f"DEBUG: file_id={file_id} i={i} mulitple = {multiple}")
+        i += 1
+        ans += multiple
+    return ans    
 
-"""
-def to_checksum_from(compacted):
-    total = 0
-    for i in range(len(compacted)):        
-        ch_value = compacted[i]
-        if '.' == ch_value:
-            break 
-        i_value = int(ch_value)
-        #print(f"DEBUG: ch_value={ch_value} i={i}")
-        total += i_value * i
-        
-    return total
-"""
 
 def solve_part1(filename):
     input = fileutils.get_text_from(filename)
     qbr = to_block_representation_from(input)
     qc = to_compacted_from(qbr)
-
     #print(f"DEBUG: qc={qc}")
 
-    ans = 0
-    i = 0
-    while len(qc) >= 1:
-        file_id = qc.popleft()
-        multiple = file_id * i
-        #print(f"DEBUG: file_id={file_id} i={i} mulitple = {multiple}")
-        i += 1
-        ans += multiple
-    return ans
+    return to_checksum_from(qc)
 
 
 def solve_part2(filename):
     input = fileutils.get_text_from(filename)
     qbr = to_block_representation_from(input)
     qc = to_compacted_from(qbr) # TODO: Change compaction approach
-
     #print(f"DEBUG: qc={qc}")
 
-    ans = 0
-    i = 0
-    while len(qc) >= 1:
-        file_id = qc.popleft()
-        multiple = file_id * i
-        #print(f"DEBUG: file_id={file_id} i={i} mulitple = {multiple}")
-        i += 1
-        ans += multiple
-    return ans
+    return to_checksum_from(qc)
