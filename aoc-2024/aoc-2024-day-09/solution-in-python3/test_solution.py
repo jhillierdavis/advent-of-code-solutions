@@ -36,18 +36,6 @@ def test_to_compacted_from(diskmap, block_representation, expected):
     assert expected == solution.queue_to_string(q_compacted)
 
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
-@pytest.mark.parametrize(
-    "compacted, expected",
-    [
-        pytest.param('0099811188827773336446555566..............', 1928),
-    ],    
-)
-def test_to_checksum_from(compacted, expected):
-    checksum = solution.to_checksum_from(compacted)
-    assert expected == checksum
-
-
 #@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, expected",
