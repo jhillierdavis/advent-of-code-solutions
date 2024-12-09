@@ -1,5 +1,5 @@
 from helpers import fileutils
-from collections import deque
+from collections import deque, defaultdict
 
 def queue_to_string(q_original):
     q = deque(q_original)
@@ -63,6 +63,33 @@ def to_compacted_from(q_original:deque):
     #print(f"DEBUG: {q_compacted}")
     return q_compacted
 
+"""
+def to_alt_compacted_from(q_original:deque):
+    q = deque(q_original)    
+    q_compacted = deque()
+    size = len(q)
+
+    #print(f"DEBUG: q={q} size={size}")
+    for _ in range(size):
+        if len(q) <= 0:
+            break
+
+        v_i = q.popleft()
+        #print(f"DEBUG: {v_i}")
+        if v_i == None:
+            v_j = None
+            space_count = 0
+            while len(q) > 0 and v_j == None:
+                v_j = q.pop()
+                space_count += 1
+            if v_j is not None:
+                q_compacted.append(v_j)
+        else:
+            q_compacted.append(v_i)
+
+    #print(f"DEBUG: {q_compacted}")
+    return q_compacted
+"""
 
 def to_checksum_from(q_compacted:deque) -> int:
     q = deque(q_compacted)
@@ -70,10 +97,12 @@ def to_checksum_from(q_compacted:deque) -> int:
     i = 0
     while len(q) >= 1:
         file_id = q.popleft()
-        multiple = file_id * i
+        if file_id is not None: 
+            multiple = file_id * i
+            ans += multiple
         #print(f"DEBUG: file_id={file_id} i={i} mulitple = {multiple}")
         i += 1
-        ans += multiple
+        
     return ans    
 
 
@@ -86,10 +115,144 @@ def solve_part1(filename):
     return to_checksum_from(qc)
 
 
+def to_block_representation_as_pairs_from(diskmap) -> deque:
+    if None == diskmap:
+        return None
+    
+    #print(f"DEBUG: diskmap={diskmap}")
+    q = deque()
+
+    file_id = 0
+    for i, c in enumerate(diskmap):        
+        v = int(c)
+        count = 0
+        if i % 2 == 0: # length of file            
+            for _ in range(v):
+                count += 1
+            q.append((file_id, count))    
+            if count > 0:
+                file_id += 1
+        else: # length of free space
+            count = 0
+            for _ in range(v):
+                count += 1
+            if count > 0:
+                q.append((None, count))
+    #print(f"DEBUG: q={q}")
+    return q
+
+
+
+def to_alt_compacted_from(q_original:deque):
+    q = deque(q_original)    
+    q_compacted = deque()
+    size = len(q)
+
+    for i in range(size):
+        if len(q) <= 0:
+            break
+
+        v,c = q.popleft()
+        if v is not None:
+            for _ in range(c):
+                q_compacted.append(v)
+        else:
+            q_suffix = deque()
+            while len(q) > 0:
+                value = q.pop()
+                print(f"DEBUG: value={value} q={q}")
+                (ev, ec) = (value[0], value[1])
+                if ec is None or ec > c:
+                    q_suffix.append((ev, ec))
+                else:
+                    for _ in range(ec):
+                        q_compacted.append(ev)
+                    diff = c - ec
+                    if diff > 0:
+                        q.appendleft((None, diff))
+                    break
+            for e in q_suffix:
+                q.append(e)
+
+    #print(f"DEBUG: {q_compacted}")
+    return q_compacted
+
+
+def queue_of_pairs_to_string(q_original):
+    q = deque(q_original)
+    s = ""
+    if None == q:
+        return s
+    
+    while len(q) > 0:
+        v,c = q.popleft()
+        if None == v:
+            v = '.'
+        else:
+            v = str(v)
+        for _ in range(c):
+            s += v
+
+    #print(f"DEBUG: s={s}")
+    return s
+
+    
+def populate_gap(dfq, qp, qp_reversed, size):
+    matched = None
+    remainder = 0
+    for e in qp_reversed:
+        ev, ec = e
+        if ev == None:
+            continue
+
+        if ec <= size:
+            remainder = size - ec
+            matched = e
+            for _ in range(ec):
+                dfq.append(ev)
+            break
+    
+    if matched:
+        idx = qp.index(matched)
+        qp.remove(matched)
+        qp.insert(idx, (None, matched[1]))
+        qp_reversed.remove(matched)
+        if remainder > 0:
+            populate_gap(dfq, qp, qp_reversed, remainder)
+    elif remainder > 0:        
+        for _ in range(remainder):
+            dfq.append(None)
+    else:       
+        for _ in range(size):
+            dfq.append(None)
+    #print(f"DEBUG: size={size} remainder={remainder} dfq={dfq}")
+    
+
 def solve_part2(filename):
     input = fileutils.get_text_from(filename)
-    qbr = to_block_representation_from(input)
-    qc = to_compacted_from(qbr) # TODO: Change compaction approach
-    #print(f"DEBUG: qc={qc}")
 
-    return to_checksum_from(qc)
+    q = to_block_representation_from(input)
+    #print(f"DEBUG: q={q}")
+
+    qp = to_block_representation_as_pairs_from(input)
+    #print(f"DEBUG: qp={qp}")
+
+    qp_reverse = deque(qp)
+    qp_reverse.reverse()
+
+    dfq = deque()
+    while len(qp) > 0:
+        p = qp.popleft()
+        v,c = p
+
+        if v is not None:
+            for _ in range(c):
+                dfq.append(v)
+            if qp_reverse.count(p) > 0:
+                qp_reverse.remove(p)
+        else:
+            populate_gap(dfq, qp, qp_reverse, c)
+        
+
+    #print(f'DEBUG: dfq={dfq}')
+    return to_checksum_from(dfq)

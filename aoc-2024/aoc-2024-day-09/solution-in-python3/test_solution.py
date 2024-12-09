@@ -66,7 +66,7 @@ def test_solve_part1(filename, expected):
     "filename, expected",
     [
         pytest.param(input_example, 2858),
-        #pytest.param(input_full, "TODO"),
+        pytest.param(input_full, 6321896265143),
     ],    
 )
 def test_solve_part2(filename, expected):
