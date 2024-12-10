@@ -18,6 +18,9 @@ def test_solve_part1(filename, expected):
     value = solution.solve_part1(filename)    
     assert expected == value
 
+    value = solution.solve_part1_alternative(filename)
+    assert expected == value
+
 
 #@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
