@@ -31,6 +31,15 @@ https://adventofcode.com/2024
 * [Day 25](https://adventofcode.com/2024/day/25) -> TODO
 
 
+## TODOs
+
+Revisit:
+
+* Day 06 Part 2 - preformance - a bit slow
+* Day 09 Part 2 - solve more elegantly
+
+
+
 ## Solutions from others
 
 Jonathan Paulson (solutions in Python):

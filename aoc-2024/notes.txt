@@ -1,5 +1,6 @@
 Solutions from Others
 ----------------------
 
-YouTube: Jonathan Paulson (solutions in Python)
-https://www.youtube.com/@jonathanpaulson5053/videos
+Jonathan Paulson (solutions in Python)
+YouTube: https://www.youtube.com/@jonathanpaulson5053/videos
+GitHub: https://github.com/jonathanpaulson/AdventOfCode/blob/master/2024
