@@ -57,6 +57,19 @@ def mark_trailheads(g:grid.Grid2D, cp:point.Point2D) -> None:
                 mark_trailheads(g, np)
 
 
+def count_trailends(g:grid.Grid2D, cp:point.Point2D) -> int:    
+    count = 0
+    neighbours = g.get_cardinal_point_neighbours(cp)    
+    for np in neighbours:
+        if is_stepup(g, cp, np):
+            #print(f"DBEUG: Step: cv={cv} nv={nv} cp={cp} np={np}")
+            if is_trailend(g, np):        
+                count += 1
+            else:
+                count += count_trailends(g, np)
+    return count
+
+
 def solve_part1(filename:str) -> int:
     g = get_grid_from(filename)
 
@@ -68,19 +81,6 @@ def solve_part1(filename:str) -> int:
         gc = g.clone()
         mark_trailheads(gc, ep)
         count += gc.count_symbol(symbol_marker)
-    return count
-
-
-def count_trailends(g:grid.Grid2D, cp:point.Point2D) -> int:    
-    count = 0
-    neighbours = g.get_cardinal_point_neighbours(cp)    
-    for np in neighbours:
-        if is_stepup(g, cp, np):
-            #print(f"DBEUG: Step: cv={cv} nv={nv} cp={cp} np={np}")
-            if is_trailend(g, np):        
-                count += 1
-            else:
-                count += count_trailends(g, np)
     return count
 
 
