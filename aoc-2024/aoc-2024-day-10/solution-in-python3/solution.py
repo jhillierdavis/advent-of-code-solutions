@@ -77,7 +77,7 @@ def solve_part1(filename:str) -> int:
 
     count = 0    
     for ep in end_points:
-        # For each ending location (trailend) count the unique starting locations (trailends)
+        # For each ending location (trailend) count the unique starting locations (trailheads)
         gc = g.clone()
         mark_trailheads(gc, ep)
         count += gc.count_symbol(symbol_marker)
