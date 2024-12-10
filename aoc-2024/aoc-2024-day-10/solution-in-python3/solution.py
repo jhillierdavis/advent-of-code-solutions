@@ -1,6 +1,9 @@
 import string
 from helpers import fileutils, grid
 
+symbol_trailhead = '0'
+symbol_trailend = '9'
+symbol_marker = 'X'
 
 def get_grid_from(filename):
     lines = fileutils.get_file_lines_from(filename)
@@ -53,7 +56,7 @@ def mark_trailheads(g, cp):
             #print(f"DBEUG: Step: cv={cv} nv={nv} cp={cp} np={np}")
             if is_trailhead_start(g, np):        
                 #print(f"DBEUG: End: np={np}")
-                g.set_symbol(np, 'X')            
+                g.set_symbol(np, symbol_marker)            
             else:
                 mark_trailheads(g, np)
 
@@ -61,13 +64,14 @@ def mark_trailheads(g, cp):
 def solve_part1(filename):
     g = get_grid_from(filename)
     
-    end_points = g.get_matching_symbol_coords('9')
+    end_points = g.get_matching_symbol_coords(symbol_trailend)
 
-    count = 0
+    count = 0    
     for ep in end_points:
+        # For each ending location (trailend) count the unique starting locations (trailends)
         gc = g.clone()
         mark_trailheads(gc, ep)
-        count += gc.count_symbol('X')
+        count += gc.count_symbol(symbol_marker)
     return count
 
 
@@ -87,9 +91,10 @@ def count_trailends(g, cp):
 def solve_part2(filename):
     g = get_grid_from(filename)
     
-    start_points = g.get_matching_symbol_coords('0')
+    start_points = g.get_matching_symbol_coords(symbol_trailhead)
 
     count = 0
     for sp in start_points:
+        # For each starting location (trailhead) count up all the paths to the ending locations (trailends)
         count += count_trailends(g, sp)
     return count
