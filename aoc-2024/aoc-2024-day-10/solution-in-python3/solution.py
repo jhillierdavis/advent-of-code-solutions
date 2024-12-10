@@ -1,33 +1,6 @@
 import string
 from helpers import fileutils, grid
 
-"""
-def get_trailhead_paths(g, cp, value)
-    cp = int(g.get_symbol(cp))
-    neighbours = g.get_cardinal_point_neighbours(cp)
-    for np in neighbours: 
-        nv = int(g.get_symbol(cp))        
-        if nv == cp + 1:            
-"""
-
-ans = 0
-def count_trailhead_paths(g, sp):
-    global ans
-    sv = int(g.get_symbol(sp))
-
-    if sv == 9:
-        ans += 1
-        return
-
-    neighbours = g.get_cardinal_point_neighbours(sp)
-    for np in neighbours:
-        
-        nv = int(g.get_symbol(np))        
-
-        if nv == sv + 1:     
-            count_trailhead_paths(g, np)
-    return
-
 def get_grid_from(filename):
     lines = fileutils.get_file_lines_from(filename)
 
@@ -35,10 +8,6 @@ def get_grid_from(filename):
     #grid.display_grid(g)
     return g
 
-
-def count_starting_points_from(g):
-    starting_points = g.get_matching_symbol_coords('0')
-    return len(starting_points)
 
 def get_value(g, p):
     s = g.get_symbol(p)
@@ -51,10 +20,12 @@ def is_trailhead_step(g, cp, np):
     cv = get_value(g, cp)
     nv = get_value(g, np)
     return nv - cv == 1
-        
+
+
 def is_trailhead_end(g, cp):
     cv = get_value(g, cp)
     return cv == 9
+
 
 def count_trailhead_paths(g, cp):
     
@@ -93,14 +64,17 @@ def count_trailheads_startpoints(g):
         count += count_trailhead_paths(g, sp)
     return g.count_symbol('X')
 
+
 def is_stepdown(g, cp, np):
     cv = get_value(g, cp)
     nv = get_value(g, np)
     return cv - nv == 1
-        
+
+
 def is_trailhead_start(g, cp):
     cv = get_value(g, cp)
     return cv == 0
+
 
 def find_trailheads(g, cp):    
     neighbours = g.get_cardinal_point_neighbours(cp)
@@ -112,6 +86,7 @@ def find_trailheads(g, cp):
                 g.set_symbol(np, 'X')            
             else:
                 find_trailheads(g, np)
+
 
 def solve_part1(filename):
     g = get_grid_from(filename)
@@ -125,10 +100,12 @@ def solve_part1(filename):
         count += gc.count_symbol('X')
     return count
 
+
 def is_stepup(g, cp, np):
     cv = get_value(g, cp)
     nv = get_value(g, np)
     return nv - cv == 1
+
         
 def is_trailend(g, cp):
     cv = get_value(g, cp)
