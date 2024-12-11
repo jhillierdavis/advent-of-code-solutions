@@ -68,17 +68,18 @@ def count_evolved_stones_using_cache(individual_stone_number:int, blinks:int, ca
         return 1 # A single individual (unevolved) stone (do not need to know/use stone number value i.e. stone count is one)
 
     # Use cache entry (if present)
-    if (individual_stone_number, blinks) in cache:
-        return cache[(individual_stone_number, blinks)]
+    cache_key = (individual_stone_number, blinks)
+    if cache_key in cache:
+        return cache[cache_key]
     
     # Determine the number of stones that this individual stone value will evolve into (using cache for better performance)
-    prior_blinks = blinks - 1
+    prior_blinks = blinks - 1 # Decrement for each evolution
     left_value, right_value = evolve_individual_stone_number_into_pair(individual_stone_number)
     number_of_stones = count_evolved_stones_using_cache(left_value, prior_blinks, cache) \
         + count_evolved_stones_using_cache(right_value, prior_blinks, cache)
     
     # Add new cache entry
-    cache[(individual_stone_number, blinks)] = number_of_stones
+    cache[cache_key] = number_of_stones
     return number_of_stones
 
 
