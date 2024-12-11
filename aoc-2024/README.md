@@ -35,8 +35,8 @@ https://adventofcode.com/2024
 
 Revisit:
 
-* Day 06 Part 2 - preformance - a bit slow
-* Day 09 Part 2 - solve more elegantly
+* Day 06: Part 2 -> preformance - a bit too slow
+* Day 09: Part 2 -> solve more elegantly
 
 
 
