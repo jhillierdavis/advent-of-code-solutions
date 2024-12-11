@@ -56,6 +56,7 @@ def mark_trailheads(g:grid.Grid2D, cp:point.Point2D) -> None:
             else:
                 mark_trailheads(g, np)
 
+
 def populate_with_unique_trailheads(g:grid.Grid2D, cp:point.Point2D, trailheads:set) -> None:
     neighbours = g.get_cardinal_point_neighbours(cp)
     for np in neighbours:
