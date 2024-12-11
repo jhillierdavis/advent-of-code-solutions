@@ -1,44 +1,29 @@
-from helpers import fileutils
-
 import re
 
-
-# def find_repeating_multiplication(text):
-#     pattern = re.compile(r'(mul\(\d+,\d+\))+?')
-#     matches = pattern.findall(text)
-#     return matches
-
-# def get_multiplication(snippet):
-#     x,y = snippet[4:-1].split(',')
-#     return int(x) * int(y)
-
-# def solve_part1(filename):
-#     text = open(filename).read().strip()
-
-#     count = 0
-#     matches = find_repeating_multiplication(text)
-#     for m in matches:
-#         #print(f"DEBUG: m={m}")
-#         count += get_multiplication(m)
-
-#     return count
+from helpers import fileutils
 
 
 def count_multiplications_in(text, is_enabler_active=False):
     # Match via groups (with sub-groups for integer values)
     pattern = re.compile(r'mul\((\d+),(\d+)\)')
+
+    enabler_text = 'do()'
+    enabler_size = len(enabler_text)
+
+    disabler_text = "don't()"
+    disabler_size = len(disabler_text)
    
     count = 0    
     enabled = True
     for i in range(len(text)):
         if is_enabler_active:
-            if text[i:].startswith('do()'):
+            if text[i:].startswith(enabler_text):
                 enabled = True
-                i += 3
+                i += enabler_size
                 continue
-            elif text[i:].startswith("don't()"):
+            elif text[i:].startswith(disabler_text):
                 enabled = False
-                i += 6
+                i += disabler_size
                 continue
 
         match = pattern.match(text[i:])
