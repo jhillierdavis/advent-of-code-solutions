@@ -2,6 +2,7 @@ import pytest
 
 import helpers.numutils as numutils
 
+
 @pytest.mark.parametrize(
     "number, expected",
     [    
@@ -18,6 +19,7 @@ import helpers.numutils as numutils
 )
 def test_is_even(number, expected):    
     assert expected == numutils.is_even(number)
+
 
 @pytest.mark.parametrize(
     "number, expected",
@@ -36,8 +38,9 @@ def test_is_even(number, expected):
 def test_is_odd(number, expected):    
     assert expected == numutils.is_odd(number)    
 
+
 @pytest.mark.parametrize(
-    "alpha, beta, expected",
+    "left, right, expected",
     [
         pytest.param(1,2,12),
         pytest.param(12,345,12345),
@@ -45,6 +48,24 @@ def test_is_odd(number, expected):
         pytest.param(9,0,90),
     ],    
 )
-def test_concatonate(alpha, beta, expected):
-    assert expected == numutils.concatonate(alpha, beta)
+def test_concatonate(left, right, expected):
+    assert expected == numutils.concatonate(left, right)
+
+
+@pytest.mark.parametrize(
+    "array_of_integers, expected",
+    [
+        pytest.param([75,47,61,53,29], 61),
+        pytest.param([97,61,53,29,13], 53),
+        pytest.param([75,29,13], 29),
+        pytest.param([1,2,3,4], 2), # Even length
+        pytest.param([], None),
+    ],    
+)
+def test_get_middle_value_from(array_of_integers, expected):
+    # When:
+    value = numutils.get_middle_value_from(array_of_integers)   
+
+    # Then:
+    assert expected == value
 

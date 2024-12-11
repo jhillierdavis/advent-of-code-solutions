@@ -1,18 +1,8 @@
-from helpers import fileutils
-from collections import deque, defaultdict
 
+from collections import deque, defaultdict
 from typing import Callable, Any, Iterable
 
-
-def get_middle_value_from(array_of_integers:Iterable[int]) -> int:
-    size =  len(array_of_integers)
-    if size <= 0: # Guard
-        return None
-    
-    middle_index = size//2
-    if size % 2 == 0: # Even length
-        middle_index -= 1
-    return array_of_integers[middle_index]
+from helpers import fileutils, numutils
 
 
 def is_valid_page_number_ordering(list_of_page_numbers:list[int], preceding_page_map:dict[int:Iterable[int]]) -> bool:
@@ -84,7 +74,7 @@ def solve_part1(filename:str) -> int:
         list_of_pages = get_list_of_page_numbers_from(line)
 
         if is_valid_page_number_ordering(list_of_pages, preceding_page_map):
-            answer += get_middle_value_from(list_of_pages)
+            answer += numutils.get_middle_value_from(list_of_pages)
 
     return answer
 
@@ -124,6 +114,6 @@ def solve_part2(filename:str) -> int:
         
         if not is_valid_page_number_ordering(list_of_page_numbers, preceding_page_map):
             list_of_reprioritised_page_numbers = get_reprioritised_page_numbers(list_of_page_numbers, subsequent_page_map)
-            answer += get_middle_value_from(list_of_reprioritised_page_numbers)
+            answer += numutils.get_middle_value_from(list_of_reprioritised_page_numbers)
 
     return answer
