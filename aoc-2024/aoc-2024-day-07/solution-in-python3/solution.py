@@ -1,16 +1,4 @@
-from helpers import fileutils
-
-
-def to_int_array_from(array_str):
-    #print(f"DEBUG: {array_str}")
-    values = [int(numeric_string) for numeric_string in array_str]
-    return values
-
-
-def concatonate(alpha:int, beta:int) -> int:
-    if alpha == 0:
-        return beta
-    return int(str(alpha) + str(beta))
+from helpers import fileutils, numutils
 
 
 def is_possible_equation(values, result, subtotal=0, use_concationation=False):    
@@ -19,7 +7,7 @@ def is_possible_equation(values, result, subtotal=0, use_concationation=False):
     
     addition = values[0] + subtotal
     multiplication = values[0] if subtotal == 0 else values[0] * subtotal # Fix nasty bug! (Originally forgot to guard against multiplication by zero!)    
-    concatination = concatonate(subtotal, values[0]) if use_concationation else None
+    concatination = numutils.concatonate(subtotal, values[0]) if use_concationation else None
     
     size = len(values)
     if size == 1:
@@ -44,7 +32,7 @@ def count_valid_target_result_for_expression_values_from(filename, use_concation
     for l in lines:
         parts = l.split(': ')
         result = int(parts[0])
-        values = to_int_array_from(parts[1].split(' '))
+        values = numutils.int_array_from_str_array(parts[1].split(' '))
 
         if is_possible_equation(values, result, 0, use_concationation):
             #print(f"DEBUG: Valid equation: {result} {values}")

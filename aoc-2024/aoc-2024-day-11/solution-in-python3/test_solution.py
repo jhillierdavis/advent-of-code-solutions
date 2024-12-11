@@ -9,20 +9,6 @@ input_full = "AOC-2024-Day-11_Puzzle-Input-Full.txt"
 @pytest.mark.parametrize(
     "number, expected",
     [    
-        pytest.param(0, True),
-        pytest.param(1, False),
-        pytest.param(2, True),
-        pytest.param(3, False),
-        pytest.param(4, True),
-    ],    
-)
-def test_is_even(number, expected):    
-    assert expected == solution.is_even(number)
-
-
-@pytest.mark.parametrize(
-    "number, expected",
-    [    
         pytest.param(12, (1, 2)),
         pytest.param(1000, (10, 0)),
     ],    

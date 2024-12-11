@@ -7,17 +7,6 @@ input_full = "AOC-2024-Day-07_Puzzle-Input-Full.txt"
 
 
 @pytest.mark.parametrize(
-    "alpha, beta, expected",
-    [
-        pytest.param(1,2,12),
-        pytest.param(12,345,12345),
-    ],    
-)
-def test_concatonate(alpha, beta, expected):
-    assert expected == solution.concatonate(alpha, beta)
-
-
-@pytest.mark.parametrize(
     "values, result, expected",
     [
         pytest.param([0,1],1,True),

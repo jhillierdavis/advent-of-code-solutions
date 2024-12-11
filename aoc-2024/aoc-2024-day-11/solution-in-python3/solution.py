@@ -1,8 +1,4 @@
-from helpers import fileutils
-
-def is_even(number:int) -> bool:
-    return number % 2 == 0
-
+from helpers import fileutils, numutils
 
 def count_stone_values(values:str) -> int:
     stones = values.split(' ')
@@ -22,7 +18,7 @@ def evolve_individual_stone_number_into_pair(value:int) -> (int,int):
         return 1, None
     
     size = len(str(value))
-    if is_even(size): # Even length value -> pair of values (2 stones)
+    if numutils.is_even(size): # Even length value -> pair of values (2 stones)
         left_value, right_value = split_even_length_stone_number_into_pair(value)
         return left_value, right_value
     
