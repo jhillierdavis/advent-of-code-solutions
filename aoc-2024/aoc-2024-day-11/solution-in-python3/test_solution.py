@@ -26,7 +26,7 @@ input_full = "AOC-2024-Day-11_Puzzle-Input-Full.txt"
     ],    
 )
 def test_evolve_stones(input, blinks, expected):
-    stones = solution.evolve_stones(input, blinks)
+    stones = solution.evolve_stone_values(input, blinks)
     assert expected == stones
 
 
@@ -44,34 +44,34 @@ def test_evolve_stones(input, blinks, expected):
     ],    
 )
 def test_count_stones_after_blinks(input, blinks, expected):
-    stones = solution.evolve_stones(input, blinks)
-    assert expected == solution.count(stones)
+    stone_values = solution.evolve_stone_values(input, blinks)
+    assert expected == solution.count_stone_values(stone_values)
 
 
 
 #@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
-    "filename, expected",
+    "filename, blinks, expected",
     [
-        pytest.param(input_example, 55312),
-        pytest.param(input_full, 197157),
+        pytest.param(input_example, 25, 55312),
+        pytest.param(input_full, 25, 197157),
     ],    
 )
-def test_solve_part1(filename, expected):
-    value = solution.solve_part1(filename)
-    
+def test_solve_part1(filename, blinks, expected):
+    value = solution.solve_part1(filename, blinks)
     assert expected == value
 
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
-    "filename, expected",
+    "filename, blinks, expected",
     [
-        pytest.param(input_example, -1),
-        #pytest.param(input_full, -1),
+        pytest.param(input_example, 25, 55312),
+        pytest.param(input_example, 75, 65601038650482),
+        pytest.param(input_full, 25, 197157),
+        pytest.param(input_full, 75, 234430066982597),
     ],    
 )
-def test_solve_part2(filename, expected):
-    value = solution.solve_part2(filename)
-    
+def test_solve_part2(filename, blinks, expected):
+    value = solution.solve_part2(filename, blinks)
     assert expected == value
