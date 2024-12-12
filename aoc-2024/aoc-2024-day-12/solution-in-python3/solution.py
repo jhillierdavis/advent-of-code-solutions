@@ -32,8 +32,6 @@ def populate_continguous_region(g:grid.Grid2D, s, sp, region):
             populate_continguous_region(g, s, n, region)
         
 
-
-
 def get_contiguous_region_containing(g:grid.Grid2D, s, sp):
     region = set()
     region.add(sp)
@@ -66,8 +64,10 @@ def count_regions(g:grid.Grid2D) -> int:
 
     return count
 
+
 def calculate_area(region):
     return len(region)
+
 
 def calculate_perimeter(g, s, region):
     size =  len(region)
@@ -90,6 +90,31 @@ def calculate_perimeter(g, s, region):
 
     return count
 
+
+def get_min_max_points_for_region_points(region, w, h):
+    min_x = w
+    min_y = h
+    max_x = 0
+    max_y = 0
+
+    for r in region:
+        x = r.get_x()
+        y = r.get_y()
+
+        if x < min_x:
+            min_x = x
+
+        if y < min_y:
+            min_y = y
+
+        if x > max_x:
+            max_x = x
+
+        if y > max_y:
+            max_y = y
+    return min_x, min_y, 1+max_x, 1+max_y
+
+
 def calculate_sides(g, s, region):
     size =  len(region)
 
@@ -101,17 +126,19 @@ def calculate_sides(g, s, region):
     
     
     count = 0
-    max_h = g.get_height()
-    max_w = g.get_width()
+    
+    
+    
+    min_x, min_y, max_x, max_y = get_min_max_points_for_region_points(region, g.get_width(), g.get_height())
 
     count_sides_north = 0
     count_sides_south = 0
     
     # Count horizontal side
-    for h in range(max_h):        
+    for h in range(min_y,max_y):        
         in_side_north = False
         in_side_south = False
-        for w in range(max_w):
+        for w in range(min_x,max_x):
             p = point.Point2D(w, h)
             if p in region:            
                 n_north = g.get_neighbour_north(p)                
@@ -133,10 +160,10 @@ def calculate_sides(g, s, region):
 
     count_sides_east = 0
     count_sides_west = 0
-    for w in range(max_w):
+    for w in range(min_x,max_x): 
         in_side_east = False
         in_side_west = False
-        for h in range(max_h):
+        for h in range(min_y,max_y): 
             p = point.Point2D(w, h)
             if p in region:            
                 n_east = g.get_neighbour_east(p)
@@ -182,7 +209,7 @@ def solve_part1(filename):
             perimeter = calculate_perimeter(g, s, r)
             price = area * perimeter
             #print(f"DEBUG: s={s} area={area} r={r}")
-            print(f"DEBUG: s={s} area={area} perimeter={perimeter} price={price}")
+            #print(f"DEBUG: s={s} area={area} perimeter={perimeter} price={price}")
             ans += price
             
     return ans
@@ -206,7 +233,7 @@ def solve_part2(filename):
             sides = calculate_sides(g, s, r)
             price = area * sides
             #print(f"DEBUG: s={s} area={area} r={r}")
-            print(f"DEBUG: s={s} area={area} sides={sides} price={price}")
+            #print(f"DEBUG: s={s} area={area} sides={sides} price={price}")
             ans += price
             
     return ans
