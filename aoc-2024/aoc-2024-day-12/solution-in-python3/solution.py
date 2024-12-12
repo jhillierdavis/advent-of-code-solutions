@@ -90,10 +90,84 @@ def calculate_perimeter(g, s, region):
 
     return count
 
+def calculate_sides(g, s, region):
+    size =  len(region)
+
+    if size == 0:
+        return 0
+    
+    if size == 1:
+        return 4
+    
+    
+    count = 0
+    max_h = g.get_height()
+    max_w = g.get_width()
+
+    count_sides_north = 0
+    count_sides_south = 0
+    
+    # Count horizontal side
+    for h in range(max_h):        
+        in_side_north = False
+        in_side_south = False
+        for w in range(max_w):
+            p = point.Point2D(w, h)
+            if p in region:            
+                n_north = g.get_neighbour_north(p)                
+                if n_north in region:
+                    in_side_north = False
+                elif not in_side_north:
+                    in_side_north = True                    
+                    count_sides_north += 1
+
+                n_south = g.get_neighbour_south(p)
+                if n_south in region:
+                    in_side_south = False
+                elif not in_side_south:
+                    in_side_south = True                    
+                    count_sides_south += 1
+            else:
+                in_side_north = False
+                in_side_south = False                    
+
+    count_sides_east = 0
+    count_sides_west = 0
+    for w in range(max_w):
+        in_side_east = False
+        in_side_west = False
+        for h in range(max_h):
+            p = point.Point2D(w, h)
+            if p in region:            
+                n_east = g.get_neighbour_east(p)
+                if n_east in region:
+                    in_side_east = False
+                elif not in_side_east:
+                    #print(f"DEBUG: side east at p={p}")
+                    in_side_east = True                    
+                    count_sides_east += 1
+
+                n_west  = g.get_neighbour_west(p)
+                if n_west in region:
+                    in_side_west = False
+                elif not in_side_west:
+                    in_side_west = True                    
+                    count_sides_west += 1
+            else:
+                in_side_east = False
+                in_side_west = False                    
+
+
+    
+    count = count_sides_north + count_sides_south + count_sides_east + count_sides_west
+    #print(f"DEBUG: count={count} count_sides_north={count_sides_north} count_sides_south={count_sides_south} count_sides_east={count_sides_east} count_sides_west={count_sides_west}")    
+    return count
+
+
 def solve_part1(filename):
     lines = fileutils.get_file_lines_from(filename)
     g = grid.lines_to_grid(lines)
-    grid.display_grid(g)
+    #grid.display_grid(g)
 
     map = get_symbol_to_position_map(g)
 
@@ -117,5 +191,22 @@ def solve_part1(filename):
 def solve_part2(filename):
     lines = fileutils.get_file_lines_from(filename)
     g = grid.lines_to_grid(lines)
-    grid.display_grid(g)
-    return "TODO"
+    #grid.display_grid(g)
+
+    map = get_symbol_to_position_map(g)
+
+    ans = 0
+    for s, sps in map.items():
+        #print(f"DEBUG; sps={sps}")
+        # For each symbol count distinct regions
+        regions = get_contiguous_regions(g, s, sps)        
+
+        for r in regions:
+            area = calculate_area(r)
+            sides = calculate_sides(g, s, r)
+            price = area * sides
+            #print(f"DEBUG: s={s} area={area} r={r}")
+            print(f"DEBUG: s={s} area={area} sides={sides} price={price}")
+            ans += price
+            
+    return ans
