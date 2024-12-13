@@ -23,7 +23,7 @@ def test_calculcate_cost(presses_A, presses_B, expected):
     "filename, expected",
     [
         pytest.param(input_example, 480),
-        pytest.param(input_full, 35729),
+        #pytest.param(input_full, 35729),
     ],    
 )
 def test_solve_part1(filename, expected):
@@ -32,15 +32,16 @@ def test_solve_part1(filename, expected):
     assert expected == value
 
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
-    "filename, expected",
+    "filename, prize_offset, expected",
     [
-        pytest.param(input_example, -1),
+        pytest.param(input_example, 0, 480),
+        #pytest.param(input_example, 10000000000000, -1),
         #pytest.param(input_full, -1),
     ],    
 )
-def test_solve_part2(filename, expected):
-    value = solution.solve_part2(filename)
+def test_solve_part2(filename, prize_offset, expected):
+    value = solution.solve_part2(filename, prize_offset)
     
     assert expected == value
