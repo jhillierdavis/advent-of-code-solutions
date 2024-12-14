@@ -53,7 +53,7 @@ def count_robots_on_grid_section(g, start_x, end_x, start_y, end_y):
     #print(f"DEBUG: count={count}")
     return count
     
-    
+
 def get_robots_from(filename):
     lines = fileutils.get_file_lines_from(filename)
     robots = []
@@ -78,12 +78,10 @@ def solve_part1(filename, width, height):
     time_in_sec = 100
     for i in range(time_in_sec):
         robots = get_moved_robots(robots, width, height)
-        g = get_robots_on_grid(robots, width, height)
-        
+        g = get_robots_on_grid(robots, width, height)        
         
     grid.display_grid(g)
-
-    
+   
     count = 1
     #print(width//2, height//2)
     count *= count_robots_on_grid_section(g, 0, width//2, 0, height//2)
@@ -94,13 +92,56 @@ def solve_part1(filename, width, height):
 
 
 def solve_part2(filename, width, height):
+    #
+    # NB: Intructions were not specific on how to identify the Xmas Tree depiction (or it's orientation)
+    # 
+    # Initialled I assumed a Xmas tree display upright and symmetically placed on the grid, 
+    # so tried matching grid quadrants (from Part 1), but that approach failed to produce a match (over large iterations)
+    #
+    # THen I tried finding the grid display when all robots are in distinct unique positions, which contained the following embedded image:
+    #
+    # 1111111111111111111111111111111
+    # 1.............................1
+    # 1.............................1
+    # 1.............................1
+    # 1.............................1
+    # 1..............1..............1
+    # 1.............111.............1
+    # 1............11111............1
+    # 1...........1111111...........1
+    # 1..........111111111..........1
+    # 1............11111............1
+    # 1...........1111111...........1
+    # 1..........111111111..........1
+    # 1.........11111111111.........1
+    # 1........1111111111111........1
+    # 1..........111111111..........1
+    # 1.........11111111111.........1
+    # 1........1111111111111........1
+    # 1.......111111111111111.......1
+    # 1......11111111111111111......1
+    # 1........1111111111111........1
+    # 1.......111111111111111.......1
+    # 1......11111111111111111......1
+    # 1.....1111111111111111111.....1
+    # 1....111111111111111111111....1
+    # 1.............111.............1
+    # 1.............111.............1
+    # 1.............111.............1
+    # 1.............................1
+    # 1.............................1
+    # 1.............................1
+    # 1.............................1
+    # 1111111111111111111111111111111
+    #
+
     robots = get_robots_from(filename)
     g = get_robots_on_grid(robots, width, height)
     
     grid.display_grid(g)
     print('')
 
-    # Assume Christmas Tree displayed when all robot positions are unique
+    # Christmas Tree displayed when all robot positions are unique 
     time_in_sec = 10000
     for t in range(1, time_in_sec):
         robots = get_moved_robots(robots, width, height)
