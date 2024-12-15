@@ -1,7 +1,7 @@
 from helpers import fileutils, grid, point
 
 
-def has_moved_into_space(g:grid.Grid2D, p:point.Point2D, n:point.Point2D, target_symbol:str) -> point.Point2D:
+def has_moved_into_space(g:grid.Grid2D, p:point.Point2D, n:point.Point2D, target_symbol:str='O') -> point.Point2D:
     if n == None:
         return False
 
@@ -15,6 +15,7 @@ def has_moved_into_space(g:grid.Grid2D, p:point.Point2D, n:point.Point2D, target
         return True
     return False
 
+
 def has_moved_boxes(g:grid.Grid2D, p:point.Point2D, n:point.Point2D) -> point.Point2D:
     if n == None:
         return False
@@ -25,10 +26,11 @@ def has_moved_boxes(g:grid.Grid2D, p:point.Point2D, n:point.Point2D) -> point.Po
         g.set_symbol(n, ps)
         g.set_symbol(p, ns)
 
-        grid.display_grid(g)
-        print('\n')
+        #grid.display_grid(g)
+        #print('\n')
         return True
     return False
+
 
 def find_first_occurrence(input_string, character):
     try:
@@ -36,6 +38,7 @@ def find_first_occurrence(input_string, character):
         return index
     except ValueError:
         return -1
+
 
 def apply_movements(gss:grid.Grid2D, movement_lines:str) -> grid.Grid2D:
     rp = gss.get_matching_symbol_coords('@')[0]
@@ -147,9 +150,9 @@ def end_state(filename_instructions, filename_end_state) -> bool:
     
     print(f"DEBUG: {start_state_lines}")    
     gss = grid.lines_to_grid(start_state_lines)
-    print('Start grid:')
-    grid.display_grid(gss)
-    print('\n')
+    #print('Start grid:')
+    #grid.display_grid(gss)
+    #print('\n')
 
     movement_lines = fileutils.get_lines_after_empty_from_file(filename_instructions)
     print(f'Movement lines: {movement_lines}\n')
@@ -184,8 +187,8 @@ def end_state(filename_instructions, filename_end_state) -> bool:
     return ges.__eq__(gms)
 
 
-def calculate_sum_box_gps_coords(g:grid.Grid2D) -> int:
-    boxes = g.get_matching_symbol_coords('O')
+def calculate_sum_box_gps_coords(g:grid.Grid2D, box_symbol='O') -> int:
+    boxes = g.get_matching_symbol_coords(box_symbol)
 
     ans = 0
     for b in boxes:
@@ -205,8 +208,3 @@ def solve_part1(filename):
     movement_lines = fileutils.get_lines_after_empty_from_file(filename)
     gms = apply_movements(gss, movement_lines)
     return calculate_sum_box_gps_coords(gms)
-
-
-def solve_part2(filename):
-    lines = fileutils.get_file_lines_from(filename)
-    return "TODO"
