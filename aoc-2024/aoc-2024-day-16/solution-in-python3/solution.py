@@ -2,15 +2,12 @@
 #
 # NB: Use Heap queue algorithm in Python3: https://docs.python.org/3/library/heapq.html
 #
-# See AOC 2021 Day 15 for another Dijkstra example.
+# See also AOC 2021 Day 15 for a prior Dijkstra example (which used as basis).
 
 import heapq
 
 # Local helper utils
 from helpers import fileutils, grid, point
-
-
-
 
 
 def calculate_change_in_direction_cost(current_direction:int, new_direction:int):
@@ -40,7 +37,7 @@ def create_low_cost_path_grid(g:grid.Grid2D):
     start_point = grid.get_single_symbol_point(g, 'S')
     stop_point = grid.get_single_symbol_point(g, 'E')
 
-    direction = int(grid.Compass.EAST) # grid.Compass.EAST # direction
+    direction = int(grid.Compass.EAST)  # Initial direction
     pq = [(0, (start_point, direction))] # Priority queue list, holding entries with total cost per point (x,y) when moving in a specific direction (NB: Cost must be first item for default comparator)
     visited = set()
 
