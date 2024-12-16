@@ -23,7 +23,9 @@ def test_solve_part1(filename, expected):
     assert expected == value
 
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
+import solution_part2
+
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, expected",
     [
@@ -33,5 +35,5 @@ def test_solve_part1(filename, expected):
     ],    
 )
 def test_solve_part2(filename, expected):
-    value = solution.solve_part2(filename)    
+    value = solution_part2.solve_part2(filename)    
     assert expected == value

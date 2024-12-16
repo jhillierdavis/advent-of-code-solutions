@@ -108,16 +108,9 @@ def create_low_cost_path_grid(g:grid.Grid2D):
     return low_cost_path_grid
 
 
-def create_chiton_grid_from_file(filename):
-    lines = fileutils.get_file_lines(filename)
-    return grid.lines_to_integer_grid(lines)
 
 
-def get_grid_bottom_right_value(low_risk_path_grid):
-    return int(low_risk_path_grid.get_symbol(point.Point2D(low_risk_path_grid.get_width() -1, low_risk_path_grid.get_height() -1)))
-
-
-def calcuate_lowest_risk_score(filename):
+def calcuate_lowest_cost_score(filename):
     lines = fileutils.get_file_lines(filename)
     g = grid.lines_to_grid(lines)
     stop_point = get_single_symbol_point(g, 'E')
@@ -125,9 +118,24 @@ def calcuate_lowest_risk_score(filename):
     low_cost_path_grid = create_low_cost_path_grid(g)
 
     #grid.display_grid(low_cost_path_grid, " ")
-
+    display_grid_evenly_spaced(low_cost_path_grid)
     return low_cost_path_grid.get_symbol(stop_point)
 
 
+def display_grid_evenly_spaced(g:grid.Grid2D, separator:str="", cell_size=4):   
+    for h in range(g.get_height()):
+        #print(f"Grid line: {h} ")
+        line = ""
+        for w in range(g.get_width()):
+            symbol = g.get_symbol(point.Point2D(w,h))
+            #print(f"DEBUG: {symbol}")
+            symbol = str(symbol)
+            line += symbol.rjust(cell_size, ' ')
+            line += separator
+        print(f"{line}")
+
+
 def solve_part1(filename):
-    return calcuate_lowest_risk_score(filename)
+    return calcuate_lowest_cost_score(filename)
+
+
