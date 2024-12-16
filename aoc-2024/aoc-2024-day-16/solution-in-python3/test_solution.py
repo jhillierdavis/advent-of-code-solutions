@@ -30,8 +30,8 @@ import solution_part2
     "filename, expected",
     [
         pytest.param(input_example, 45),
-        #pytest.param(input_example2, 64),
-        #pytest.param(input_full, -1),
+        pytest.param(input_example2, 64),
+        pytest.param(input_full, 575),
     ],    
 )
 def test_solve_part2(filename, expected):

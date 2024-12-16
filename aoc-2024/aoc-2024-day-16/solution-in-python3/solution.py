@@ -6,55 +6,48 @@
 
 import heapq
 
-# Local
+# Local helper utils
 from helpers import fileutils, grid, point
 
 
-def get_single_symbol_point(g:grid.Grid2D, symbol) -> point.Point2D:
-    points = g.get_points_matching(symbol)
-    assert len(points) == 1
-    sp = points.pop()
-    #print(f"DEBUG: Start point: sp={sp}")
-    return sp
+
 
 
 def calculate_change_in_direction_cost(current_direction:int, new_direction:int):
     if current_direction == new_direction:
         return 0
     
-    if current_direction == 1:
-        if new_direction == 3:
+    if current_direction == int(grid.Compass.NORTH):
+        if new_direction == int(grid.Compass.SOUTH):
             return 2000
 
-    if current_direction == 3:
-        if new_direction == 1:
+    if current_direction == int(grid.Compass.SOUTH):
+        if new_direction == int(grid.Compass.NORTH):
             return 2000
     
-    if current_direction == 4:
-        if new_direction == 2:
+    if current_direction == int(grid.Compass.EAST):
+        if new_direction == int(grid.Compass.WEST):
             return 2000
 
-    if current_direction == 2:
-        if new_direction == 4:
+    if current_direction == int(grid.Compass.WEST):
+        if new_direction == int(grid.Compass.EAST):
             return 2000
         
     return 1000
 
 
 def create_low_cost_path_grid(g:grid.Grid2D):
-    start_point = get_single_symbol_point(g, 'S')
-    stop_point = get_single_symbol_point(g, 'E')
+    start_point = grid.get_single_symbol_point(g, 'S')
+    stop_point = grid.get_single_symbol_point(g, 'E')
 
-    direction = 2 # grid.Compass.EAST # direction
-    pq = [(0, (start_point, direction))] # Priority queue list, holding entries with total cost per point (x,y)
-    #heap = heapq.heapify(pq) # Transform a populated list into a heap
+    direction = int(grid.Compass.EAST) # grid.Compass.EAST # direction
+    pq = [(0, (start_point, direction))] # Priority queue list, holding entries with total cost per point (x,y) when moving in a specific direction (NB: Cost must be first item for default comparator)
     visited = set()
 
     low_cost_path_grid = grid.Grid2D(g.get_width(), g.get_height())
-    low_cost_path_grid.set_symbol(start_point, 0)
-    
+    low_cost_path_grid.set_symbol(start_point, 0) 
 
-    while len(pq) > 0:
+    while pq:
         # Get next lowest total risk cost point (x,y) and direction
         c, (p, d) = heapq.heappop(pq)
 
@@ -68,74 +61,36 @@ def create_low_cost_path_grid(g:grid.Grid2D):
 
         # Stop when reach target destination point
         if p == stop_point:
-            #print(f"DEBUG: Bingo!")
+            print(f"DEBUG: Lowest cost: {c}")
             break
 
         # Process cardial point (north, south, east, west) immediate neighbours, adding costs
 
-        np = g.get_neighbour_north(p)
-        if np:
-            additional_cost = calculate_change_in_direction_cost(d, 1)
-            symbol = g.get_symbol(np)
-            if symbol == '.' or symbol == 'E':  
-                cost = 1 + c + additional_cost
-                heapq.heappush(pq, (cost, (np, 1)))
-
-        np = g.get_neighbour_east(p)
-        if np:
-            additional_cost = calculate_change_in_direction_cost(d, 2)
-            symbol = g.get_symbol(np)
-            if symbol == '.' or symbol == 'E':  
-                cost = 1 + c + additional_cost
-                heapq.heappush(pq, (cost, (np, 2)))
-
-        np = g.get_neighbour_south(p)
-        if np:
-            additional_cost = calculate_change_in_direction_cost(d, 3)
-            symbol = g.get_symbol(np)
-            if symbol == '.' or symbol == 'E':  
-                cost = 1 + c + additional_cost
-                heapq.heappush(pq, (cost, (np, 3)))
-
-        np = g.get_neighbour_west(p)
-        if np:
-            additional_cost = calculate_change_in_direction_cost(d, 4)
-            symbol = g.get_symbol(np)
-            if symbol == '.' or symbol == 'E':  
-                cost = 1 + c + additional_cost
-                heapq.heappush(pq, (cost, (np, 4)))
+        for compass_direction in [grid.Compass.NORTH, grid.Compass.EAST, grid.Compass.SOUTH, grid.Compass.WEST]:
+            np = g.get_neighbour_in_direction(p, compass_direction)
+            nd = int(compass_direction)
+            if np:
+                additional_cost = calculate_change_in_direction_cost(d, nd)
+                symbol = g.get_symbol(np)
+                if symbol == '.' or symbol == 'E':  
+                    cost = 1 + c + additional_cost
+                    heapq.heappush(pq, (cost, (np, nd)))
 
     return low_cost_path_grid
-
-
 
 
 def calcuate_lowest_cost_score(filename):
     lines = fileutils.get_file_lines(filename)
     g = grid.lines_to_grid(lines)
-    stop_point = get_single_symbol_point(g, 'E')
+
+    stop_point = grid.get_single_symbol_point(g, 'E')
 
     low_cost_path_grid = create_low_cost_path_grid(g)
 
     #grid.display_grid(low_cost_path_grid, " ")
-    display_grid_evenly_spaced(low_cost_path_grid)
+    grid.display_grid_evenly_spaced(low_cost_path_grid)
     return low_cost_path_grid.get_symbol(stop_point)
-
-
-def display_grid_evenly_spaced(g:grid.Grid2D, separator:str="", cell_size=4):   
-    for h in range(g.get_height()):
-        #print(f"Grid line: {h} ")
-        line = ""
-        for w in range(g.get_width()):
-            symbol = g.get_symbol(point.Point2D(w,h))
-            #print(f"DEBUG: {symbol}")
-            symbol = str(symbol)
-            line += symbol.rjust(cell_size, ' ')
-            line += separator
-        print(f"{line}")
 
 
 def solve_part1(filename):
     return calcuate_lowest_cost_score(filename)
-
-
