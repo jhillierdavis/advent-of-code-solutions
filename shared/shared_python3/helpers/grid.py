@@ -3,7 +3,24 @@ from helpers import point, fileutils
 # TODO: Update to follow style conventions (e.g. for class & method names) https://peps.python.org/pep-0008/
 
 from enum import Enum
-Compass = Enum('Compass', [('NORTH', 1), ('NORTHEAST', 2), ('EAST', 3), ('SOUTHEAST', 4), ('SOUTH', 5), ('SOUTHWEST', 6), ('WEST', 7), ('NORTHWEST', 8)])
+#Compass = Enum('Compass', [('NORTH', 1), ('NORTHEAST', 2), ('EAST', 3), ('SOUTHEAST', 4), ('SOUTH', 5), ('SOUTHWEST', 6), ('WEST', 7), ('NORTHWEST', 8)])
+
+class Compass(Enum):
+    NORTH = 1, 'North'
+    NORTHEAST = 2, 'Northeast'
+    EAST = 3, 'North'
+    SOUTHEAST = 4, 'Southeast'
+    SOUTH = 5, 'South'
+    SOUTHWEST = 6, 'Southwest'
+    WEST = 7, 'West'
+    NORTHWEST = 8, 'Northwest'
+
+    def __int__(self):
+        return self.value[0]
+
+    def __str__(self):
+        return self.value[1]
+    
 
 def lines_to_grid(input_lines):
     height = len(input_lines)
@@ -54,6 +71,19 @@ def display_grid(grid, separator:str=""):
         print(f"Grid line: {gl} ")
 
 
+def display_grid_evenly_spaced(g, separator:str="", cell_size=5):   
+    for h in range(g.get_height()):
+        #print(f"Grid line: {h} ")
+        line = ""
+        for w in range(g.get_width()):
+            symbol = g.get_symbol(point.Point2D(w,h))
+            #print(f"DEBUG: {symbol}")
+            symbol = str(symbol)
+            line += symbol.rjust(cell_size, ' ')
+            line += separator
+        print(f"{line}")
+
+
 def get_multiple_grids_from(filename):
     list_of_grid_lines = fileutils.get_contiguous_non_empty_lines_from(filename)
 
@@ -62,6 +92,14 @@ def get_multiple_grids_from(filename):
         g = lines_to_grid(lines)
         grids.append(g)
     return grids
+
+
+def get_single_symbol_point(g, symbol:str) -> point.Point2D:
+    points = g.get_points_matching(symbol)
+    assert len(points) == 1
+    sp = points.pop()
+    #print(f"DEBUG: Start point: sp={sp}")
+    return sp
 
 
 class Grid2D():
@@ -143,6 +181,22 @@ class Grid2D():
         #    print(f"DEBUG: x={x} x_unwrapped={x_unwrapped} x_max={x_max} y={y} y_unwrapped={y_unwrapped} y_max={y_max}")
         unwrapped_point = point.Point2D(x_unwrapped, y_unwrapped)
         return unwrapped_point
+
+
+    def get_neighbour_in_direction(self, p:point.Point2D, d:Compass) -> point.Point2D:
+        if d == Compass.NORTH:
+            return self.get_neighbour_north(p)
+        
+        if d == Compass.EAST:
+            return self.get_neighbour_east(p)
+
+        if d == Compass.SOUTH:
+            return self.get_neighbour_south(p)
+
+        if d == Compass.WEST:
+            return self.get_neighbour_west(p)
+
+        raise Exception(f"Unknown direction: {d}")  
 
 
     def get_neighbour_east(self, p:point.Point2D) -> point.Point2D:
