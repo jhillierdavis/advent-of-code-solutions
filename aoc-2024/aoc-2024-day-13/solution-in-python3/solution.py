@@ -1,6 +1,9 @@
+import re, math
+from itertools import combinations
+
 from helpers import fileutils, point
 
-def calculate_cost(presses_a, presses_b):
+def calculate_cost_from_button_presses(presses_a, presses_b):
     # Button A presses cost 3 tokens, Button B presses cost 1 token
     return 3 * presses_a + 1 * presses_b
 
@@ -19,7 +22,7 @@ def determine_tokens(button_a, button_b, price, max_presses_per_button):
             y += button_b.get_y()
 
             if x == price.get_x() and y == price.get_y():
-                cost = calculate_cost(a,b)
+                cost = calculate_cost_from_button_presses(a,b)
                 print(f"DEBUG: Bingo! at a={a} b={b} for x={x} y={y} cost={cost}")
                 matches.add((a, b))
             elif x > price.get_x():
@@ -70,7 +73,7 @@ def solve_part1(filename):
         size = len(matches)
         if size == 1:
             a, b = matches.pop()
-            cost = calculate_cost(a,b)                
+            cost = calculate_cost_from_button_presses(a,b)                
             print(f'DEBUG: Turn: button_a={button_a} button_b={button_b} prize={prize} cost={cost}')
             total_cost += cost
         elif size > 1: # Only appears to be one solution per turn!
@@ -78,7 +81,7 @@ def solve_part1(filename):
 
     return total_cost
 
-import math
+
 
 def calculate_gradient(rise, run): 
     if run == 0: 
@@ -101,7 +104,6 @@ def get_point_info(p):
     return calculate_hypotenuse(p.get_y(), p.get_x()), calculate_gradient(p.get_y(), p.get_x())
 
 
-from itertools import combinations
 
 def are_factors(numbers, target):
     factors = set()
@@ -162,45 +164,61 @@ def find_combination_multiples_factors(x, y, z):
     return multiples_factors
 
 
-def solve_part2(filename, prize_offset):
+def old_solve_part2(filename, prize_offset):
     turns = get_turn_info_from(filename, prize_offset)
     assert len(turns) > 0
 
     total_cost = 0
-    for t in turns:        
+    for t in turns:                
         button_a, button_b, prize = t
-        #print(f'DEBUG: Turn: button_a={button_a} button_b={button_b} prize={prize}')
-        gradient_a = calculate_point_gradient(button_a)
-        gradient_b = calculate_point_gradient(button_b)
-        gradient_p = calculate_point_gradient(prize)
-        #print(f'DEBUG: Gradients: gradient_a={gradient_a} gradient_b={gradient_b} gradient_p={gradient_p}')
+        print(f'DEBUG: Turn: button_a={button_a} button_b={button_b} prize={prize}')
 
-        a_h, a_g = get_point_info(button_a)
-        #print(f"DEBUG: a_g={a_g} a_h={a_h}")
+        map = dict() # map of gradient to hypotenuse & cost
 
-
+        a_h, a_g = get_point_info(button_a)        
+        map[a_g] = (a_h, 3, button_a)
         b_h, b_g = get_point_info(button_b)
-        #print(f"DEBUG: b_g={b_g} b_h={b_h}")
-
+        map[b_g] = (b_h, 1, button_b)
+        button_ab = point.Point2D(button_a.get_x() + button_b.get_x(), button_a.get_y() + button_b.get_y())         
+        ab_h, ab_g = get_point_info(button_ab)   
+        map[ab_g] = (ab_h, 4, button_ab)
+        button_abb = point.Point2D(button_a.get_x() + 2 * button_b.get_x(), button_a.get_y() + 2 * button_b.get_y())         
+        abb_h, abb_g = get_point_info(button_abb)   
+        map[abb_g] = (abb_h, 5, button_abb)
+        button_abbb = point.Point2D(button_a.get_x() + 3 * button_b.get_x(), button_a.get_y() + 3 * button_b.get_y())         
+        abbb_h, abbb_g = get_point_info(button_abbb)   
+        map[abbb_g] = (abbb_h, 6, button_abbb)
         p_h, p_g = get_point_info(prize)
-        #print(f"DEBUG: p_g={p_g} p_h={p_h}")
-
-        """
-        pfx = set()
-        pfx.add(button_a.get_x())
-        pfx.add(button_b.get_x())
-        pfx.add(button_a.get_x() + button_b.get_x())
-        pfx.add(button_a.get_x() + 2 * button_b.get_x())
-        pfx.add(button_a.get_x() + 3 * button_b.get_x())
 
         
-        pfy = set()
-        pfy.add(button_a.get_y())
-        pfy.add(button_b.get_y())
-        pfy.add(button_a.get_y() + button_b.get_y())
-        pfy.add(button_a.get_y() + 2 * button_b.get_y())
-        pfy.add(button_a.get_y() + 3 * button_b.get_y())
-        """
+        min_diff = None
+        index = None
+        for k in map.keys():
+            d = abs(p_g - k)
+            if min_diff == None or d < min_diff:
+                min_diff = d
+                index = k        
+        print(f"DEBUG: match index={index}")
+
+
+        #print(f"DEBUG: a_g={a_g} a_h={a_h}")
+        #print(f"DEBUG: b_g={b_g} b_h={b_h}")
+        #print(f"DEBUG: ab_g={ab_g} ab_h={ab_h}")
+        #print(f"DEBUG: abb_g={abb_g} abb_h={abb_h}")
+        #print(f"DEBUG: abbb_g={abbb_g} abb_h={abbb_h}")
+        #print(f"DEBUG: p_g={p_g} p_h={p_h}")
+
+        print(f'DEBUG: map={map}')
+        h, c, p = map[index]
+        
+
+        rounds = int(prize_offset // h)
+        cost_offset = rounds * c
+        target = (prize.get_x() - rounds * p.get_x(), prize.get_y() - rounds * p.get_y())
+        print(f'DEBUG: rounds={rounds} cost={cost_offset} target={target} prize={prize} p={p}')
+        
+        
+        prize = p
 
         fx = find_combination_multiples_factors(button_a.get_x(), button_b.get_x(), prize.get_x())
         fy = find_combination_multiples_factors(button_a.get_y(), button_b.get_y(), prize.get_y())
@@ -209,10 +227,90 @@ def solve_part2(filename, prize_offset):
         if intersection:
             print(f'DEBUG: Turn: button_a={button_a} button_b={button_b} prize={prize}')
             
-            cost = min(calculate_cost(i[0], i[1]) for i in intersection)
+            cost = cost_offset + min(calculate_cost_from_button_presses(i[0], i[1]) for i in intersection)
             print(f"DEBUG: Bingo! intersection={intersection}  cost={cost} fx={fx} fy={fy}")
             total_cost += cost
         
         #break
 
     return total_cost
+"""
+def solve_spedulartively(ax, ay, bx, by, px, py) -> int:
+    ca = (px * by - py * bx) / (ax * by - ay * bx)
+    cb = (px - ax * ca) / bx
+        
+    if ca % 1 == cb % 1 == 0:
+        return calculate_cost_from_button_presses(ca, cb)
+    return 0
+
+
+
+def solve(ax, ay, bx, by, px, py) -> int:
+    ca = (px * by - py * bx) / (ax * by - ay * bx)
+    cb = (px - ax * ca) / bx
+        
+    if ca % 1 == cb % 1 == 0:
+        return calculate_cost_from_button_presses(ca, cb)
+    return 0
+"""
+
+
+def determine_buttons_presses_speculatively(ax, ay, bx, by, px, py) -> (int,int):
+    max_presses_per_button = 100
+
+    x_start = 0
+    y_start = 0
+
+
+    d = px // 100
+    if d > max_presses_per_button:
+        px -= d
+        py -= d
+    else:
+        d = 0
+
+    print(f"DEBUG: d={d} px={px} py={py}")
+        
+    for a in range(1 + x_start, 1 + max_presses_per_button):
+        x = a * ax
+        y = a * ay
+
+        for b in range(1 + y_start, 1 + max_presses_per_button):
+            #print(f'DEBUG: a={a} b={b}')
+            x += bx
+            y += by
+
+            if x == px and y == py:
+                return (a,b)    
+    return (None, None)
+
+
+
+def determine_buttons_presses(ax, ay, bx, by, px, py) -> (int,int):
+    ca = (px * by - py * bx) / (ax * by - ay * bx)
+    cb = (px - ax * ca) / bx
+        
+    if ca % 1 == cb % 1 == 0:
+        return (int(ca), int(cb))
+    return (None, None)
+
+
+def solve_part2(filename, prize_offset):
+    total = 0
+
+    #a_presses = set()
+    #b_presses = set()
+    for block in open(filename).read().split("\n\n"):
+        instr = map(int, re.findall(r"\d+", block))
+        ax, ay, bx, by, px, py = instr
+        px += prize_offset
+        py += prize_offset
+
+        (ca,cb) = determine_buttons_presses(ax, ay, bx, by, px, py)
+        if ca and cb:
+            total += calculate_cost_from_button_presses(ca, cb)        
+
+    #return int(total)
+    #print(f"DEBUG: min a_presses={min(a_presses)} b_presses={min(b_presses)}")
+    return total
+        
