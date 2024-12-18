@@ -45,10 +45,7 @@ def create_low_risk_path_grid(g):
     return -1
 
 
-def solve_part1(filename, fallen, size):
-    lines = fileutils.get_file_lines_from(filename)
-    g = grid.Grid2D(size, size)
-
+def get_corruption_points(lines):
     cps = [] # Corruption points
     for l in lines:
         values = l.split(",")
@@ -56,16 +53,35 @@ def solve_part1(filename, fallen, size):
         y = int(values[1])
         p = point.Point2D(x,y)
         cps.append(p)
-    
+    return cps
+
+
+def solve_part1(filename, fallen, size):
+    lines = fileutils.get_file_lines_from(filename)
+    cps = get_corruption_points(lines)
+
+    g = grid.Grid2D(size, size)
+
     for i in range(fallen):
         p = cps[i]
         g.set_symbol(p, '#')
     
-    grid.display_grid(g)
+    #grid.display_grid(g)
 
     return create_low_risk_path_grid(g)
 
 
 def solve_part2(filename, size):
     lines = fileutils.get_file_lines_from(filename)
-    return "TODO"
+    cps = get_corruption_points(lines)
+
+    g = grid.Grid2D(size, size)
+
+    size = len(cps)
+    for i in range(size):
+        p = cps[i]
+        g.set_symbol(p, '#')
+        if create_low_risk_path_grid(g) < 0:
+            return (p.get_x(), p.get_y())
+
+    return (-1,-1)
