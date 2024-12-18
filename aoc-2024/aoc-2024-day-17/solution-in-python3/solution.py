@@ -139,6 +139,29 @@ def solve_part1(filename):
     instructions = data_line[len('Program: '):]    
     return process_string_of_instructions(instructions, reg_map)
 
+# Full Example:
+#
+# 2,4,1,2,7,5,4,5,1,3,5,5,0,3,3,0
+#
+# Breakdown (vertically):
+#
+# Opcode:  2 -> BST -> B = (A % 8)
+# Operand: 4
+# Opcode:  1 -> BXL -> B = B ^ 2
+# Opcode:  2
+# Opcode:  7 -> CDV -> C = A / (2 ** B)  (NB: = B >> A)
+# Opcode:  5
+# Opcode:  4 -> BXC -> B = B ^ C
+# Opcode:  5
+# Opcode:  1 -> BXL -> B = B ^ 3
+# Opcode:  3
+# Opcode:  5 -> OUT -> out(B % 8)
+# Opcode:  5
+# Opcode:  0 -> ADV -> A = A / (2 ** 3) =  A / 8 (NB: = A >> 3)
+# Opcode:  3
+# Opcode:  3 -> JNZ -> if (0 == A): exit , else: goto 0
+# Opcode:  0
+
 
 def solve_part2(instructions):
     # Work backwards to see what taget value of Register A produced instructions values (reading from right to left)
