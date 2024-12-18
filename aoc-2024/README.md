@@ -45,3 +45,11 @@ Revisit:
 Jonathan Paulson (solutions in Python):
 * [YouTube videos]( https://www.youtube.com/@jonathanpaulson5053/videos ) @jonathanpaulson5053 
 * [GitHub code]( https://github.com/jonathanpaulson/AdventOfCode/blob/master/2024 ) jonathanpaulson
+
+@hyper-neutrino (solutions in Python):
+* [YouTube videos]( https://www.youtube.com/@hyper-neutrino ) @hyper-neutrino 
+* [GitHub code]( https://github.com/hyperneutrino/advent-of-code/tree/main/2024 ) hyperneutrino
+
+@0xdf (solutions in Python)
+* [YouTube videos] ( https://www.youtube.com/@0xdf/videos ) @0xdf
+* [GitLab code]( https://gitlab.com/0xdf/aoc2024/ ) 0xdf
