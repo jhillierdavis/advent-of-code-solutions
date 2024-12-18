@@ -32,57 +32,36 @@ def solve_part1(filename:str, size:int, fallen:int) -> int:
     cbps = get_corruption_blocks(lines)
 
     g = grid.Grid2D(size, size)
-
     place_corruption_blocks(g, cbps, fallen)
-    
-    #grid.display_grid(g)
-
+    #grid.display_grid(g)    
+   
+    # Determine the least number of steps in optimum path from top left to bottom right of grid (with blocked corruption points)
     return  dijkstra.get_least_steps(g)
 
 
-def get_block_point(g:grid.Grid2D, cbps:[point.Point2D], reachable:int=0) -> (int,int):
+def get_blocked_path_point(g:grid.Grid2D, cbps:[point.Point2D], reachable:int=0) -> (int,int):
     size = len(cbps)
     for i in range(reachable, size):
         p = cbps[i]
 
         g.set_symbol(p, CORRUPTION_BLOCK_CHAR) # Blocked
             
-        if  dijkstra.get_least_steps(g) < 0:
+        # Check whether impassable (based on min. number of steps from start to finish point)    
+        if  dijkstra.get_least_steps(g) <= 0: 
             return (p.get_x(), p.get_y())
 
     return (-1,-1) # Failed
 
-"""
-def get_block_point_optimised(g, cps):
-    size = len(cps)
-    max_x = 0
-    max_y = 0
-    for i in range(size):
-        p = cps[i]
-        if max_x < p.get_x():
-            max_x = p.get_x()
-            if max_x < g.get_width() -1:
-                max_x += 1
-        if max_y < p.get_y():
-            max_y = p.get_y()
-            if max_y < g.get_height() -1:
-                max_y += 1
-
-        g.set_symbol(p, '#') # Blocked
-            
-        # Try to use next point, as stop point, from furthest curruption point to optimise
-        if  dijkstra.get_least_steps(g, CORRUPTION_BLOCK_CHAR, point.Point2D(0,0), point.Point2D(max_x, max_y)) < 0:
-            return (p.get_x(), p.get_y())
-
-    return (-1,-1)
-"""
 
 def solve_part2(filename:str, size:int, reachable:int) -> (int,int):
     lines = fileutils.get_file_lines_from(filename)
     cbps = get_corruption_blocks(lines)
 
+
     g = grid.Grid2D(size, size)
+    # NB: We know (from Part 1) the 'reachable' block points (i.e. those that do not make an impassable path), 
+    # # so place those on the grid
     place_corruption_blocks(g, cbps, reachable)
 
-    return get_block_point(g, cbps, reachable)
-    #return get_block_point(g, cps, 0)
+    # Determine the point when addition of another blocked corruption point causes the traversal path to become impassable    
+    return get_blocked_path_point(g, cbps, reachable)
