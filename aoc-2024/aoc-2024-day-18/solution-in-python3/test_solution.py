@@ -21,12 +21,12 @@ def test_solve_part1(filename, size, fallen, expected):
 
 #@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
-    "filename, size, expected",
+    "filename, size, reachable, expected",
     [
-        pytest.param(input_example, 7, (6,1)),
-        pytest.param(input_full, 71, (5,60)),
+        pytest.param(input_example, 7, 12, (6,1)),
+        pytest.param(input_full, 71, 1024, (5,60)),
     ],    
 )
-def test_solve_part2(filename, size, expected):
-    value = solution.solve_part2(filename, size)    
+def test_solve_part2(filename, size, reachable, expected):
+    value = solution.solve_part2(filename, size, reachable)    
     assert expected == value
