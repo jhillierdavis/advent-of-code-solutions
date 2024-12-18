@@ -1,8 +1,4 @@
 # Solution implementation using Dijkstra's_algorithm (see https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm )
-#
-# NB: Use Heap queue algorithm in Python3: https://docs.python.org/3/library/heapq.html
-
-import heapq
 
 from helpers import fileutils, grid, point, dijkstra
 
