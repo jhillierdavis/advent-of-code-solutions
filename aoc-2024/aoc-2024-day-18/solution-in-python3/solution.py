@@ -6,8 +6,10 @@ import heapq
 
 from helpers import fileutils, grid, point
 
+CORRUPTION_BLOCK_CHAR = '#'
 
-def get_least_steps(g:grid.Grid2D, start_point:point.Point2D = point.Point2D(0, 0), stop_point:point.Point2D = None):
+
+def get_least_steps(g:grid.Grid2D, block_char:str="#", start_point:point.Point2D = point.Point2D(0, 0), stop_point:point.Point2D = None):
     if stop_point == None:
         stop_point = point.Point2D(g.get_width() -1, g.get_height() -1)
 
@@ -45,42 +47,42 @@ def get_least_steps(g:grid.Grid2D, start_point:point.Point2D = point.Point2D(0, 
     return -1
 
 
-def get_corruption_points(lines):
-    cps = [] # Corruption points
+def get_corruption_blocks(lines):
+    cbps = [] # Corruption block points
     for l in lines:
         values = l.split(",")
         x = int(values[0])
         y = int(values[1])
         p = point.Point2D(x,y)
-        cps.append(p)
-    return cps
+        cbps.append(p)
+    return cbps
 
 
-def place_corruption_blocks(g, cps, count):
+def place_corruption_blocks(g:grid.Grid2D, cbps, count):
     for i in range(count):
-        p = cps[i]
-        g.set_symbol(p, '#') # Blocked
+        p = cbps[i]
+        g.set_symbol(p, CORRUPTION_BLOCK_CHAR) # Blocked
 
 
-def solve_part1(filename, fallen, size):
+def solve_part1(filename:str, size:int, fallen:int) -> int:
     lines = fileutils.get_file_lines_from(filename)
-    cps = get_corruption_points(lines)
+    cbps = get_corruption_blocks(lines)
 
     g = grid.Grid2D(size, size)
 
-    place_corruption_blocks(g, cps, fallen)
+    place_corruption_blocks(g, cbps, fallen)
     
     #grid.display_grid(g)
 
     return get_least_steps(g)
 
 
-def get_block_point(g, cps, reachable=0):
-    size = len(cps)
+def get_block_point(g:grid.Grid2D, cbps:[point.Point2D], reachable:int=0) -> (int,int):
+    size = len(cbps)
     for i in range(reachable, size):
-        p = cps[i]
+        p = cbps[i]
 
-        g.set_symbol(p, '#') # Blocked
+        g.set_symbol(p, CORRUPTION_BLOCK_CHAR) # Blocked
             
         if get_least_steps(g) < 0:
             return (p.get_x(), p.get_y())
@@ -106,18 +108,18 @@ def get_block_point_optimised(g, cps):
         g.set_symbol(p, '#') # Blocked
             
         # Try to use next point, as stop point, from furthest curruption point to optimise
-        if get_least_steps(g, point.Point2D(0,0), point.Point2D(max_x, max_y)) < 0:
+        if get_least_steps(g, CORRUPTION_BLOCK_CHAR, point.Point2D(0,0), point.Point2D(max_x, max_y)) < 0:
             return (p.get_x(), p.get_y())
 
     return (-1,-1)
 """
 
-def solve_part2(filename, size, reachable):
+def solve_part2(filename:str, size:int, reachable:int) -> (int,int):
     lines = fileutils.get_file_lines_from(filename)
-    cps = get_corruption_points(lines)
+    cbps = get_corruption_blocks(lines)
 
     g = grid.Grid2D(size, size)
-    place_corruption_blocks(g, cps, reachable)
+    place_corruption_blocks(g, cbps, reachable)
 
-    return get_block_point(g, cps, reachable)
+    return get_block_point(g, cbps, reachable)
     #return get_block_point(g, cps, 0)

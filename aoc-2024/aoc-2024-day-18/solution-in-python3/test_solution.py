@@ -15,7 +15,7 @@ input_full = "AOC-2024-Day-18_Puzzle-Input-Full.txt"
     ],    
 )
 def test_solve_part1(filename, size, fallen, expected):
-    value = solution.solve_part1(filename, fallen, size)    
+    value = solution.solve_part1(filename, size, fallen)    
     assert expected == value
 
 
