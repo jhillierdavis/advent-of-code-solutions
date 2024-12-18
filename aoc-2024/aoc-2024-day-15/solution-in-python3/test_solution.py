@@ -9,7 +9,7 @@ input_example = "AOC-2024-Day-15_Puzzle-Input-Example.txt"
 input_example_end_state = "AOC-2024-Day-15_Puzzle-Input-Example_End-State.txt"
 input_full = "AOC-2024-Day-15_Puzzle-Input-Full.txt"
 
-
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, expected",
     [
@@ -53,6 +53,7 @@ input_example_second_warehouse = "AOC-2024-Day-15_Puzzle-Input-Example-Second-Wa
 
 import solution_part2
 
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, filename_example_second_warehouse",
     [
@@ -75,10 +76,31 @@ input_example_2 = "example_2.txt"
     [
         pytest.param(input_example_2, 618), # (1,5) -> 105, (2,7) -> 207, (3,6) -> 306, total = 105 + 207 + 306 = 618
         pytest.param(input_example, 9021),
-        #pytest.param(input_full, 1522215), # not 1502541
+        pytest.param(input_full, 1522215), # not 1502541
     ],    
 )
 def test_solve_part2(filename, expected):
     #value = solution.solve_part2(filename)
     value = solution_part2.solve_part2(filename)
     assert expected == value
+
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
+@pytest.mark.parametrize(
+    "filename",
+    [
+        pytest.param('bug-example.txt')
+    ],    
+)
+def test_apply_second_warehouse_movements(filename):
+    lines = fileutils.get_lines_before_empty_from_file(filename)
+    gi = grid.lines_to_grid(lines)
+    grid.display_grid(gi)
+
+    go = gi.clone()
+    
+
+    movement_lines = [['^']]
+    go = solution_part2.apply_second_warehouse_movements(go, movement_lines)
+
+    grid.display_grid(go)
+    assert gi == go # Not changed!
