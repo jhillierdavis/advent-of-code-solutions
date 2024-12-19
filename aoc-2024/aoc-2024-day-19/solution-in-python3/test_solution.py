@@ -8,6 +8,19 @@ input_full = "AOC-2024-Day-19_Puzzle-Input-Full.txt"
 
 #@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
+    "input, expected",
+    [
+        pytest.param('a, b, c', ['a','b','c']), 
+        pytest.param('a,b,c', ['a','b','c']), 
+    ],    
+)
+def test_comma_separated_values_to_list(input:str, expected) -> list:
+    assert solution.comma_separated_values_to_list(input) == expected
+
+
+
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
+@pytest.mark.parametrize(
     "towel_pattern, design, expected",
     [
         pytest.param('r, wr, b, g, bwu, rb, gb, br', 'brwrr', True), # br + wr + r
@@ -29,11 +42,7 @@ input_full = "AOC-2024-Day-19_Puzzle-Input-Full.txt"
     ],    
 )
 def test_has_patterns(towel_pattern, design, expected):
-    # Try original approach
-    #value = solution.is_possible_design(towel_pattern, design) # Fails for towel_pattern ='a, ab, b' with design='ba'
-    #assert expected == value  
-
-    patterns = towel_pattern.split(', ')
+    patterns = solution.comma_separated_values_to_list(towel_pattern)
     cache = dict()
     value = solution.has_patterns(patterns, design, cache)   
     assert expected == value

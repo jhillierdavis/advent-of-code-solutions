@@ -3,41 +3,19 @@
 from helpers import fileutils
 
 
-def is_possible_design(towel_pattern, design) -> bool:
-    patterns = towel_pattern.split(", ")
-    patterns = sorted(patterns, key=len, reverse=True)
-    #print(f"DEBUG: {patterns}")
-
-    has_patterns = False
-    
-    s = design
-    size = len(design)
-    for i in range(size):
-        for p in patterns:
-            if s.startswith(p):                
-                s = s[len(p):]
-                #print(f"DEBUG: {s}")
-                continue
-
-    has_patterns = len(s) <= 0
-    return has_patterns
-
+def comma_separated_values_to_list(csvs:str) -> list:
+    return [value.strip() for value in csvs.split(',')]
 
 
 #@cache # Will not work with list!
 def has_patterns(patterns, design, cache=dict()):
     #print(f"DEBUG: has_patterns {patterns} design={design} cache={cache}")
 
-    if design in cache:
+    if design in cache: 
         print(f"DEBUG: Cache: {design} {cache[design]}")
         return cache[design]
 
-    """
-    if len(design) <= 0:
-        print(f"Matched design={design}")
-        return True    
-    """
-    if not design: # Nothing left to match
+    if not design: # Nothing left to match i.e. len(design) <= 0
         #print(f"DEBUG: Cache: {design}")
         return True
 
@@ -79,8 +57,7 @@ def count_patterns(patterns, design, cache):
 
 def solve_part1(filename):
     lines = fileutils.get_file_lines(filename)
-
-    patterns = lines[0].split(', ')
+    patterns = comma_separated_values_to_list(lines[0])
     designs = fileutils.get_lines_after_empty_from_file(filename)
     #print(f"DEBUG: patterns={patterns}")
 
@@ -94,8 +71,7 @@ def solve_part1(filename):
 
 def solve_part2(filename):
     lines = fileutils.get_file_lines(filename)
-
-    patterns = lines[0].split(', ')
+    patterns = comma_separated_values_to_list(lines[0])
     designs = fileutils.get_lines_after_empty_from_file(filename)
     #print(f"DEBUG: patterns={patterns}")
 
