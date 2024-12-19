@@ -6,7 +6,6 @@ input_example = "AOC-2024-Day-19_Puzzle-Input-Example.txt"
 input_full = "AOC-2024-Day-19_Puzzle-Input-Full.txt"
 
 
-
 #@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "towel_pattern, design, expected",
@@ -20,30 +19,23 @@ input_full = "AOC-2024-Day-19_Puzzle-Input-Full.txt"
         pytest.param('r, wr, b, g, bwu, rb, gb, br', 'brgr', True), 
         pytest.param('r, wr, b, g, bwu, rb, gb, br', 'bbrgwb', False), 
         pytest.param('r, wr, b, g, bwu, rb, gb, br', 'w', False), 
-    ],    
-)
-def test_is_possible_design(towel_pattern, design, expected):
-    value = solution.is_possible_design(towel_pattern, design)   
-    assert expected == value
-
-#@pytest.mark.skip(reason="TODO: Ignore until implemented")
-@pytest.mark.parametrize(
-    "towel_pattern, design, expected",
-    [
-        pytest.param('r, wr, b, g, bwu, rb, gb, br', 'brwrr', True), # br + wr + r
-        pytest.param('r, wr, b, g, bwu, rb, gb, br', 'bggr', True), # b + g + g + r
-        pytest.param('r, wr, b, g, bwu, rb, gb, br', 'gbbr', True), # g + b + b + r
-        pytest.param('r, wr, b, g, bwu, rb, gb, br', 'rrbgbr', True), # r + rb + g + br
-        pytest.param('r, wr, b, g, bwu, rb, gb, br', 'ubwu', False), # no u
-        pytest.param('r, wr, b, g, bwu, rb, gb, br', 'bwurrg', True),
-        pytest.param('r, wr, b, g, bwu, rb, gb, br', 'brgr', True), 
-        pytest.param('r, wr, b, g, bwu, rb, gb, br', 'bbrgwb', False), 
-        pytest.param('r, wr, b, g, bwu, rb, gb, br', 'w', False), 
+        pytest.param('a, ab', 'aab', True),
+        pytest.param('a, ab', 'aba', True), 
+        pytest.param('a, ab', 'aab', True), 
+        pytest.param('a, ab', 'abba', False), # Cannot make 'ba'
+        pytest.param('a, b, ab', 'abba', True), 
+        pytest.param('a, ab, b', 'ba', True), 
+        pytest.param('bba, ab, a', 'abba', True), # Would fail if used 'ab' (since cannot make 'ba') rather than 'a' and 'bba'
     ],    
 )
 def test_has_patterns(towel_pattern, design, expected):
+    # Try original approach
+    #value = solution.is_possible_design(towel_pattern, design) # Fails for towel_pattern ='a, ab, b' with design='ba'
+    #assert expected == value  
+
     patterns = towel_pattern.split(', ')
-    value = solution.has_patterns(patterns, design)   
+    cache = dict()
+    value = solution.has_patterns(patterns, design, cache)   
     assert expected == value
 
 

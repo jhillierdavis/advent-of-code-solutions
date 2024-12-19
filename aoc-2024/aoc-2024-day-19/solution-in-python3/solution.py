@@ -26,7 +26,10 @@ def is_possible_design(towel_pattern, design) -> bool:
 
 #@cache # Will not work with list!
 def has_patterns(patterns, design, cache=dict()):
+    #print(f"DEBUG: has_patterns {patterns} design={design} cache={cache}")
+
     if design in cache:
+        print(f"DEBUG: Cache: {design} {cache[design]}")
         return cache[design]
 
     """
@@ -35,6 +38,7 @@ def has_patterns(patterns, design, cache=dict()):
         return True    
     """
     if not design: # Nothing left to match
+        #print(f"DEBUG: Cache: {design}")
         return True
 
     #print(f"DEBUG: Patterns {patterns}")
@@ -78,7 +82,7 @@ def solve_part1(filename):
 
     patterns = lines[0].split(', ')
     designs = fileutils.get_lines_after_empty_from_file(filename)
-    print(patterns)
+    #print(f"DEBUG: patterns={patterns}")
 
     ans = 0
     for d in designs:
