@@ -31,9 +31,13 @@ input_full = "AOC-2024-Day-19_Puzzle-Input-Full.txt"
     ],    
 )
 def test_has_patterns(towel_pattern, design, expected):
+    # Given
     patterns = csvutils.comma_separated_values_to_list(towel_pattern)
-    cache = dict()
-    value = solution.has_patterns(patterns, design, cache)   
+
+    # When:
+    value = solution.has_patterns(patterns, design)   
+
+    # Then:
     assert expected == value
 
 

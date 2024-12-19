@@ -1,12 +1,17 @@
 from helpers import fileutils, csvutils
 
 
-def has_patterns(patterns, design, cache=dict()):
+def has_patterns(patterns, design, cache=None):
+    if None == cache:
+        cache = dict()
     return count_patterns(patterns, design, cache) > 0
 
-# Check each initial part of the design provided against available patterns, 
-# if matched then check the remainder (repeating for all pattern combos)
-def count_patterns(patterns, design, cache=dict()):
+
+# Check each part of the design provided (working left too right) against the available patterns, 
+# if a pattern is matched then check the remainder of the design (repeating for all pattern combos)
+def count_patterns(patterns, design, cache=None):
+    if None == cache:
+        cache = dict()
 
     # Check if can used cached result (for performance)
     if design in cache:
