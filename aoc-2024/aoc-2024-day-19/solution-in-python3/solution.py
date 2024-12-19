@@ -1,10 +1,6 @@
 #from functools import cache
 
-from helpers import fileutils
-
-
-def comma_separated_values_to_list(csvs:str) -> list:
-    return [value.strip() for value in csvs.split(',')]
+from helpers import fileutils, csvutils
 
 
 #@cache # Will not work with list!
@@ -57,7 +53,7 @@ def count_patterns(patterns, design, cache):
 
 def solve_part1(filename):
     lines = fileutils.get_file_lines(filename)
-    patterns = comma_separated_values_to_list(lines[0])
+    patterns = csvutils.comma_separated_values_to_list(lines[0])
     designs = fileutils.get_lines_after_empty_from_file(filename)
     #print(f"DEBUG: patterns={patterns}")
 
@@ -71,7 +67,7 @@ def solve_part1(filename):
 
 def solve_part2(filename):
     lines = fileutils.get_file_lines(filename)
-    patterns = comma_separated_values_to_list(lines[0])
+    patterns = csvutils.comma_separated_values_to_list(lines[0])
     designs = fileutils.get_lines_after_empty_from_file(filename)
     #print(f"DEBUG: patterns={patterns}")
 
