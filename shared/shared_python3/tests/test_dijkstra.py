@@ -13,7 +13,15 @@ def place_blocks(g:grid.Grid2D, blocks):
 
 @pytest.mark.parametrize(
     "blocks, size, expected",
-    [         
+    [   
+        pytest.param([], 3, 4),
+        pytest.param([(1,1)], 3, 4),
+        pytest.param([], 4, 6),
+        pytest.param([(1,1), (2,1)], 4, 6),
+        pytest.param([], 5, 8),
+        pytest.param([(0,1),(1,1),(2,1),(3,1),(1,3),(2,3),(3,3),(4,3)], 5, 16),
+        pytest.param([(1,1), (2,1), (1,2)], 4, 6),
+        pytest.param([], 7, 12),      
         pytest.param([(5,4),(4,2),(4,5),(3,0),(2,1),(6,3),(2,4),(1,5),(0,6),(3,3),(2,6),(5,1)], 7, 22),
     ],    
 )
