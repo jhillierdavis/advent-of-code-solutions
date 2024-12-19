@@ -65,10 +65,13 @@ def grid_to_lines(grid, separator:str=""):
     return lines
             
     
-def display_grid(grid, separator:str=""):
+def display_grid(grid, separator:str="", use_prefix=True):
+    prefix = ""
+    if use_prefix:
+        prefix = "Grid line: "
     lines = grid_to_lines(grid, separator)
     for gl in lines:
-        print(f"Grid line: {gl} ")
+        print(f"{prefix}{gl}")
 
 
 def display_grid_evenly_spaced(g, separator:str="", cell_size=5):   
@@ -219,6 +222,7 @@ class Grid2D():
                 return np
         return None  
 
+
     def get_neighbour_north(self, p:point.Point2D) -> point.Point2D:
         x = p.get_x()
         y = p.get_y()
@@ -226,7 +230,7 @@ class Grid2D():
         np = point.Point2D(x , y-1)
 
         if self.contains(np):
-                return np
+            return np
         return None  
 
     def get_neighbour_south(self, p:point.Point2D) -> point.Point2D:
@@ -236,8 +240,9 @@ class Grid2D():
         np = point.Point2D(x , y+1)
 
         if self.contains(np):
-                return np
+            return np
         return None  
+
 
     def get_matching_symbol_coords(self, symbol:chr):
         locations = []
