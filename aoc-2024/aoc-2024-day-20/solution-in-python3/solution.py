@@ -7,7 +7,8 @@ def find_single_symbol_point_and_clear(g, symbol):
     return p 
 
 
-def get_cheat_paths(g:grid.Grid2D, max_size:int=1):
+def get_cheat_paths(g:grid.Grid2D, duration:int=1):
+    assert duration > 0
     spaces = g.get_points_matching('.') 
 
     cheat_paths = set()
@@ -24,7 +25,7 @@ def get_cheat_paths(g:grid.Grid2D, max_size:int=1):
                 if nns == '#' or nnp == sp:
                     continue
 
-                cheat_paths.add( (sp, nnp, 1, np))
+                cheat_paths.add( (sp, nnp, duration, np))
 
     return cheat_paths
 
@@ -218,7 +219,7 @@ def solve_part2(filename:str, saving:int, duration:int=1) -> int:
     ep = find_single_symbol_point_and_clear(g,'E')
     count_original = dijkstra.get_least_steps(g, '#', sp, ep)
 
-    cheat_paths = get_cheat_paths(g)
+    cheat_paths = get_cheat_paths(g, duration)
 
     map_d2s = dict()
     map_d2e = dict()
