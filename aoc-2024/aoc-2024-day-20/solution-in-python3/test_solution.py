@@ -92,7 +92,7 @@ def test_get_cheat_paths(filename, size, expected):
 
     matched = False
     for cp in cheat_paths:
-        cs, ce, cl = cp
+        cs, ce, cl, _ = cp
         if cs == esp and ce == eep and cl == el:
             matched = True
             break
@@ -100,7 +100,7 @@ def test_get_cheat_paths(filename, size, expected):
     assert matched
 
 
-#@pytest.mark.skip(reason="TODO: Ignore until implemented")
+@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, saving, expected",
     [
@@ -114,15 +114,25 @@ def test_solve_part1(filename, saving, expected):
     assert expected == value
 
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
-    "filename, expected",
+    "filename, saving, expected",
     [
-        pytest.param(input_example, -1),
-        #pytest.param(input_full, -1),
+        pytest.param(input_example, 2, 14),
+        pytest.param(input_example, 4, 14),
+        pytest.param(input_example, 6, 2),
+        pytest.param(input_example, 8, 4),
+        pytest.param(input_example, 10, 2),
+        pytest.param(input_example, 12, 3),
+        pytest.param(input_example, 20, 1),
+        pytest.param(input_example, 36, 1),
+        pytest.param(input_example, 38, 1),
+        pytest.param(input_example, 40, 1),
+        pytest.param(input_example, 64, 1),
+        #pytest.param(input_full, 100, -1),
     ],    
 )
-def test_solve_part2(filename, expected):
-    value = solution.solve_part2(filename)
+def test_solve_part2(filename, saving, expected):
+    value = solution.solve_part2(filename, saving)
     
     assert expected == value
