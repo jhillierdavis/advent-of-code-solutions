@@ -1,16 +1,44 @@
 from helpers import fileutils, grid, point, dijkstra
 
 
+def find_single_symbol_point_and_clear(g, symbol):
+    p = grid.get_single_symbol_point(g, symbol)
+    g.set_symbol(p, '.')
+    return p 
+
+
+def get_cheat_paths(g:grid.Grid2D, max_size:int=1):
+    spaces = g.get_points_matching('.') 
+
+    cheat_paths = set()
+    for sp in spaces:
+        nps = g.get_cardinal_point_neighbours(sp)
+        for np in nps:
+            if np == sp:
+                continue
+
+            ns = g.get_symbol(np)
+            if ns == '#':
+                nnps = g.get_cardinal_point_neighbours(np)
+                for nnp in nnps:
+                    if nnp == np or nnp == sp:
+                        continue
+
+                    nns = g.get_symbol(nnp)
+                    if nns == '.':
+                        cheat_paths.add( (sp, nnp, 1))
+    return cheat_paths
+
+
+
+
 def get_shortest_path(filename) -> int:
     lines = fileutils.get_file_lines_from(filename)
     g = grid.lines_to_grid(lines)
     #grid.display_grid(g)
 
-    sp = grid.get_single_symbol_point(g,'S')
-    g.set_symbol(sp, '.')
-
-    ep = grid.get_single_symbol_point(g,'E')
-    g.set_symbol(ep, '.')
+    sp = find_single_symbol_point_and_clear(g,'S')
+    ep = find_single_symbol_point_and_clear(g,'E')
     
     #grid.display_grid(g)
     #print(f"DEBUG: sp={sp} ep={ep}")
@@ -23,21 +51,14 @@ def get_shortest_path_with_cheat(filename) -> int:
     lines = fileutils.get_file_lines_from(filename)
     g = grid.lines_to_grid(lines)
 
-    cp = grid.get_single_symbol_point(g,'1')
-    g.set_symbol(cp, '.')
-
-    cp = grid.get_single_symbol_point(g,'2')
-    g.set_symbol(cp, '.')
-    ep = cp
-
-    sp = grid.get_single_symbol_point(g,'S')
-    g.set_symbol(sp, '.')
+    sp = find_single_symbol_point_and_clear(g,'S')
+    find_single_symbol_point_and_clear(g,'1')
+    ep = find_single_symbol_point_and_clear(g,'2')
 
     points = g.get_points_matching('E')
     #print(f"DEBUG: points={points}")
     if len(points) > 0:
-        ep = grid.get_single_symbol_point(g,'E')
-        g.set_symbol(ep, '.')    
+        ep = find_single_symbol_point_and_clear(g,'E')        
 
     #grid.display_grid(g)
     #print(f"DEBUG: sp={sp} ep={ep}")
@@ -51,11 +72,8 @@ def count_number_of_cheats_for_saving(filename, saving):
     g = grid.lines_to_grid(lines)
     #grid.display_grid(g)
 
-    sp = grid.get_single_symbol_point(g,'S')
-    g.set_symbol(sp, '.')
-
-    ep = grid.get_single_symbol_point(g,'E')
-    g.set_symbol(ep, '.')
+    sp = find_single_symbol_point_and_clear(g,'S')
+    ep = find_single_symbol_point_and_clear(g,'E')
     
     #grid.display_grid(g)
     #print(f"DEBUG: sp={sp} ep={ep}")
@@ -91,11 +109,8 @@ def solve_part1(filename, saving):
     g = grid.lines_to_grid(lines)
     #grid.display_grid(g)
 
-    sp = grid.get_single_symbol_point(g,'S')
-    g.set_symbol(sp, '.')
-
-    ep = grid.get_single_symbol_point(g,'E')
-    g.set_symbol(ep, '.')
+    sp = find_single_symbol_point_and_clear(g,'S')
+    ep = find_single_symbol_point_and_clear(g,'E')
     
     #grid.display_grid(g)
     #print(f"DEBUG: sp={sp} ep={ep}")
