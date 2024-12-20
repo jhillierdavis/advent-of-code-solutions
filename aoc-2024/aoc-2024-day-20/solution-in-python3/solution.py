@@ -7,26 +7,31 @@ def find_single_symbol_point_and_clear(g, symbol):
     return p 
 
 
+def get_cheat_paths_for_starting_point(g, sp, cheat_paths, duration):
+    if duration < 1:
+        return
+    
+    nps = g.get_cardinal_point_neighbours(sp)
+    for np in nps:
+        ns = g.get_symbol(np)
+        if ns == '.':
+            continue
+
+        nnps = g.get_cardinal_point_neighbours(np)
+        for nnp in nnps:
+            nns = g.get_symbol(nnp)
+            if nns == '#' or nnp == sp:
+                continue
+
+            cheat_paths.add( (sp, nnp, duration))
+
+
 def get_cheat_paths(g:grid.Grid2D, duration:int=1):
     assert duration > 0
     spaces = g.get_points_matching('.') 
-
     cheat_paths = set()
     for sp in spaces:
-        nps = g.get_cardinal_point_neighbours(sp)
-        for np in nps:
-            ns = g.get_symbol(np)
-            if ns == '.':
-                continue
-
-            nnps = g.get_cardinal_point_neighbours(np)
-            for nnp in nnps:
-                nns = g.get_symbol(nnp)
-                if nns == '#' or nnp == sp:
-                    continue
-
-                cheat_paths.add( (sp, nnp, duration, np))
-
+        get_cheat_paths_for_starting_point(g, sp, cheat_paths, duration)
     return cheat_paths
 
 
@@ -186,7 +191,7 @@ def count_number_of_cheats_for_saving_alt_approach(filename, saving):
 
     cheat_points = set()
     for entry in cheat_paths:
-        cps, cpe, cpl, cpp = entry
+        cps, cpe, cpl = entry
         #print(f"DEBUG: entry={entry}")
         #print(f"DEBUG: cheat path: cps={cps} {g.get_symbol(cps)} cpe={cpe} {g.get_symbol(cpe)}")
 
@@ -244,7 +249,7 @@ def solve_part2(filename:str, saving:int, duration:int=1) -> int:
 
     cheat_points = set()
     for entry in cheat_paths:
-        cps, cpe, cpl, cpp = entry
+        cps, cpe, cpl = entry
         #print(f"DEBUG: entry={entry}")
         #print(f"DEBUG: cheat path: cps={cps} {g.get_symbol(cps)} cpe={cpe} {g.get_symbol(cpe)}")
 

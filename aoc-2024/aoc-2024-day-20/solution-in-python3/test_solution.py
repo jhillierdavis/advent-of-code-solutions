@@ -92,7 +92,7 @@ def test_get_cheat_paths(filename, size, expected):
 
     matched = False
     for cp in cheat_paths:
-        cs, ce, cl, _ = cp
+        cs, ce, cl = cp
         if cs == esp and ce == eep and cl == el:
             matched = True
             break
