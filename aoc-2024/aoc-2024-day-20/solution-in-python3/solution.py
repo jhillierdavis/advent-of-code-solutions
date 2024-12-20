@@ -7,7 +7,29 @@ def find_single_symbol_point_and_clear(g, symbol):
     return p 
 
 
-def get_cheat_paths_for_starting_point(g, sp, cheat_paths, duration):
+def get_paths_to_next_space(g, cp, sp, cheat_paths, duration, visited):
+    if duration < 1:
+        return    
+
+    nps = g.get_cardinal_point_neighbours(cp)
+    for np in nps:
+        if np in visited:
+            continue
+        visited.add(np)
+
+        ns = g.get_symbol(np)
+        if ns == '.' and duration > 1:
+            cheat_paths.add( (sp, np, duration))
+        elif ns == '#':
+            get_paths_to_next_space(g, np, sp, cheat_paths, duration-1, visited)
+        
+
+
+
+        
+    
+
+def get_cheat_paths_for_starting_point(g, sp, sp_orig, cheat_paths, duration):
     if duration < 1:
         return
     
@@ -20,10 +42,13 @@ def get_cheat_paths_for_starting_point(g, sp, cheat_paths, duration):
         nnps = g.get_cardinal_point_neighbours(np)
         for nnp in nnps:
             nns = g.get_symbol(nnp)
-            if nns == '#' or nnp == sp:
+            if nnp == sp or nnp == sp_orig:
                 continue
 
-            cheat_paths.add( (sp, nnp, duration))
+            if nns == '#':
+                get_cheat_paths_for_starting_point(g, sp, sp_orig, cheat_paths, duration -1)
+            else:
+                cheat_paths.add( (sp_orig, nnp, duration))
 
 
 def get_cheat_paths(g:grid.Grid2D, duration:int=1):
@@ -31,7 +56,10 @@ def get_cheat_paths(g:grid.Grid2D, duration:int=1):
     spaces = g.get_points_matching('.') 
     cheat_paths = set()
     for sp in spaces:
-        get_cheat_paths_for_starting_point(g, sp, cheat_paths, duration)
+        #visited = set()
+        #visited.add(sp)
+        #get_paths_to_next_space(g, sp, sp, cheat_paths, duration, visited)
+        get_cheat_paths_for_starting_point(g, sp, sp, cheat_paths, duration)
     return cheat_paths
 
 

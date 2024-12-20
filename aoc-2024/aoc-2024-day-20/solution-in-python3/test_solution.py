@@ -137,6 +137,7 @@ def test_count_number_of_cheats_for_saving_alt_approach(filename, saving, expect
     
     assert expected == value
 
+import solution_part2
 
 #@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
@@ -144,9 +145,10 @@ def test_count_number_of_cheats_for_saving_alt_approach(filename, saving, expect
     [
         pytest.param(input_example, 64, 1, 1),
         #pytest.param(input_full, 100, 1, 1454),
+        pytest.param(input_full, 100, 20, 997879),
     ],    
 )
 def test_solve_part2(filename, saving, duration, expected):
-    value = solution.solve_part2(filename, saving, duration)
+    value = solution_part2.solve_part2(filename, saving, duration)
     
     assert expected == value
