@@ -209,7 +209,7 @@ def count_number_of_cheats_for_saving_alt_approach(filename, saving):
 
 
 
-def solve_part2(filename, saving):
+def solve_part2(filename:str, saving:int, duration:int=1) -> int:
     lines = fileutils.get_file_lines_from(filename)
     lines = fileutils.get_file_lines_from(filename)
     g = grid.lines_to_grid(lines)
