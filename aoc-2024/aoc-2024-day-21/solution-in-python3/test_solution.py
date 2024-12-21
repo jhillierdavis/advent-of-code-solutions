@@ -24,6 +24,7 @@ def test_calculate_complexity(code, sequence, expected):
     "code, expected",
     [
         pytest.param('029A', ['<A^A>^^AvvvA', '<A^A^>^AvvvA', '<A^A^^>AvvvA']),
+        pytest.param('379A', ['^A^^<<A>>AvvvA']),
     ],    
 )
 def test_get_shortest_directional_sequence_for_code(code, expected):
@@ -36,10 +37,12 @@ def test_get_shortest_directional_sequence_for_code(code, expected):
     [
         pytest.param('<A^A>^^AvvvA', 'v<<A>>^A<A>AvA<^AA>A<vAAA>^A'),
         pytest.param('v<<A>>^A<A>AvA<^AA>A<vAAA>^A', '<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A'),
+        pytest.param('^A^^<<A>>AvvvA', '<A>A<AAv<AA^>>AvAA^Av<AAA^>A'), # TODO: Check!
     ],    
 )
 def test_get_shortest_directional_sequence_for_directions(directions, expected):
     value = solution.get_shortest_directional_sequence_for_directions(directions)
+    print(f"DEBUG: directions={directions} value={value}")
     assert len(value) == len(expected)
 
 @pytest.mark.parametrize(
@@ -64,7 +67,7 @@ def test_shortest_sequence_of_button_presses(code, expected):
     "filename, expected",
     [
         pytest.param(input_example, 126384),
-        #pytest.param(input_full, -1),
+        pytest.param(input_full, -1), # 223804 too high
     ],    
 )
 def test_solve_part1(filename, expected):

@@ -3,11 +3,14 @@ from collections import deque
 
 from helpers import fileutils, grid, point
 
-# TODO: Handle '•' sysmbol (non-navigatable)
+# TODO: Handle '#' sysmbol (non-navigatable)
 
 def find_paths_with_directions(g:grid.Grid2D, start_symbol, end_symbol):
     start = grid.get_single_symbol_point(g, start_symbol)
     end = grid.get_single_symbol_point(g, end_symbol)
+    block = grid.get_single_symbol_point(g, '#')
+    visited = set()
+    #visited.add(block)
 
     def dfs(p, path, directions_path, visited):
         if p == end:
@@ -37,7 +40,7 @@ def find_paths_with_directions(g:grid.Grid2D, start_symbol, end_symbol):
             dfs(np, new_path, directions_path + ['<'], set(visited))
 
     paths = []
-    dfs(start, [(start.get_x(), start.get_y())], [], set())
+    dfs(start, [(start.get_x(), start.get_y())], [], visited)
     return paths
 
 
@@ -67,7 +70,7 @@ def calculate_complexity(code, sequence):
 
 def create_directional_keypad_grid():
     g = grid.Grid2D(3,2)
-    g.set_symbol(point.Point2D(0,0), '*')
+    g.set_symbol(point.Point2D(0,0), '#')
     g.set_symbol(point.Point2D(1,0), '^')
     g.set_symbol(point.Point2D(2,0), 'A')
     g.set_symbol(point.Point2D(0,1), '<')
@@ -89,7 +92,7 @@ def create_numerical_keypad_grid():
     g.set_symbol(point.Point2D(0,2), '1')
     g.set_symbol(point.Point2D(1,2), '2')
     g.set_symbol(point.Point2D(2,2), '3')
-    g.set_symbol(point.Point2D(0,3), '*')
+    g.set_symbol(point.Point2D(0,3), '#')
     g.set_symbol(point.Point2D(1,3), '0')
     g.set_symbol(point.Point2D(2,3), 'A')
 
@@ -125,13 +128,20 @@ def get_shortest_directional_sequence_for_directions(directions):
             sequence += md
         sequence += 'A'
         start = c
-        
+
     return sequence
 
 
 def solve_part1(filename):
     lines = fileutils.get_file_lines_from(filename)
 
-    nkg = create_numerical_keypad_grid()
-    dkg = create_directional_keypad_grid()
-    return "TODO"
+    ans = 0
+    for code in lines:
+        directions = get_shortest_directional_sequence_for_code(code)
+        directions = get_shortest_directional_sequence_for_directions(directions)
+        value = get_shortest_directional_sequence_for_directions(directions)
+        complexity = calculate_complexity(code, value)
+        print(f"DEBUG: code={code} complexity={complexity}")
+        ans += complexity
+        
+    return ans
