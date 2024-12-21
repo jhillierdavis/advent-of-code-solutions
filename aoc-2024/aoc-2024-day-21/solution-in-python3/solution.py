@@ -5,6 +5,62 @@ from helpers import fileutils, grid, point
 
 # TODO: Handle '#' sysmbol (non-navigatable)
 
+def find_shortest_lists(list_of_lists):
+    if not list_of_lists:
+        return []
+
+    # Find the length of the shortest list(s)
+    min_length = min(len(lst) for lst in list_of_lists)
+
+    # Collect all lists that have the shortest length
+    shortest_lists = [lst for lst in list_of_lists if len(lst) == min_length]
+    return shortest_lists
+
+
+def get_shortest_possibilities(g:grid.Grid2D, start_symbol, end_symbol):
+    start = grid.get_single_symbol_point(g, start_symbol)
+    end = grid.get_single_symbol_point(g, end_symbol)
+    #block = grid.get_single_symbol_point(g, '#')
+    #visited = set()
+    #visited.add(block)
+
+    possibilities = []
+
+    def dfs(p, instructions, visited):
+        ps = g.get_symbol(p)
+        #print(f"DEBUG: p={p} {ps} end={end} {end_symbol} instructions={instructions}")
+        if p == end:
+            possibilities.append(instructions)
+            return
+        
+        visited.add(p)
+
+        #ps = g.get_symbol(p)
+        np = g.get_neighbour_north(p)        
+        if None != np and np not in visited:        
+            dfs(np, instructions + ['^'], set(visited))
+
+        np = g.get_neighbour_east(p)
+        if None != np and np not in visited:
+            dfs(np, instructions + ['>'], set(visited))
+
+        np = g.get_neighbour_south(p)
+        if None != np and np not in visited:
+            dfs(np, instructions + ['v'], set(visited))
+
+        np = g.get_neighbour_west(p)
+        if None != np and np not in visited:
+            dfs(np, instructions + ['<'], set(visited))
+
+    block = grid.get_single_symbol_point(g, '#')
+    initial_visited = set()
+    initial_visited.add(block)
+    dfs(start, [], initial_visited)
+
+    return find_shortest_lists(possibilities)
+
+
+
 def find_paths_with_directions(g:grid.Grid2D, start_symbol, end_symbol):
     start = grid.get_single_symbol_point(g, start_symbol)
     end = grid.get_single_symbol_point(g, end_symbol)
@@ -67,7 +123,11 @@ def find_min_directions(g:grid.Grid2D, start_symbol, end_symbol):
 
 def find_set_of_min_directions(g:grid.Grid2D, start_symbol, end_symbol):
     paths = find_paths_with_directions(g, start_symbol, end_symbol)
-    return min(paths)
+    d = list()
+    for p in paths:
+        _, directions = p 
+        d.append(directions)
+    return min(d)
 
 
 def calculate_complexity(code, sequence):
@@ -123,6 +183,23 @@ def get_shortest_directional_sequence_for_code(code):
     return sequence
 
 
+def get_all_shortest_directional_sequences_for_code(code):
+    g = create_numerical_keypad_grid()
+
+    start = 'A'
+    sequence = ''
+    for c in code:
+        min_directions = find_set_of_min_directions(g, start, c)
+        print(f"DEBUG: start={start} end={c} min_directions={min_directions}")     
+        """
+        for md in min_directions:
+            sequence += md
+        sequence += 'A' # Press button
+        start = c
+        """   
+    return []
+
+
 def get_shortest_directional_sequence_for_directions(directions):
     g = create_directional_keypad_grid()
     #print(f"DEBUG: directions={directions}")
@@ -153,3 +230,10 @@ def solve_part1(filename):
         ans += complexity
         
     return ans
+
+"""
+g = create_numerical_keypad_grid()
+grid.display_grid(g)
+possibilities = get_shortest_possibilities(g, '2', '9')
+print(f"DEBUG: possibilities={possibilities}")   
+"""
