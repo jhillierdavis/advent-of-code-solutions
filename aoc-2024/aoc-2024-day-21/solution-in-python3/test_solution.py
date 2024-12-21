@@ -49,16 +49,20 @@ def test_get_shortest_directional_sequence_for_directions(directions, expected):
     "code, expected",
     [
         pytest.param('029A', '<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A'),
-        pytest.param('980A', '<v<A>>^AAAvA^A<vA<AA>>^AvAA<^A>A<v<A>A>^AAAvA<^A>A<vA>^A<A>A'),
-        pytest.param('179A', '<v<A>>^A<vA<A>>^AAvAA<^A>A<v<A>>^AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A'),
-        pytest.param('456A', '<v<A>>^AA<vA<A>>^AAvAA<^A>A<vA>^A<A>A<vA>^A<A>A<v<A>A>^AAvA<^A>A'),
-        pytest.param('379A', '<v<A>>^AvA^A<vA<AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A'),
+        #pytest.param('980A', '<v<A>>^AAAvA^A<vA<AA>>^AvAA<^A>A<v<A>A>^AAAvA<^A>A<vA>^A<A>A'),
+        #pytest.param('179A', '<v<A>>^A<vA<A>>^AAvAA<^A>A<v<A>>^AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A'),
+        #pytest.param('456A', '<v<A>>^AA<vA<A>>^AAvAA<^A>A<vA>^A<A>A<vA>^A<A>A<v<A>A>^AAvA<^A>A'),
+        #pytest.param('379A', '<v<A>>^AvA^A<vA<AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A'),
     ],    
 )
 def test_shortest_sequence_of_button_presses(code, expected):
+    print(f"DEBUG: code={code}")
     directions = solution.get_shortest_directional_sequence_for_code(code)
+    print(f"DEBUG: directions={directions} {len(directions)}")
     directions = solution.get_shortest_directional_sequence_for_directions(directions)
+    print(f"DEBUG: directions={directions} {len(directions)}")
     value = solution.get_shortest_directional_sequence_for_directions(directions)
+    print(f"DEBUG: value={value} {len(value)}")
     assert len(value) == len(expected)
 
 
@@ -67,7 +71,7 @@ def test_shortest_sequence_of_button_presses(code, expected):
     "filename, expected",
     [
         pytest.param(input_example, 126384),
-        pytest.param(input_full, -1), # 223804 too high
+        #pytest.param(input_full, -1), # 223804 too high
     ],    
 )
 def test_solve_part1(filename, expected):

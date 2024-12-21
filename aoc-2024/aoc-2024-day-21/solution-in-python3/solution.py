@@ -10,7 +10,7 @@ def find_paths_with_directions(g:grid.Grid2D, start_symbol, end_symbol):
     end = grid.get_single_symbol_point(g, end_symbol)
     block = grid.get_single_symbol_point(g, '#')
     visited = set()
-    #visited.add(block)
+    visited.add(block)
 
     def dfs(p, path, directions_path, visited):
         if p == end:
@@ -19,6 +19,7 @@ def find_paths_with_directions(g:grid.Grid2D, start_symbol, end_symbol):
         
         visited.add(p)
 
+        #ps = g.get_symbol(p)
         np = g.get_neighbour_north(p)        
         if None != np and np not in visited:        
             new_path = path + [(np.get_x(), np.get_y())]
@@ -44,10 +45,10 @@ def find_paths_with_directions(g:grid.Grid2D, start_symbol, end_symbol):
     return paths
 
 
-cache = {}
+#cache = {}
 def find_min_directions(g:grid.Grid2D, start_symbol, end_symbol):
-    if (start_symbol, end_symbol) in cache:
-        return cache[(start_symbol, end_symbol)]
+    #if (start_symbol, end_symbol) in cache:
+    #    return cache[(start_symbol, end_symbol)]
 
     paths = find_paths_with_directions(g, start_symbol, end_symbol)
     #print(f"DEBUG: paths={paths}")
@@ -56,12 +57,17 @@ def find_min_directions(g:grid.Grid2D, start_symbol, end_symbol):
     for p, d in paths:
         size = len(d)
         if size < min_size:
-            min_directions = d
+            min_directions = d        
             min_size = size
 
-    cache[(start_symbol, end_symbol)] = min_directions
+    #cache[(start_symbol, end_symbol)] = min_directions
 
     return min_directions
+
+
+def find_set_of_min_directions(g:grid.Grid2D, start_symbol, end_symbol):
+    paths = find_paths_with_directions(g, start_symbol, end_symbol)
+    return min(paths)
 
 
 def calculate_complexity(code, sequence):
@@ -76,8 +82,8 @@ def create_directional_keypad_grid():
     g.set_symbol(point.Point2D(0,1), '<')
     g.set_symbol(point.Point2D(1,1), 'v')
     g.set_symbol(point.Point2D(2,1), '>')
-    grid.display_grid(g)
-    print()
+    #grid.display_grid(g)
+    #print()
     return g
 
 
@@ -96,8 +102,8 @@ def create_numerical_keypad_grid():
     g.set_symbol(point.Point2D(1,3), '0')
     g.set_symbol(point.Point2D(2,3), 'A')
 
-    grid.display_grid(g)
-    print()
+    #grid.display_grid(g)
+    #print()
     return g
 
 
@@ -108,26 +114,28 @@ def get_shortest_directional_sequence_for_code(code):
     sequence = ''
     for c in code:
         min_directions = find_min_directions(g, start, c)
-#       print(f"DEBUG: c={c} min_directions={min_directions}")        
+#       print(f"DEBUG: start={start} c={c} min_directions={min_directions}")        
         for md in min_directions:
             sequence += md
-        sequence += 'A'
+        sequence += 'A' # Press button
         start = c
 
     return sequence
 
+
 def get_shortest_directional_sequence_for_directions(directions):
     g = create_directional_keypad_grid()
-
+    #print(f"DEBUG: directions={directions}")
     start = 'A'
     sequence = ''
-    for c in directions:
-        min_directions = find_min_directions(g, start, c)
-#       print(f"DEBUG: c={c} min_directions={min_directions}")        
+    for end in directions:
+        min_directions = find_min_directions(g, start, end)
+        
         for md in min_directions:
             sequence += md
-        sequence += 'A'
-        start = c
+        sequence += 'A' # Press button
+        print(f"DEBUG: sequence={sequence} start={start} end={end} min_directions={min_directions}")        
+        start = end
 
     return sequence
 
