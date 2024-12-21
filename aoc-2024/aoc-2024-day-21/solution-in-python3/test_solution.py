@@ -31,6 +31,34 @@ def test_get_shortest_directional_sequence_for_code(code, expected):
     assert value in expected
 
 
+@pytest.mark.parametrize(
+    "directions, expected",
+    [
+        pytest.param('<A^A>^^AvvvA', 'v<<A>>^A<A>AvA<^AA>A<vAAA>^A'),
+        pytest.param('v<<A>>^A<A>AvA<^AA>A<vAAA>^A', '<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A'),
+    ],    
+)
+def test_get_shortest_directional_sequence_for_directions(directions, expected):
+    value = solution.get_shortest_directional_sequence_for_directions(directions)
+    assert len(value) == len(expected)
+
+@pytest.mark.parametrize(
+    "code, expected",
+    [
+        pytest.param('029A', '<vA<AA>>^AvAA<^A>A<v<A>>^AvA^A<vA>^A<v<A>^A>AAvA^A<v<A>A>^AAAvA<^A>A'),
+        pytest.param('980A', '<v<A>>^AAAvA^A<vA<AA>>^AvAA<^A>A<v<A>A>^AAAvA<^A>A<vA>^A<A>A'),
+        pytest.param('179A', '<v<A>>^A<vA<A>>^AAvAA<^A>A<v<A>>^AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A'),
+        pytest.param('456A', '<v<A>>^AA<vA<A>>^AAvAA<^A>A<vA>^A<A>A<vA>^A<A>A<v<A>A>^AAvA<^A>A'),
+        pytest.param('379A', '<v<A>>^AvA^A<vA<AA>>^AAvA<^A>AAvA^A<vA>^AA<A>A<v<A>A>^AAAvA<^A>A'),
+    ],    
+)
+def test_shortest_sequence_of_button_presses(code, expected):
+    directions = solution.get_shortest_directional_sequence_for_code(code)
+    directions = solution.get_shortest_directional_sequence_for_directions(directions)
+    value = solution.get_shortest_directional_sequence_for_directions(directions)
+    assert len(value) == len(expected)
+
+
 @pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, expected",

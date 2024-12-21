@@ -113,6 +113,21 @@ def get_shortest_directional_sequence_for_code(code):
 
     return sequence
 
+def get_shortest_directional_sequence_for_directions(directions):
+    g = create_directional_keypad_grid()
+
+    start = 'A'
+    sequence = ''
+    for c in directions:
+        min_directions = find_min_directions(g, start, c)
+#       print(f"DEBUG: c={c} min_directions={min_directions}")        
+        for md in min_directions:
+            sequence += md
+        sequence += 'A'
+        start = c
+        
+    return sequence
+
 
 def solve_part1(filename):
     lines = fileutils.get_file_lines_from(filename)
