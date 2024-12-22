@@ -119,20 +119,20 @@ def get_all_shortest_directional_sequences_for_directions(g_dirpad, directions):
 
 def get_sequences_min_complexity(code, sequences, current_complexity):
     complexity = current_complexity
-    for s in sequences:        
+    for s in sequences:
         s_complexity = calculate_complexity(code, s)
         if complexity > s_complexity:
             complexity = s_complexity 
     return complexity
 
 
-def get_min_directional_complexity(g_dirpad, code, sequences):        
-    complexity = math.inf
+def get_min_directional_complexity_for_intermediaries(g_dirpad, code, sequences, intermediaries, complexity):            
     for s in sequences:
         directions = get_all_shortest_directional_sequences_for_directions(g_dirpad, s)
-        for d in directions:
-            next_directions = get_all_shortest_directional_sequences_for_directions(g_dirpad, d)
-            complexity = get_sequences_min_complexity(code, next_directions, complexity)
+        if intermediaries <= 1:            
+            complexity = get_sequences_min_complexity(code, directions, complexity)
+        else:
+            complexity = get_min_directional_complexity_for_intermediaries(g_dirpad, code, directions, intermediaries - 1, complexity)
     return complexity
 
 
@@ -145,5 +145,5 @@ def solve_part1(filename):
     ans = 0
     for code in lines:
         sequences = get_all_shortest_directional_sequences_for_code(g_numpad, code)
-        ans += get_min_directional_complexity(g_dirpad, code, sequences)
+        ans += get_min_directional_complexity_for_intermediaries(g_dirpad, code, sequences, 2, math.inf)
     return ans
