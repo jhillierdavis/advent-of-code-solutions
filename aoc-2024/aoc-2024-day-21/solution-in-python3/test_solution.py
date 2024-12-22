@@ -102,7 +102,8 @@ def test_shortest_sequence_of_button_presses(code, expected):
     "filename, expected",
     [
         pytest.param(input_example, 126384),
-        # pytest.param(input_full, 212488), # 223804 too high
+        #pytest.param(input_full, 212488), # 223804 too high
+        #pytest.param(input_example, 3, "TODO"), # Solution Part 1 approach too slow!
     ],    
 )
 def test_solve_part1(filename, expected):
@@ -116,6 +117,7 @@ import solution_part2
     "filename, intermediaries, expected",
     [
         pytest.param(input_example, 2, 126384),
+        pytest.param(input_full, 2, 212488),
         #pytest.param(input_full, 2, 212488),
         #pytest.param(input_full, 25, "TODO"),
     ],    
