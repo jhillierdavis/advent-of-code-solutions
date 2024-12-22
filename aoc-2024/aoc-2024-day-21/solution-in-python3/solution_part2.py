@@ -21,16 +21,22 @@ def get_min_directional_complexity(g_dirpad, code, sequences, depth):
         return get_min_directional_complexity(g_dirpad, code, directions, complexity, depth - 1)
 """       
 
-def get_min_directional_complexity(g_dirpad, code, sequences, intermediaries):        
-    complexity = math.inf
+def get_sequences_min_complexity(code, sequences, current_complexity):
+    complexity = current_complexity
+    for s in sequences:
+        s_complexity = solution.calculate_complexity(code, s)
+        if complexity > s_complexity:
+            complexity = s_complexity 
+    return complexity
+
+
+def get_min_directional_complexity(g_dirpad, code, sequences, intermediaries, complexity):            
     for s in sequences:
         directions = solution.get_all_shortest_directional_sequences_for_directions(g_dirpad, s)
-        for d in directions:
-            next_directions = solution.get_all_shortest_directional_sequences_for_directions(g_dirpad, d)
-            for nd in next_directions:
-                s_complexity = solution.calculate_complexity(code, nd)
-                if complexity > s_complexity:
-                    complexity = s_complexity 
+        if intermediaries <= 1:            
+            complexity = get_sequences_min_complexity(code, directions, complexity)
+        else:
+            complexity = get_min_directional_complexity(g_dirpad, code, directions, intermediaries - 1, complexity)
     return complexity
 
 
@@ -43,5 +49,5 @@ def solve_part2(filename, intermediaries):
     ans = 0
     for code in lines:
         sequences = solution.get_all_shortest_directional_sequences_for_code(g_numpad, code)
-        ans += get_min_directional_complexity(g_dirpad, code, sequences, intermediaries)
+        ans += get_min_directional_complexity(g_dirpad, code, sequences, intermediaries, math.inf)
     return ans

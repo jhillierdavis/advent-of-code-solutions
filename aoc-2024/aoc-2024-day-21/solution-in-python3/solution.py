@@ -117,16 +117,22 @@ def get_all_shortest_directional_sequences_for_directions(g_dirpad, directions):
     return sequences
 
 
-def get_min_directional_complexity(g_dirpad, code, sequences):    
+def get_sequences_min_complexity(code, sequences, current_complexity):
+    complexity = current_complexity
+    for s in sequences:        
+        s_complexity = calculate_complexity(code, s)
+        if complexity > s_complexity:
+            complexity = s_complexity 
+    return complexity
+
+
+def get_min_directional_complexity(g_dirpad, code, sequences):        
     complexity = math.inf
-    for s in sequences:         
+    for s in sequences:
         directions = get_all_shortest_directional_sequences_for_directions(g_dirpad, s)
         for d in directions:
             next_directions = get_all_shortest_directional_sequences_for_directions(g_dirpad, d)
-            for nd in next_directions:
-                nd_complexity = calculate_complexity(code, nd)
-                if complexity > nd_complexity:
-                    complexity = nd_complexity 
+            complexity = get_sequences_min_complexity(code, next_directions, complexity)
     return complexity
 
 
