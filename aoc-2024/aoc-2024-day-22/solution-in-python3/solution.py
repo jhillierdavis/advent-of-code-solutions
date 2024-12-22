@@ -87,8 +87,6 @@ def find_sequence_index(lst, sequence):
     return -1
 
 
-
-
 def get_price_point_matching_change_sequence(secret_number, max, changes):
     ans = None
     price_sequence = generate_secret_number_price_sequence(secret_number, max)
@@ -103,41 +101,36 @@ def get_price_point_matching_change_sequence(secret_number, max, changes):
     return ans
 
 
-def solve_part2(filename):
+def get_subseq_to_price_map(price_sequence:list[int], change_sequence:list[int]) -> dict:
+    subseq_to_price_map = dict()
+    size = len(change_sequence)
+    for i in range(size-3):
+        changes = (change_sequence[i], change_sequence[i+1], change_sequence[i+2], change_sequence[i+3])
+        if changes not in subseq_to_price_map:
+            price_point = price_sequence[i+4]
+#            if changes == (-2,1,-1,3):
+#                print(f"DEBUG: changes={changes} price_point={price_point}")
+            subseq_to_price_map[changes] = price_point
 
-    """
-    price_sequence = generate_secret_number_price_sequence(123, 10)
-    print(price_sequence)
-    max_value = max(price_sequence[4:])
-    print(f"DEBUG: max_value={max_value}")
-    index = price_sequence.index(max_value, 4)
-    change_sequence = get_change_sequence(price_sequence)
-    print(change_sequence[index-4])
-    print(change_sequence[index-3])
-    print(change_sequence[index-2])
-    print(change_sequence[index-1])
-    """
+    return subseq_to_price_map
 
-    
+
+def solve_part2(filename:str) -> int:
     lines = fileutils.get_file_lines_from(filename)
 
-    count = 0
-    [-2,-1]
+    subseq_to_total_price_map = dict()
     for l in lines:
         num = int(l)
+        #print(f"DEBUG: secret_number={num}")
+        price_sequence = generate_secret_number_price_sequence(num, 2000)
+        change_sequence = get_change_sequence(price_sequence)
+        kvmap = get_subseq_to_price_map(price_sequence, change_sequence)
+        for k,v in kvmap.items():
+            if k in subseq_to_total_price_map:
+                subseq_to_total_price_map[k] += v
+            else: # First match                
+                subseq_to_total_price_map[k] = v
 
+    max_value = max(subseq_to_total_price_map.values())    
 
-    price_sequence = generate_secret_number_price_sequence(2024, 2000)
-    print(price_sequence[:50])
-    max_value = max(    )
-    index = price_sequence.index(max_value, 4)
-    print(f"DEBUG: num={num} max_value={max_value} index={index}")
-    change_sequence = get_change_sequence(price_sequence)
-    print(change_sequence[index-4])
-    print(change_sequence[:50])
-    print(change_sequence[index-3])
-    print(change_sequence[index-2])
-    print(change_sequence[index-1])
-
-
-    return count
+    return max_value

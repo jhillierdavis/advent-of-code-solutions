@@ -3,6 +3,7 @@ import pytest
 import solution
 
 input_example = "AOC-2024-Day-22_Puzzle-Input-Example.txt"
+input_example_part2 = "AOC-2024-Day-22_Puzzle-Input-Example-Part2.txt"
 input_full = "AOC-2024-Day-22_Puzzle-Input-Full.txt"
 
 
@@ -62,7 +63,7 @@ def test_generate_nth_secret_number(initial, n, expected):
     "filename, expected",
     [
         pytest.param(input_example, 37327623),
-        #pytest.param(input_full, 15608699004), # Ignore for speed
+        pytest.param(input_full, 15608699004), # Ignore for speed
     ],    
 )
 def test_solve_part1(filename, expected):
@@ -97,19 +98,19 @@ def test_get_change_sequence(number_sequence, expected):
     "secret_number, max, changes, expected",
     [
         pytest.param(123, 10, [-1,-1,0,2], 6),
-        #pytest.param(input_full, 'TODO'),
     ],    
 )
 def test_get_price_point_matching_change_sequence(secret_number, max, changes, expected):
     assert expected == solution.get_price_point_matching_change_sequence(secret_number, max, changes)
 
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, expected",
-    [
-        pytest.param(input_example, 23),
-        #pytest.param(input_full, 'TODO'),
+    [        
+        pytest.param(input_example_part2, 23),
+        pytest.param(input_example, 24),
+        pytest.param(input_full, 1791),
     ],    
 )
 def test_solve_part2(filename, expected):
