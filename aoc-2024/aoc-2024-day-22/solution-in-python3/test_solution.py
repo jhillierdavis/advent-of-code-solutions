@@ -62,7 +62,7 @@ def test_generate_nth_secret_number(initial, n, expected):
     "filename, expected",
     [
         pytest.param(input_example, 37327623),
-        pytest.param(input_full, 'TODO'),
+        #pytest.param(input_full, 15608699004), # Ignore for speed
     ],    
 )
 def test_solve_part1(filename, expected):
@@ -71,11 +71,44 @@ def test_solve_part1(filename, expected):
     assert expected == value
 
 
+
+@pytest.mark.parametrize(
+    "initial, max, expected",
+    [
+        pytest.param(123, 10, [3,0,6,5,4,4,6,4,4,2]),
+    ],    
+)
+def test_generate_secret_number_price_sequence(initial, max, expected):
+    value = solution.generate_secret_number_price_sequence(initial, max)    
+    assert expected == value
+
+@pytest.mark.parametrize(
+    "number_sequence, expected",
+    [
+        pytest.param([3,0,6,5,4,4,6,4,4,2], [-3,6,-1,-1,0,2,-2,0,-2]),
+    ],    
+)
+def test_get_change_sequence(number_sequence, expected):
+    value = solution.get_change_sequence(number_sequence)    
+    assert expected == value
+
+
+@pytest.mark.parametrize(
+    "secret_number, max, changes, expected",
+    [
+        pytest.param(123, 10, [-1,-1,0,2], 6),
+        #pytest.param(input_full, 'TODO'),
+    ],    
+)
+def test_get_price_point_matching_change_sequence(secret_number, max, changes, expected):
+    assert expected == solution.get_price_point_matching_change_sequence(secret_number, max, changes)
+
+
 @pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, expected",
     [
-        pytest.param(input_example, 'TODO'),
+        pytest.param(input_example, 23),
         #pytest.param(input_full, 'TODO'),
     ],    
 )
