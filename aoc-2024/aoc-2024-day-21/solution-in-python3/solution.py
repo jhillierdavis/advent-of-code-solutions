@@ -1,20 +1,7 @@
 import math
-from collections import deque
+#from collections import deque
 
-from helpers import fileutils, grid, point
-
-# TODO: Handle '#' sysmbol (non-navigatable)
-
-def find_shortest_lists(list_of_lists):
-    if not list_of_lists:
-        return []
-
-    # Find the length of the shortest list(s)
-    min_length = min(len(lst) for lst in list_of_lists)
-
-    # Collect all lists that have the shortest length
-    shortest_lists = [lst for lst in list_of_lists if len(lst) == min_length]
-    return shortest_lists
+from helpers import fileutils, grid, point, listutils
 
 
 def get_shortest_possibilities(g:grid.Grid2D, start_symbol, end_symbol):
@@ -57,77 +44,7 @@ def get_shortest_possibilities(g:grid.Grid2D, start_symbol, end_symbol):
     initial_visited.add(block)
     dfs(start, [], initial_visited)
 
-    return find_shortest_lists(possibilities)
-
-
-
-def find_paths_with_directions(g:grid.Grid2D, start_symbol, end_symbol):
-    start = grid.get_single_symbol_point(g, start_symbol)
-    end = grid.get_single_symbol_point(g, end_symbol)
-    block = grid.get_single_symbol_point(g, '#')
-    visited = set()
-    visited.add(block)
-
-    def dfs(p, path, directions_path, visited):
-        if p == end:
-            paths.append((path, directions_path))
-            return
-        
-        visited.add(p)
-
-        #ps = g.get_symbol(p)
-        np = g.get_neighbour_north(p)        
-        if None != np and np not in visited:        
-            new_path = path + [(np.get_x(), np.get_y())]
-            dfs(np, new_path, directions_path + ['^'], set(visited))
-
-        np = g.get_neighbour_east(p)
-        if None != np and np not in visited:
-            new_path = path + [(np.get_x(), np.get_y())]
-            dfs(np, new_path, directions_path + ['>'], set(visited))
-
-        np = g.get_neighbour_south(p)
-        if None != np and np not in visited:
-            new_path = path + [(np.get_x(), np.get_y())]
-            dfs(np, new_path, directions_path + ['v'], set(visited))
-
-        np = g.get_neighbour_west(p)
-        if None != np and np not in visited:
-            new_path = path + [(np.get_x(), np.get_y())]
-            dfs(np, new_path, directions_path + ['<'], set(visited))
-
-    paths = []
-    dfs(start, [(start.get_x(), start.get_y())], [], visited)
-    return paths
-
-
-#cache = {}
-def find_min_directions(g:grid.Grid2D, start_symbol, end_symbol):
-    #if (start_symbol, end_symbol) in cache:
-    #    return cache[(start_symbol, end_symbol)]
-
-    paths = find_paths_with_directions(g, start_symbol, end_symbol)
-    #print(f"DEBUG: paths={paths}")
-    min_size = math.inf
-    min_directions = None
-    for p, d in paths:
-        size = len(d)
-        if size < min_size:
-            min_directions = d        
-            min_size = size
-
-    #cache[(start_symbol, end_symbol)] = min_directions
-
-    return min_directions
-
-
-def find_set_of_min_directions(g:grid.Grid2D, start_symbol, end_symbol):
-    paths = find_paths_with_directions(g, start_symbol, end_symbol)
-    d = list()
-    for p in paths:
-        _, directions = p 
-        d.append(directions)
-    return min(d)
+    return listutils.find_shortest_sublists(possibilities)
 
 
 def calculate_complexity(code, sequence):
@@ -167,25 +84,9 @@ def create_numerical_keypad_grid():
     return g
 
 
-def get_shortest_directional_sequence_for_code(code):
-    g = create_numerical_keypad_grid()
-
-    start = 'A'
-    sequence = ''
-    for c in code:
-        min_directions = find_min_directions(g, start, c)
-#       print(f"DEBUG: start={start} c={c} min_directions={min_directions}")        
-        for md in min_directions:
-            sequence += md
-        sequence += 'A' # Press button
-        start = c
-
-    return sequence
-
-def foo(g, start, end, partial_sequences) -> list:
+def get_sequence_for_shortest_possibilities(g, start, end, partial_sequences) -> list:
     sequences = []
     possibilities = get_shortest_possibilities(g, start, end)
-
     
     for p in possibilities:
         for ps in partial_sequences:
@@ -196,68 +97,45 @@ def foo(g, start, end, partial_sequences) -> list:
     return sequences
 
 
-def get_all_shortest_directional_sequences_for_code(code):
-    g = create_numerical_keypad_grid()    
+def get_all_shortest_directional_sequences_for_code(g_numpad, code):
     start = 'A'
     sequences = list()
     sequences.append('')
     for c in code:            
-        sequences = foo(g, start, c, sequences)
+        sequences = get_sequence_for_shortest_possibilities(g_numpad, start, c, sequences)
         start = c        
     return sequences
 
 
-def get_all_shortest_directional_sequences_for_directions(directions):
-    g = create_directional_keypad_grid()    
+def get_all_shortest_directional_sequences_for_directions(g_dirpad, directions):
     start = 'A'
     sequences = list()
     sequences.append('')
     for c in directions:            
-        sequences = foo(g, start, c, sequences)
+        sequences = get_sequence_for_shortest_possibilities(g_dirpad, start, c, sequences)
         start = c        
     return sequences
-
-
-def get_shortest_directional_sequence_for_directions(directions):
-    g = create_directional_keypad_grid()
-    #print(f"DEBUG: directions={directions}")
-    start = 'A'
-    sequence = ''
-    for end in directions:
-        min_directions = find_min_directions(g, start, end)
-        
-        for md in min_directions:
-            sequence += md
-        sequence += 'A' # Press button
-        #print(f"DEBUG: sequence={sequence} start={start} end={end} min_directions={min_directions}")        
-        start = end
-
-    return sequence
 
 
 def solve_part1(filename):
     lines = fileutils.get_file_lines_from(filename)
 
+    g_numpad = create_numerical_keypad_grid()
+    g_dirpad = create_directional_keypad_grid()
+    
     ans = 0
     for code in lines:
-        sequences = get_all_shortest_directional_sequences_for_code(code)
+        sequences = get_all_shortest_directional_sequences_for_code(g_numpad, code)
         complexity = math.inf
         for s in sequences:
-            #directions = get_shortest_directional_sequence_for_directions(s)
-            directions = get_all_shortest_directional_sequences_for_directions(s)
+            #directions = get_shortest_directional_sequence_for_directions(s)            
+            directions = get_all_shortest_directional_sequences_for_directions(g_dirpad, s)
             for d in directions:
-                value = get_shortest_directional_sequence_for_directions(d)
-                s_complexity = calculate_complexity(code, value)
-                if complexity > s_complexity:
-                    complexity = s_complexity 
-                    print(f"DEBUG: code={code} complexity={complexity}")
+                next_directions = get_all_shortest_directional_sequences_for_directions(g_dirpad, d)
+                for nd in next_directions:
+                    s_complexity = calculate_complexity(code, nd)
+                    if complexity > s_complexity:
+                        complexity = s_complexity 
         ans += complexity
-        
-    return ans
 
-"""
-g = create_numerical_keypad_grid()
-grid.display_grid(g)
-possibilities = get_shortest_possibilities(g, '2', '9')
-print(f"DEBUG: possibilities={possibilities}")   
-"""
+    return ans

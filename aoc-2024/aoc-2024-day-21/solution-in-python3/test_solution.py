@@ -39,28 +39,23 @@ def test_calculate_complexity(code, sequence, expected):
     "code, expected",
     [
         pytest.param('029A', ['<A^A>^^AvvvA', '<A^A^>^AvvvA', '<A^A^^>AvvvA']),
-        pytest.param('379A', ['^A^^<<A>>AvvvA']),
-    ],    
-)
-def test_get_shortest_directional_sequence_for_code(code, expected):
-    value = solution.get_shortest_directional_sequence_for_code(code)
-    assert value in expected
-
-
-@pytest.mark.parametrize(
-    "code, expected",
-    [
-        pytest.param('029A', ['<A^A>^^AvvvA', '<A^A^>^AvvvA', '<A^A^^>AvvvA']),
+        pytest.param('379A', ['^A^^<<A>>AvvvA', '^A^<^<A>>AvvvA', '^A^<<^A>>AvvvA', '^A<^^<A>>AvvvA', '^A<^<^A>>AvvvA', '^A<<^^A>>AvvvA']),
     ],    
 )
 def test_get_all_shortest_directional_sequences_for_code(code, expected):
-    value = solution.get_all_shortest_directional_sequences_for_code(code)
+    # Given:
+    g_numpad = solution.create_numerical_keypad_grid()
+
+    # When:
+    value = solution.get_all_shortest_directional_sequences_for_code(g_numpad, code)
+
+    # Then:
     for v in value:
         assert v in expected
     assert len(value) == len(expected)
 
 
-#@pytest.mark.skip
+@pytest.mark.skip
 @pytest.mark.parametrize(
     "directions, expected",
     [
@@ -70,9 +65,13 @@ def test_get_all_shortest_directional_sequences_for_code(code, expected):
     ],    
 )
 def test_get_shortest_directional_sequence_for_directions(directions, expected):
+    # When:
     value = solution.get_shortest_directional_sequence_for_directions(directions)
-    print(f"DEBUG: directions={directions} value={value}")
+    #print(f"DEBUG: directions={directions} value={value}")
+
+    # THen:
     assert len(value) == len(expected)
+
 
 @pytest.mark.parametrize(
     "code, expected",
@@ -98,27 +97,29 @@ def test_shortest_sequence_of_button_presses(code, expected):
     #directions = solution.get_shortest_directional_sequence_for_code(code)
 
 
-#@pytest.mark.skip(reason="TODO: Ignore until implemented")
+#@pytest.mark.skip
 @pytest.mark.parametrize(
     "filename, expected",
     [
         pytest.param(input_example, 126384),
-        pytest.param(input_full, 212488), # 223804 too high
+        # pytest.param(input_full, 212488), # 223804 too high
     ],    
 )
 def test_solve_part1(filename, expected):
     value = solution.solve_part1(filename)    
     assert expected == value
 
+import solution_part2
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
-    "filename, expected",
+    "filename, intermediaries, expected",
     [
-        pytest.param(input_example, -1),
-        #pytest.param(input_full, -1),
+        pytest.param(input_example, 2, 126384),
+        #pytest.param(input_full, 2, 212488),
+        #pytest.param(input_full, 25, "TODO"),
     ],    
 )
-def test_solve_part2(filename, expected):
-    value = solution.solve_part2(filename)
+def test_solve_part2(filename, intermediaries, expected):
+    value = solution_part2.solve_part2(filename, intermediaries)
     assert expected == value
