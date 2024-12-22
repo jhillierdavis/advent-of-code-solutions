@@ -55,10 +55,12 @@ def test_get_shortest_directional_sequence_for_code(code, expected):
 )
 def test_get_all_shortest_directional_sequences_for_code(code, expected):
     value = solution.get_all_shortest_directional_sequences_for_code(code)
-    assert value in expected
+    for v in value:
+        assert v in expected
+    assert len(value) == len(expected)
 
 
-@pytest.mark.skip
+#@pytest.mark.skip
 @pytest.mark.parametrize(
     "directions, expected",
     [
@@ -96,12 +98,12 @@ def test_shortest_sequence_of_button_presses(code, expected):
     #directions = solution.get_shortest_directional_sequence_for_code(code)
 
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, expected",
     [
         pytest.param(input_example, 126384),
-        #pytest.param(input_full, -1), # 223804 too high
+        pytest.param(input_full, 212488), # 223804 too high
     ],    
 )
 def test_solve_part1(filename, expected):

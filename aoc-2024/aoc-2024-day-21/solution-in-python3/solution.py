@@ -182,22 +182,40 @@ def get_shortest_directional_sequence_for_code(code):
 
     return sequence
 
+def foo(g, start, end, partial_sequences) -> list:
+    sequences = []
+    possibilities = get_shortest_possibilities(g, start, end)
+
+    
+    for p in possibilities:
+        for ps in partial_sequences:
+            for i in p:
+                ps += i
+            ps += 'A' # Press button
+            sequences.append(ps)            
+    return sequences
+
 
 def get_all_shortest_directional_sequences_for_code(code):
-    g = create_numerical_keypad_grid()
-
+    g = create_numerical_keypad_grid()    
     start = 'A'
-    sequence = ''
-    for c in code:
-        min_directions = find_set_of_min_directions(g, start, c)
-        print(f"DEBUG: start={start} end={c} min_directions={min_directions}")     
-        """
-        for md in min_directions:
-            sequence += md
-        sequence += 'A' # Press button
-        start = c
-        """   
-    return []
+    sequences = list()
+    sequences.append('')
+    for c in code:            
+        sequences = foo(g, start, c, sequences)
+        start = c        
+    return sequences
+
+
+def get_all_shortest_directional_sequences_for_directions(directions):
+    g = create_directional_keypad_grid()    
+    start = 'A'
+    sequences = list()
+    sequences.append('')
+    for c in directions:            
+        sequences = foo(g, start, c, sequences)
+        start = c        
+    return sequences
 
 
 def get_shortest_directional_sequence_for_directions(directions):
@@ -211,7 +229,7 @@ def get_shortest_directional_sequence_for_directions(directions):
         for md in min_directions:
             sequence += md
         sequence += 'A' # Press button
-        print(f"DEBUG: sequence={sequence} start={start} end={end} min_directions={min_directions}")        
+        #print(f"DEBUG: sequence={sequence} start={start} end={end} min_directions={min_directions}")        
         start = end
 
     return sequence
@@ -222,11 +240,17 @@ def solve_part1(filename):
 
     ans = 0
     for code in lines:
-        directions = get_shortest_directional_sequence_for_code(code)
-        directions = get_shortest_directional_sequence_for_directions(directions)
-        value = get_shortest_directional_sequence_for_directions(directions)
-        complexity = calculate_complexity(code, value)
-        print(f"DEBUG: code={code} complexity={complexity}")
+        sequences = get_all_shortest_directional_sequences_for_code(code)
+        complexity = math.inf
+        for s in sequences:
+            #directions = get_shortest_directional_sequence_for_directions(s)
+            directions = get_all_shortest_directional_sequences_for_directions(s)
+            for d in directions:
+                value = get_shortest_directional_sequence_for_directions(d)
+                s_complexity = calculate_complexity(code, value)
+                if complexity > s_complexity:
+                    complexity = s_complexity 
+                    print(f"DEBUG: code={code} complexity={complexity}")
         ans += complexity
         
     return ans
