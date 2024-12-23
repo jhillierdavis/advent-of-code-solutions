@@ -17,7 +17,7 @@ def get_computer_map(filename):
     computer_map = dict()
     for l in lines:
         left,right = l.split('-')
-        print(left, right)
+        #print(left, right)
 
         add_to_map(computer_map, left, right)
         add_to_map(computer_map, right, left)
@@ -32,7 +32,7 @@ def get_triple_connections_from_computer_map(computer_map):
                 continue
 
             for n3, o3 in computer_map.items():
-                if n2 == n3:
+                if n1 == n3 or n2 == n3:
                     continue
 
                 if (n1 in o2 and n1 in o3) and (n2 in o1 and n2 in o3) and (n3 in o1 and n3 in o2):
@@ -71,5 +71,32 @@ def solve_part1(filename):
 
 
 def solve_part2(filename):
-    lines = fileutils.get_file_lines_from(filename)
-    return -1
+    computer_map = get_computer_map(filename)
+
+    #print(computer_map)
+
+    exclusions = set()
+    for n1,v1 in computer_map.items():
+        for n2, v2 in computer_map.items():
+            if n1 == n2:
+                continue
+
+            for n3, v3 in computer_map.items():
+                if n1 == n3 or n2 == n3:
+                    continue
+
+                #if n1 not in v3 or n2 not in v3:
+                #    continue
+
+                intersection = v1.intersection(v2).intersection(v3)
+                if len(intersection) == 2:
+                    #print(f"DEBUG: n1={n1} n2={n2} n3={n3} interection={intersection}")
+                    exclusions.add(n1)
+                    exclusions.add(n2)
+              
+              
+    keys = set(computer_map.keys())
+    remainder = sorted(keys.difference(exclusions))
+    print(f"DEBUG: remainder={remainder} keys={keys} exclusions={exclusions}")
+    
+    return ','.join(map(str, remainder))
