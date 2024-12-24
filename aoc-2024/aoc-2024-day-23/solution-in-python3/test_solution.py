@@ -6,7 +6,7 @@ input_example = "AOC-2024-Day-23_Puzzle-Input-Example.txt"
 input_full = "AOC-2024-Day-23_Puzzle-Input-Full.txt"
 
 
-@pytest.mark.skip
+#@pytest.mark.skip
 @pytest.mark.parametrize(
     "filename, expected",
     [
@@ -19,7 +19,7 @@ def test_get_triple_connections(filename, expected):
     assert expected == value
 
 
-@pytest.mark.skip
+#@pytest.mark.skip
 @pytest.mark.parametrize(
     "filename, expected",
     [
@@ -38,7 +38,7 @@ def test_solve_part1(filename, expected):
     "filename, expected",
     [
         pytest.param(input_example, 'co,de,ka,ta'),
-        pytest.param(input_full, 'TODO'),
+        pytest.param(input_full, 'cb,df,fo,ho,kk,nw,ox,pq,rt,sf,tq,wi,xz'),
     ],    
 )
 def test_solve_part2(filename, expected):

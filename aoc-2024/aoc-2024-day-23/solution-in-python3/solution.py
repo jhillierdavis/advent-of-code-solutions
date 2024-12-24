@@ -70,33 +70,33 @@ def solve_part1(filename):
     return ans
 
 
+def get_max_clique(computer_map, cliques, computer: str, group: set[str]) -> None:
+    clique = ','.join(sorted(group))    
+    if clique in cliques: 
+        return
+    
+    cliques.add(clique)
+    #print(f"DEBUG: clique={clique}")
+    
+    for other in computer_map[computer]:
+        if other in group: 
+            continue
+
+        if any(other not in computer_map[entry] for entry in group): 
+            continue
+
+        get_max_clique(computer_map, cliques, other, {*group, other})
+
+
+def find_largest_computer_clique(computer_map):
+    cliques = set()
+    for computer in computer_map:
+        get_max_clique(computer_map, cliques, computer, {computer})
+    return max(cliques, key=len)
+
+
 def solve_part2(filename):
     computer_map = get_computer_map(filename)
 
-    #print(computer_map)
-
-    exclusions = set()
-    for n1,v1 in computer_map.items():
-        for n2, v2 in computer_map.items():
-            if n1 == n2:
-                continue
-
-            for n3, v3 in computer_map.items():
-                if n1 == n3 or n2 == n3:
-                    continue
-
-                #if n1 not in v3 or n2 not in v3:
-                #    continue
-
-                intersection = v1.intersection(v2).intersection(v3)
-                if len(intersection) == 2:
-                    #print(f"DEBUG: n1={n1} n2={n2} n3={n3} interection={intersection}")
-                    exclusions.add(n1)
-                    exclusions.add(n2)
-              
-              
-    keys = set(computer_map.keys())
-    remainder = sorted(keys.difference(exclusions))
-    print(f"DEBUG: remainder={remainder} keys={keys} exclusions={exclusions}")
-    
-    return ','.join(map(str, remainder))
+    ans = find_largest_computer_clique(computer_map)
+    return ans
