@@ -1,9 +1,11 @@
 import math
-#from collections import deque
+from collections import deque
 
 from helpers import fileutils, grid, point, listutils
 
+#from functools import cache
 
+#@cache
 def get_shortest_possibilities(g:grid.Grid2D, start_symbol, end_symbol):
     start = grid.get_single_symbol_point(g, start_symbol)
     end = grid.get_single_symbol_point(g, end_symbol)
@@ -48,7 +50,9 @@ def get_shortest_possibilities(g:grid.Grid2D, start_symbol, end_symbol):
 
 
 def calculate_complexity(code, sequence):
-    return int(code[:-1]) * len(sequence)
+    moves = len(sequence)
+    #print(f"calculate_complexity: code={code} moves={moves} sequence={sequence}")
+    return int(code[:-1]) * moves
 
 
 def create_directional_keypad_grid():
