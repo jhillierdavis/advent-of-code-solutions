@@ -6,12 +6,11 @@ input_example = "AOC-2024-Day-25_Puzzle-Input-Example.txt"
 input_full = "AOC-2024-Day-25_Puzzle-Input-Full.txt"
 
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, expected",
     [
-        pytest.param(input_example, -1),
-        #pytest.param(input_full, -1),
+        pytest.param(input_example, 3),
+        pytest.param(input_full, 2586),
     ],    
 )
 def test_solve_part1(filename, expected):
@@ -20,15 +19,4 @@ def test_solve_part1(filename, expected):
     assert expected == value
 
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
-@pytest.mark.parametrize(
-    "filename, expected",
-    [
-        pytest.param(input_example, -1),
-        #pytest.param(input_full, -1),
-    ],    
-)
-def test_solve_part2(filename, expected):
-    value = solution.solve_part2(filename)
-    
-    assert expected == value
+# NB: Part 2 is completion (both parts 1 & 2) of all prior 2024 puzzle days
