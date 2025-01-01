@@ -105,6 +105,12 @@ def get_single_symbol_point(g, symbol:str) -> point.Point2D:
     return sp
 
 
+def find_single_symbol_point_and_replace(g, symbol, replacement_symbol='.') -> None:
+    p = get_single_symbol_point(g, symbol)
+    g.set_symbol(p, replacement_symbol)
+    return p 
+
+
 class Grid2D():
 
     def __init__(self, width:int, height:int):
