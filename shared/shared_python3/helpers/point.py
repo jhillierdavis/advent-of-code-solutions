@@ -1,5 +1,10 @@
 #from typing import Self # Python 3.11+
 
+def tuple_to_point2d(p):
+    x,y = p
+    return Point2D(x, y)
+
+
 class Point2D():
 
     def __init__(self, x:int, y:int):
@@ -17,6 +22,9 @@ class Point2D():
     
     def get_y(self) -> int:
         return self.y
+    
+    def to_tuple(self):
+        return (self.x, self.y)
     
     def get_manhatten_distance_to(self, other):
         return abs(self.get_x() - other.get_x()) + abs(self.get_y() - other.get_y())        

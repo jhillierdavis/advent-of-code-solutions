@@ -77,3 +77,18 @@ def test_with_heapq():
     assert heapq.heappop(h)[0] == 4
     assert heapq.heappop(h)[0] == 5
     assert len(h) == 0 
+
+
+@pytest.mark.parametrize(
+    "expected",
+    [
+        pytest.param((0,0)),        
+        pytest.param((2,3)),
+        pytest.param((7,1)),
+    ],    
+)
+def test_to_tuple(expected):
+    x,y = expected
+    p = Point2D(x,y)
+
+    assert expected == p.to_tuple()
