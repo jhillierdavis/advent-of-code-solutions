@@ -3,9 +3,7 @@ from collections import deque
 
 from helpers import fileutils, grid, point, listutils
 
-#from functools import cache
 
-#@cache
 def get_shortest_possibilities(g:grid.Grid2D, start_symbol, end_symbol):
     start = grid.get_single_symbol_point(g, start_symbol)
     end = grid.get_single_symbol_point(g, end_symbol)

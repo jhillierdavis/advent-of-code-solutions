@@ -33,6 +33,7 @@ def get_min_moves(directions, robots):
 
     if robots == 0:
         return len(directions)
+    
     min_moves = 0
     for p1, p2 in zip("A" + directions, directions):
         min_moves += min(get_min_moves(seq, robots - 1) for seq in dir_pad_paths[(p1, p2)])
