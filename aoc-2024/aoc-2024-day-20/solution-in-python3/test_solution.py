@@ -100,7 +100,7 @@ def test_get_cheat_paths(filename, size, expected):
     assert matched
 
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
+#@pytest.mark.skip
 @pytest.mark.parametrize(
     "filename, saving, expected",
     [
@@ -129,7 +129,7 @@ def test_solve_part1(filename, saving, expected):
         pytest.param(input_example, 38, 1),
         pytest.param(input_example, 40, 1),
         pytest.param(input_example, 64, 1),
-        #pytest.param(input_full, 100, -1),
+        #pytest.param(input_full, 100, -1), # Too slow
     ],    
 )
 def test_count_number_of_cheats_for_saving_alt_approach(filename, saving, expected):
@@ -139,13 +139,30 @@ def test_count_number_of_cheats_for_saving_alt_approach(filename, saving, expect
 
 import solution_part2
 
-#@pytest.mark.skip(reason="TODO: Ignore until implemented")
+"""
+@pytest.mark.skip
 @pytest.mark.parametrize(
     "filename, saving, duration, expected",
     [
         pytest.param(input_example, 64, 1, 1),
-        #pytest.param(input_full, 100, 1, 1454),
-        pytest.param(input_full, 100, 20, 997879),
+        #pytest.param(input_example, 50, 19, 32),
+        #pytest.param(input_example, 52, 20, 31),
+        #pytest.param(input_example, 74, 20, 4),
+        #pytest.param(input_example, 76, 20, 3),
+    ],    
+)
+def test_foo(filename, saving, duration, expected):
+    value = solution_part2.foo(filename, saving, duration)
+    
+    assert expected == value
+"""
+
+@pytest.mark.parametrize(
+    "filename, saving, duration, expected",
+    [
+        pytest.param(input_example, 64, 2, 1),
+        pytest.param(input_full, 100, 2, 1454), # Still a bit slow
+        pytest.param(input_full, 100, 20, 997879), # Still a bit slow
     ],    
 )
 def test_solve_part2(filename, saving, duration, expected):

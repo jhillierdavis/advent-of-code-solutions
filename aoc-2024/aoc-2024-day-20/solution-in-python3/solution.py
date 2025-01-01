@@ -22,11 +22,6 @@ def get_paths_to_next_space(g, cp, sp, cheat_paths, duration, visited):
             cheat_paths.add( (sp, np, duration))
         elif ns == '#':
             get_paths_to_next_space(g, np, sp, cheat_paths, duration-1, visited)
-        
-
-
-
-        
     
 
 def get_cheat_paths_for_starting_point(g, sp, sp_orig, cheat_paths, duration):
@@ -61,8 +56,6 @@ def get_cheat_paths(g:grid.Grid2D, duration:int=1):
         #get_paths_to_next_space(g, sp, sp, cheat_paths, duration, visited)
         get_cheat_paths_for_starting_point(g, sp, sp, cheat_paths, duration)
     return cheat_paths
-
-
 
 
 def get_shortest_path(filename) -> int:
@@ -272,8 +265,6 @@ def solve_part2(filename:str, saving:int, duration:int=1) -> int:
 
     assert count_original == map_d2e[sp]
     assert count_original == map_d2s[ep]
-
-    
 
     cheat_points = set()
     for entry in cheat_paths:
