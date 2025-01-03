@@ -1,7 +1,7 @@
 from helpers import fileutils, grid, pathutils
 
 
-def solve_part2(filename, min_saving, cheat_duration):
+def get_path(filename):
     lines = fileutils.get_file_lines(filename)
     g = grid.lines_to_grid(lines)
 
@@ -9,7 +9,11 @@ def solve_part2(filename, min_saving, cheat_duration):
     ep = grid.find_single_symbol_point_and_replace(g, 'E', pathutils.DEFAULT_PATH_SYMBOL)
 
     path = pathutils.get_quickest_path(g, sp, ep)
-    #print(f"DEBUG: path={path}")
+    #print(f"DEBUG: path={path}")    
+    return path
+
+
+def create_path_position_to_distance_map(path):
     path_dist_map = {}
     for e in enumerate(path):
         d, p = e
@@ -17,6 +21,12 @@ def solve_part2(filename, min_saving, cheat_duration):
         path_dist_map[p] = d
 
     #print(f"DEBUG: path_dist_map={path_dist_map}")
+    return path_dist_map
+
+
+def solve_part2(filename, min_saving, cheat_duration):
+    path = get_path(filename)
+    path_dist_map = create_path_position_to_distance_map(path)
 
     count = 0
     size = len(path)
