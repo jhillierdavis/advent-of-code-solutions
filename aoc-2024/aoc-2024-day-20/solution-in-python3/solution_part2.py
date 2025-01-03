@@ -36,33 +36,7 @@ def create_path_position_to_distance_map(path):
     return path_dist_map
 
 
-def get_best_chart_path_length(filename, cheat_duration=2):
-    path = get_path(filename)
-    if path == None:
-        return 0
-    
-    path_dist_map = create_path_position_to_distance_map(path)
-
-    size = len(path)
-    min_length = size
-    for i in range(size - 2):
-        p1 = path[i]
-        for j in range(i+2, size):
-            p2 = path[j]
-
-            if p1 == p2:
-                continue
-
-            md =  p1.get_manhatten_distance_to(p2)
-            if md >= 2 and md <= cheat_duration and path_dist_map[p2] > path_dist_map[p1]:
-                diff = path_dist_map[p2] - path_dist_map[p1]
-                if size + md - diff < min_length:
-                    min_length = size + md - diff
-
-    return min_length
-
-
-def count_number_of_cheats_for_exact_saving(filename, min_saving, cheat_duration):
+def count_number_of_cheats_with_saving(filename, min_saving, cheat_duration, is_exact:bool = False):
     path = get_path(filename)
     path_dist_map = create_path_position_to_distance_map(path)
 
@@ -79,30 +53,18 @@ def count_number_of_cheats_for_exact_saving(filename, min_saving, cheat_duration
             md =  p1.get_manhatten_distance_to(p2)
             if md >= 2 and md <= cheat_duration and path_dist_map[p2] > path_dist_map[p1]:
                 diff = path_dist_map[p2] - path_dist_map[p1]
-                if diff == min_saving + md:
+                target_saving = min_saving + md
+                if is_exact:
+                    if diff == target_saving:
+                        count += 1
+                elif diff >= target_saving:
                     count += 1
 
     return count
+
+def count_number_of_cheats_for_exact_saving(filename, min_saving, cheat_duration):
+    return count_number_of_cheats_with_saving(filename, min_saving, cheat_duration, True)
 
 
 def count_number_of_cheats_for_saving_or_less(filename, min_saving, cheat_duration):
-    path = get_path(filename)
-    path_dist_map = create_path_position_to_distance_map(path)
-
-    count = 0
-    size = len(path)
-    for i in range(size - 2):
-        p1 = path[i]
-        for j in range(i+2, size):
-            p2 = path[j]
-
-            if p1 == p2:
-                continue
-
-            md =  p1.get_manhatten_distance_to(p2)
-            if md >= 2 and md <= cheat_duration and path_dist_map[p2] > path_dist_map[p1]:
-                diff = path_dist_map[p2] - path_dist_map[p1]
-                if diff >= min_saving + md:
-                    count += 1
-
-    return count
+    return count_number_of_cheats_with_saving(filename, min_saving, cheat_duration, False)
