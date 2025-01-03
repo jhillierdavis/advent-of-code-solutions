@@ -1,6 +1,5 @@
 import pytest
 
-from helpers import fileutils, grid, point
 import solution
 
 input_example = "AOC-2024-Day-20_Puzzle-Input-Example.txt"
@@ -10,9 +9,6 @@ input_example_cheat_1 = "example_1_cheat.txt"
 input_example_cheat_2 = "example_2_cheat.txt"
 input_example_cheat_3 = "example_3_cheat.txt"
 input_example_cheat_4 = "example_4_cheat.txt"
-
-
-import solution_part2
 
 
 @pytest.mark.parametrize(
@@ -29,7 +25,7 @@ import solution_part2
 )
 def test_get_shortest_path(filename, expected):
     # When
-    path = solution_part2.get_path(filename)    
+    path = solution.get_path(filename)    
     size = len(path) - 1 # Deduct 1 for starting point
 
     # Then
@@ -54,7 +50,7 @@ def test_get_shortest_path(filename, expected):
     ],    
 )
 def test_count_number_of_cheats_for_saving(filename, saving, expected):
-    value = solution_part2.count_number_of_cheats_for_exact_saving(filename, saving, 2)    
+    value = solution.count_number_of_cheats_for_exact_saving(filename, saving, 2)    
     assert expected == value
 
 
@@ -67,7 +63,7 @@ def test_count_number_of_cheats_for_saving(filename, saving, expected):
     ],    
 )
 def test_solve_part1(filename, saving, duration, expected):
-    value = solution_part2.count_number_of_cheats_for_saving_or_less(filename, saving, duration)    
+    value = solution.count_number_of_cheats_for_saving_or_less(filename, saving, duration)    
     assert expected == value
 
 
@@ -79,5 +75,5 @@ def test_solve_part1(filename, saving, duration, expected):
     ],    
 )
 def test_solve_part2(filename, saving, duration, expected):
-    value = solution_part2.count_number_of_cheats_for_saving_or_less(filename, saving, duration)    
+    value = solution.count_number_of_cheats_for_saving_or_less(filename, saving, duration)    
     assert expected == value
