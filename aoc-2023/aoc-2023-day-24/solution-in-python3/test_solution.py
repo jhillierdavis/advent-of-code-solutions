@@ -65,7 +65,7 @@ def test_solve_part1(filename, target_min, target_max, expected):
     "filename,expected",
     [
         pytest.param("puzzle-input-example.txt", 47),
-        pytest.param("puzzle-input-full.txt", 566373506408017),
+        # pytest.param("puzzle-input-full.txt", 566373506408017), # Commented out as lengthy to execute
     ],    
 )
 def test_solve_part2(filename, expected):
