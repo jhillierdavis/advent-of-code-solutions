@@ -1,5 +1,6 @@
 
-def get_magnitude(snailfish_number:list) -> int:    
+def get_magnitude(snailfish_number:list) -> int:   
+    # obtain the calculated magnitude of a snailfish number 
     left = snailfish_number[0]
     right = snailfish_number[1]
     if type(left) == list:
@@ -9,13 +10,17 @@ def get_magnitude(snailfish_number:list) -> int:
     return (3 * left) + (2 * right)
 
 def add(snailfish_number_x, snailfish_number_y):
-    # TODO
-    return []
+    # add 2 snailfish numbers
+    result = []
+    result.append(snailfish_number_x)
+    result.append(snailfish_number_y)
+    return result
 
 def add_and_reduce(snailfish_number_x, snailfish_number_y):
     # TODO
     return []
 
 def explode(snailfish_number):
-    # TODO
-    return []
+    result = []
+
+    return snailfish_number

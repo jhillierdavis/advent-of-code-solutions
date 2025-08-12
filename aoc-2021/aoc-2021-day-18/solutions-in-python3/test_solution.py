@@ -44,7 +44,7 @@ def test_snailfish_number_explode(original, expected):
         pytest.param([[[[4,3],4],4],[7,[[8,4],9]]], [1,1], [[[[[4,3],4],4],[7,[[8,4],9]]],[1,1]])
     ],    
 ) 
-@pytest.mark.skip(reason="TODO")
+#@pytest.mark.skip(reason="TODO")
 def test_snailfish_number_add(x,y,expected):
     assert solution.add(x, y) == expected
 
