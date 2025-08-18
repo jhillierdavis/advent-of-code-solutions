@@ -82,3 +82,24 @@ def test_snailfish_number_add(x,y,expected):
 #@pytest.mark.skip(reason="TODO")
 def test_snailfish_number_add_and_reduce(x,y,expected):
     assert solution.add_and_reduce(x, y) == expected
+
+
+input_example = "AOC-2021-Day-18_Puzzle-Input-Example.txt"
+input_full = "AOC-2021-Day-18_Puzzle-Input-Full.txt"
+
+
+@pytest.mark.parametrize(
+    "filename, expected_reduced_snailfish_number, expected_magnitude",
+    [
+        pytest.param(input_example, [[[[6,6],[7,6]],[[7,7],[7,0]]],[[[7,7],[7,7]],[[7,8],[9,9]]]], 4140),
+        #pytest.param(input_full, TODO, TODO),
+    ],    
+)
+@pytest.mark.skip(reason="TODO")
+def test_solve_part1(filename, expected_reduced_snailfish_number, expected_magnitude):
+    result = solution.solve_part1(filename)
+    
+    assert result == expected_reduced_snailfish_number
+    assert solution.get_magnitude(result) == expected_magnitude
+
+

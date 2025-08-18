@@ -239,3 +239,11 @@ def explode(snailfish_number):
     node = binary_tree_node.create_binary_tree_node_from_list(snailfish_number)
     explode_leftmost_node(node)
     return node.to_list()
+
+"""
+from helpers import fileutils
+
+def solve_part1(filename):
+    lines = fileutils.get_file_lines_from(filename)
+    return []
+"""
