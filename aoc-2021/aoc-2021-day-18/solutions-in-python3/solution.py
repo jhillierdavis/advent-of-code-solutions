@@ -17,9 +17,52 @@ def add(snailfish_number_x, snailfish_number_y):
     result.append(snailfish_number_y)
     return result
 
+"""
 def add_and_reduce(snailfish_number_x, snailfish_number_y):
-    # TODO
-    return []
+    result = add(snailfish_number_x, snailfish_number_y)
+    print(f"DEBUG:      sum={result}")
+
+    reduced = False
+    while not reduced:
+        temp = explode(result)
+        print(f"DEBUG: exploded={temp}")
+        result = split(temp)
+        print(f"DEBUG:    split={result}")
+        if temp == result:
+            reduced = True
+
+    return result
+"""
+
+def add_and_reduce(snailfish_number_x, snailfish_number_y):
+    result = add(snailfish_number_x, snailfish_number_y)
+    print(f"DEBUG:      sum={result}")
+
+    reduced = False
+
+    while not reduced:
+        was_exploded = False
+        while not was_exploded:
+            exploded = explode(result)
+            if exploded == result:
+                was_exploded = True
+            result = exploded
+            print(f"DEBUG: exploded={result}")
+        
+        was_split = False
+        while not was_split:
+            fragmented = split(result)
+            if fragmented == result:
+                was_split = True
+            result = fragmented
+            print(f"DEBUG:    split={result}")
+
+        exploded = explode(result)
+        if exploded == result:
+            reduced = True
+        result = exploded
+
+    return result
 
 def split_number(number:int):
     if number > 9:

@@ -79,6 +79,6 @@ def test_snailfish_number_add(x,y,expected):
         pytest.param([[[[4,3],4],4],[7,[[8,4],9]]], [1,1], [[[[0,7],4],[[7,8],[6,0]]],[8,1]])
     ],    
 ) 
-@pytest.mark.skip(reason="TODO")
+#@pytest.mark.skip(reason="TODO")
 def test_snailfish_number_add_and_reduce(x,y,expected):
     assert solution.add_and_reduce(x, y) == expected
