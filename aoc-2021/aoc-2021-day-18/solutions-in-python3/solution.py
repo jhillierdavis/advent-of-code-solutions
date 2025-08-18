@@ -43,7 +43,7 @@ def generate_explosion(snailfish_number):
     raise Exception(f"Failed to explode unexpected snailfish_number={snailfish_number}")
     #return [] # Not expected!
     
-
+"""
 def explode(snailfish_number, depth=0):
     result = []
 
@@ -52,8 +52,40 @@ def explode(snailfish_number, depth=0):
         if type(e) == int:
             result.append(e)
         else:
-            if depth < 2:
+            if depth < 3:
                 result.append(explode(e, depth+1))
             else:
-                result.append(generate_explosion(e))
+                #result.append(generate_explosion(e))
+                result.append(0)
+    return result
+"""
+
+def find_and_explode(snailfish_number, depth=0):
+    result = []
+    left = 0
+    right = 0
+
+    for e in snailfish_number:
+        #print(f"DEBUG: e={e}, depth={depth}, result={result}")
+        if type(e) == int:
+            if right > 0:
+                result.append(e + right)
+                right = 0
+            else:
+                result.append(e)
+        else:
+            if depth < 3:
+                subresult, left, right = find_and_explode(e, depth+1)
+                result.append(subresult)
+            else:
+                #result.append(generate_explosion(e))
+                left = e[0]
+                right = e[1]
+                result.append(0)
+    return result, left, right
+
+
+def explode(snailfish_number):
+    result, left, right = find_and_explode(snailfish_number)
+
     return result
