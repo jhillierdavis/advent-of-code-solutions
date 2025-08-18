@@ -26,7 +26,7 @@ def split(number:int):
         half = number/2
         return [math.floor(half), math.ceil(half)]
     return number
-
+"""
 def calculate_eplosion(snailfish_number, depth):
     if depth == 4:
         return 0
@@ -43,7 +43,7 @@ def generate_explosion(snailfish_number):
     raise Exception(f"Failed to explode unexpected snailfish_number={snailfish_number}")
     #return [] # Not expected!
     
-"""
+
 def explode(snailfish_number, depth=0):
     result = []
 
@@ -84,8 +84,97 @@ def find_and_explode(snailfish_number, depth=0):
                 result.append(0)
     return result, left, right
 
+import binary_tree_node
+
+def add_left(current, parent, value):
+    if parent.has_parent() and parent.left == current:
+        # Avoid backtracking & keep accessing towards root 
+        add_left(parent, parent.parent, value)
+        return
+
+    if False == parent.left.has_children():
+        #print(f"DEBUG: Added parent.left.value={parent.left.value} value={value}")
+        parent.left.value = parent.left.value + value
+
+
+def get_leftmost_node(parent):
+    leftmost = parent.left
+    current = leftmost
+    while leftmost != None:
+        #print(f"DEBUG: leftmost.value={leftmost.value}")
+        leftmost = leftmost.left
+        if leftmost != None:
+            current = leftmost
+    #print(f"DEBUG: current.value={current.value}")
+    return current
+
+
+
+def add_right(current, parent, value):
+    #print(f"DEBUG: current.value={current.value} parent.value={parent.value} value={value}")
+    if parent.has_parent() and parent.right == current:
+        # Avoid backtracking & keep accessing towards root 
+        add_right(parent, parent.parent, value)
+        return
+    
+    elif parent.is_root() and current == parent.left:
+        #print(f"DEBUG: TODO: Implement - find leftmost node!")
+        current = get_leftmost_node(parent.right)
+        if None != current:
+            if False == current.has_children():
+                print(f"DEBUG: Added current.value={current.value} value={value}")
+                current.value = current.value + value
+            else:
+                add_right(current, current.parent, value)
+            return
+        
+
+    if False == parent.right.has_children():
+        #print(f"DEBUG: Added parent.right.value={parent.right.value} value={value}")
+        parent.right.value = parent.right.value + value
+    
+
+def explode_leftmost_node(node, depth=0):
+    if node.has_children():
+        if depth > 3:
+            #print(f"DEBUG: Exploding node: node.left.value={node.left.value} node.right.value={node.right.value}")
+            node.value = 0
+            add_left(node, node.parent, node.left.value)
+            node.left = None
+            add_right(node, node.parent, node.right.value)
+            node.right = None
+            return True
+        else:            
+            has_explosion = explode_leftmost_node(node.left, 1+depth)
+            if has_explosion:
+                return True
+            return explode_leftmost_node(node.right, 1+depth)
+    return False
+
+
+def explode_leftmost_node(node, depth=0):
+    if node.has_children():
+        if depth > 3:
+            #print(f"DEBUG: Exploding node: node.left.value={node.left.value} node.right.value={node.right.value}")
+            node.value = 0
+            add_left(node, node.parent, node.left.value)
+            node.left = None
+            add_right(node, node.parent, node.right.value)
+            node.right = None
+            return True
+        else:            
+            has_explosion = explode_leftmost_node(node.left, 1+depth)
+            if has_explosion:
+                return True
+            return explode_leftmost_node(node.right, 1+depth)
+    return False
+
 
 def explode(snailfish_number):
-    result, left, right = find_and_explode(snailfish_number)
+    #result, left, right = find_and_explode(snailfish_number)
 
-    return result
+    #return result
+
+    node = binary_tree_node.create_binary_tree_node_from_list(snailfish_number)
+    explode_leftmost_node(node)
+    return node.to_list()

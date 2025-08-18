@@ -50,3 +50,25 @@ class BinaryTreeNode:
 
 
         return result
+
+
+def create_binary_tree_node_from_list(input_list:list):
+
+    if len(input_list) > 2:
+        raise Exception("Not a pair")
+    
+    left = input_list[0]
+    right = input_list[1]
+
+    if type(left) == int:
+        left_node = BinaryTreeNode(left)
+    elif type(left) == list:
+        left_node = create_binary_tree_node_from_list(left)
+
+    
+    if type(right) == int:
+        right_node = BinaryTreeNode(right)
+    elif type(right) == list:
+        right_node = create_binary_tree_node_from_list(right)
+
+    return BinaryTreeNode(None, left_node,  right_node)
