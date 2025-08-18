@@ -38,6 +38,7 @@ def test_snailfish_number_get_magnitude(input, expected):
 def test_snailfish_number_explode(original, expected):
     assert solution.explode(original) == expected
 
+
 @pytest.mark.parametrize(
     "input, expected",
     [
@@ -46,6 +47,16 @@ def test_snailfish_number_explode(original, expected):
         pytest.param(10, [5,5]),
         pytest.param(11, [5,6]),
         pytest.param(12, [6,6]),        
+    ],    
+)
+def test_split_number(input, expected):
+    assert solution.split_number(input) == expected    
+
+@pytest.mark.parametrize(
+    "input, expected",
+    [
+        pytest.param([[[[0,7],4],[15,[0,13]]],[1,1]], [[[[0,7],4],[[7,8],[0,13]]],[1,1]]),
+        pytest.param([[[[0,7],4],[[7,8],[0,13]]],[1,1]], [[[[0,7],4],[[7,8],[0,[6,7]]]],[1,1]])
     ],    
 )
 def test_split(input, expected):

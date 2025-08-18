@@ -21,11 +21,29 @@ def add_and_reduce(snailfish_number_x, snailfish_number_y):
     # TODO
     return []
 
-def split(number:int):
+def split_number(number:int):
     if number > 9:
         half = number/2
         return [math.floor(half), math.ceil(half)]
     return number
+
+def split(snailfish_number, modified=False):
+    result = []
+    for e in snailfish_number:
+        if type(e) is int:
+            if modified == True:
+                result.append(e)
+            else:
+                a = split_number(e)        
+                result.append(a)
+                if a != e:
+                    #print(f"DEBUG: Modification: e={e} a={a}")
+                    modified = True
+        elif type(e) is list:
+            result.append(split(e, modified))
+    return result
+
+
 """
 def calculate_eplosion(snailfish_number, depth):
     if depth == 4:
