@@ -17,23 +17,6 @@ def add(snailfish_number_x, snailfish_number_y):
     result.append(snailfish_number_y)
     return result
 
-"""
-def add_and_reduce(snailfish_number_x, snailfish_number_y):
-    result = add(snailfish_number_x, snailfish_number_y)
-    print(f"DEBUG:      sum={result}")
-
-    reduced = False
-    while not reduced:
-        temp = explode(result)
-        print(f"DEBUG: exploded={temp}")
-        result = split(temp)
-        print(f"DEBUG:    split={result}")
-        if temp == result:
-            reduced = True
-
-    return result
-"""
-
 def reduce(snailfish_number):
     result = snailfish_number
     is_reduced = False
@@ -46,15 +29,15 @@ def reduce(snailfish_number):
         while was_exploded:
             exploded = explode(result)
             if exploded != result:
-                print(f"DEBUG: reduce:  step={step} exploded={exploded}")
+                #print(f"DEBUG: reduce:  step={step} exploded={exploded}")
                 result = exploded
             else:
                 was_exploded = False
             
                     
         result, was_split = split(result)
-        if was_split:
-            print(f"DEBUG: reduce: step={step} split={result}")
+        #if was_split:
+        #    print(f"DEBUG: reduce: step={step} split={result}")
 
         if not was_exploded and not was_split:
             is_reduced = True
@@ -94,40 +77,6 @@ def split(snailfish_number, modified=False):
     return result, modified
 
 
-"""
-def calculate_eplosion(snailfish_number, depth):
-    if depth == 4:
-        return 0
-    return snailfish_number
-
-def generate_explosion(snailfish_number):
-    #print(f"DEBUG: {snailfish_number}")
-    left = snailfish_number[0]
-    right = snailfish_number[1]
-    if type(left) == list and type(right) == int:
-        return [0, left[1] + right]
-    if type(right) == list and type(left) == int:
-        return [left + right[0], 0]
-    raise Exception(f"Failed to explode unexpected snailfish_number={snailfish_number}")
-    #return [] # Not expected!
-    
-
-def explode(snailfish_number, depth=0):
-    result = []
-
-    for e in snailfish_number:
-        #print(f"DEBUG: e={e}, depth={depth}, result={result}")
-        if type(e) == int:
-            result.append(e)
-        else:
-            if depth < 3:
-                result.append(explode(e, depth+1))
-            else:
-                #result.append(generate_explosion(e))
-                result.append(0)
-    return result
-"""
-
 def find_and_explode(snailfish_number, depth=0):
     result = []
     left = 0
@@ -155,7 +104,7 @@ def find_and_explode(snailfish_number, depth=0):
 import binary_tree_node
 
 def add_left(current, parent, value):
-    print(f"DEBUG: add_left: current.value={current.value} parent.value={parent.value} value={value}")
+    #print(f"DEBUG: add_left: current.value={current.value} parent.value={parent.value} value={value}")
     if parent.has_parent() and parent.left == current:
         # Avoid backtracking & keep accessing towards root 
         add_left(parent, parent.parent, value)
@@ -167,7 +116,7 @@ def add_left(current, parent, value):
 
 
 def get_leftmost_node(parent):
-    print(f"DEBUG: get_leftmost_node: parent={parent}")
+    #print(f"DEBUG: get_leftmost_node: parent={parent}")
     leftmost = parent.left
     current = leftmost
     while leftmost != None:
@@ -178,12 +127,8 @@ def get_leftmost_node(parent):
     #print(f"DEBUG: current.value={current.value}")
     return current
 
-
-
-
-
 def add_right(current, parent, value):
-    print(f"DEBUG: add_right: current.value={current.value} parent.value={parent.value} value={value}")
+    #print(f"DEBUG: add_right: current.value={current.value} parent.value={parent.value} value={value}")
     if parent.has_parent() and parent.right == current:
         # Avoid backtracking & keep accessing towards root 
         add_right(parent, parent.parent, value)
@@ -193,7 +138,7 @@ def add_right(current, parent, value):
         current = get_leftmost_node(parent.right)
         if None != current:
             if False == current.has_children():
-                print(f"DEBUG: add_right: added current.value={current.value} value={value}")
+                #print(f"DEBUG: add_right: added current.value={current.value} value={value}")
                 current.value = current.value + value
             else:
                 add_right(current, current.parent, value)
@@ -201,36 +146,14 @@ def add_right(current, parent, value):
         
 
     if False == parent.right.has_children():
-        print(f"DEBUG: add_right: added parent.right.value={parent.right.value} value={value}")
-        #parent.right.value = parent.right.value + value
+        #print(f"DEBUG: add_right: added parent.right.value={parent.right.value} value={value}")
         current = get_leftmost_node(parent.right)
         if current:
             if current.is_parent():
                 current.left.value = current.left.value + value
             else:
                 current.value = current.value + value
-
-    #else:
-    #    parent.right.left.value = parent.right.left.value + value
     
-"""
-def explode_leftmost_node(node, depth=0):
-    if node.has_children():
-        if depth > 3:
-            print(f"DEBUG: Exploding node: node.left.value={node.left.value} node.right.value={node.right.value}")
-            node.value = 0
-            add_left(node, node.parent, node.left.value)
-            node.left = None
-            add_right(node, node.parent, node.right.value)
-            node.right = None
-            return True
-        else:            
-            has_explosion = explode_leftmost_node(node.left, 1+depth)
-            if has_explosion:
-                return True
-            return explode_leftmost_node(node.right, 1+depth)
-    return False
-"""
 
 def is_explodable_pair_node(node):
     if node.get_depth() > 3 and not node.left.has_children() and not node.right.has_children():
@@ -287,20 +210,14 @@ def explode_leftmost_node(node):
         return False
     
     if is_explodable_pair_node(node):
-        
-        
-        #add_left(node, node.parent, node.left.value)
         left_value = node.left.value
         right_value = node.right.value
-
-        
 
         node.value = 0
         node.left = None
         node.right = None
 
-        print(f"DEBUG: Exploded node: {node} left_value={left_value} right_value={right_value}")
-
+        #print(f"DEBUG: Exploded node: {node} left_value={left_value} right_value={right_value}")
         add_towards_left(node, node.parent, left_value)
         add_towards_right(node, node.parent, right_value)
 
@@ -314,10 +231,6 @@ def explode_leftmost_node(node):
 
 
 def explode(snailfish_number):
-    #result, left, right = find_and_explode(snailfish_number)
-
-    #return result
-
     node = binary_tree_node.create_binary_tree_node_from_list(snailfish_number)
     explode_leftmost_node(node)
     return node.to_list()
@@ -335,15 +248,9 @@ def solve_part1(filename):
             continue
         if result:            
             output = add_and_reduce(result, sfnum)
-            print(f"DEBUG: Adding: {result} + {sfnum} = {output}")
+            #print(f"DEBUG: Adding: {result} + {sfnum} = {output}")
             result = output
         else:
             result = sfnum
 
     return result
-
-"""
-ans = explode([7,[6,[5,[4,[3,2]]]]])
-expected = [7,[6,[5,[7,0]]]]
-assert ans == expected, f"ans={ans}, expected={expected}"
-"""
