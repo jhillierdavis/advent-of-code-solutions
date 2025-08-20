@@ -48,7 +48,7 @@ def reduce(snailfish_number):
 
 def add_and_reduce(snailfish_number_x, snailfish_number_y):
     result = add(snailfish_number_x, snailfish_number_y)
-    print(f"DEBUG:      sum={result}")
+    #print(f"DEBUG: add_and_reduce: sum={result}")
 
     return reduce(result)
 
@@ -254,3 +254,28 @@ def solve_part1(filename):
             result = sfnum
 
     return result
+
+
+def solve_part2(filename):
+    lines = fileutils.get_file_lines_from(filename)
+
+    snailfish_numbers = []
+    for l in lines:
+        sfnum = ast.literal_eval(l)
+        if sfnum:
+            snailfish_numbers.append(sfnum)
+
+    max_result = None
+    max_magnitude = 0
+    for x in snailfish_numbers:
+        for y in snailfish_numbers:
+            if x == y:
+                continue
+
+            result = add_and_reduce(x, y)
+            magnitude = get_magnitude(result)
+            if magnitude > max_magnitude:
+                max_magnitude = magnitude
+                max_result = result
+
+    return max_result, max_magnitude

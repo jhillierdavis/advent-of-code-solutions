@@ -123,4 +123,15 @@ def test_solve_part1(filename, expected_reduced_snailfish_number, expected_magni
     assert result == expected_reduced_snailfish_number
     assert solution.get_magnitude(result) == expected_magnitude
 
-
+@pytest.mark.parametrize(
+    "filename, expected_reduced_max_snailfish_number, expected_max_magnitude",
+    [
+        pytest.param(input_example, [[[[7,8],[6,6]],[[6,0],[7,7]]],[[[7,8],[8,8]],[[7,9],[0,6]]]], 3993),
+        pytest.param(input_full, [[[[9, 7], [9, 8]], [[9, 9], [8, 8]]], [[[7, 8], [8, 0]], [[8, 8], [8, 7]]]], 4909),
+    ],    
+)
+def test_solve_part2(filename, expected_reduced_max_snailfish_number, expected_max_magnitude):
+    result, max_magnitude = solution.solve_part2(filename)
+    
+    assert result == expected_reduced_max_snailfish_number
+    assert max_magnitude == expected_max_magnitude
