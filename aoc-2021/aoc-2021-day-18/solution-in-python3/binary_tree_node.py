@@ -33,6 +33,16 @@ class BinaryTreeNode:
     def has_children(self):
         return self.left != None or self.right != None
     
+    def is_leaf(self):
+        return not self.has_children()
+    
+
+    def get_depth(self):
+        if self.is_root():
+            return 0
+        return 1 + self.parent.get_depth()
+    
+    
     def to_list(self):
         result = []
         if self.has_children():
@@ -50,6 +60,13 @@ class BinaryTreeNode:
 
 
         return result
+    
+    def __str__(self) -> str:
+        return f"BinaryTreeNode(id={id(self)} , value: {self.value}, depth={self.get_depth()}, is_root: {self.is_root()}, has_children={self.has_children()})"
+    
+    def __repr__(self) -> str:
+        return str(self)
+
 
 
 def create_binary_tree_node_from_list(input_list:list):

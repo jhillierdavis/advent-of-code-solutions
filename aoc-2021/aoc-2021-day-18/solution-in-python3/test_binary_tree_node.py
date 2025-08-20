@@ -7,6 +7,7 @@ def test_root_node():
 
     assert node.has_parent() == False
     assert node.is_root() == True
+    assert node.get_depth() == 0
     
 
 def test_change_value():
@@ -29,11 +30,14 @@ def test_has_children_and_has_parent():
     root_node.set_left(left_child)
     root_node.has_children() == True
     left_child.has_parent() == True
+    left_child.get_depth() == 1
 
     right_child = binary_tree_node.BinaryTreeNode(9)
     root_node.set_right(right_child)
     root_node.has_children() == True
     right_child.has_parent() == True
+    right_child.get_depth() == 1
+    left_child.get_depth() == 1
 
     root_node.set_left(None)
     root_node.has_children() == True
@@ -42,6 +46,7 @@ def test_has_children_and_has_parent():
     root_node.set_right(None)
     root_node.has_children() == False
     right_child.has_parent() == False
+    right_child.get_depth() == 0
 
 
 def test_shallow_to_list():
