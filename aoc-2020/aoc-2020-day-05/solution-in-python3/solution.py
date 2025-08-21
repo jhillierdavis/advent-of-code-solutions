@@ -27,6 +27,7 @@ def get_row(boarding_pass:str):
     #logger.debug(f"row={row}")
     return row
 
+
 def get_column(boarding_pass:str):
     column = 0
     value = 8
@@ -43,8 +44,10 @@ def get_column(boarding_pass:str):
     #logger.debug(f"row={column}")
     return column
 
+
 def calculate_seat_id(row:int, column:int) -> int:
     return (row * 8) + column
+
 
 def get_seat_id(boarding_pass:str):
     row = get_row(boarding_pass)
@@ -62,27 +65,33 @@ def solve_part1(filename):
             max_seat_id = seat_id
     return max_seat_id
 
-def solve_part2(filename):
-    lines = fileutils.get_file_lines_from(filename)
 
+def find_first_non_contiguous_gap(nums):
+    """
+    Finds the first non-contiguous gap in a sorted list of integers.
+    Returns the firt value of the gap, or None if all are contiguous.
+    """
+    for i in range(1, len(nums)):
+        prior  = nums[i - 1]
+        next = prior + 1
+        if nums[i] != next:
+            return next
+    return None
+
+def get_sorted_seat_list(lines:str):
     seats = []
     for l in lines:
         seat_id = get_seat_id(l)
         seats.append(seat_id)
 
     seats.sort()
+    return seats
 
-    #print(seats)
 
-    prior_seat_id = None
-    for i, seat_id in enumerate(seats):
-        #logger.debug(f"i={i} seat_id={seat_id}")
-        if i == 0:
-            prior_seat_id = seat_id
-            continue
-        elif seat_id == (1 + prior_seat_id):
-            #logger.debug(f"seat_id={seat_id} prior_seat_id={prior_seat_id}")
-            prior_seat_id = seat_id
-            continue
-        return 1 + prior_seat_id
-    raise Exception(f"Gap not found in seats={seats}")
+def solve_part2(filename):
+    lines = fileutils.get_file_lines_from(filename)
+
+    seats = get_sorted_seat_list(lines)
+    vacant_seat_id = find_first_non_contiguous_gap(seats)
+    
+    return vacant_seat_id if vacant_seat_id else Exception(f"Gap not found in seats={seats}")
