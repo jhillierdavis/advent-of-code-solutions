@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 logger = logging.getLogger('simpleLogger')
 
 
-def get_row(boarding_pass:str):
+def get_row(boarding_pass:str) -> int:
     row = 0
     value = 128
 
@@ -28,7 +28,7 @@ def get_row(boarding_pass:str):
     return row
 
 
-def get_column(boarding_pass:str):
+def get_column(boarding_pass:str) -> int:
     column = 0
     value = 8
 
@@ -55,30 +55,7 @@ def get_seat_id(boarding_pass:str):
     return calculate_seat_id(row, column)
 
 
-def solve_part1(filename):    
-    lines = fileutils.get_file_lines_from(filename)
-
-    max_seat_id = 0
-    for l in lines:
-        seat_id = get_seat_id(l)
-        if seat_id > max_seat_id:
-            max_seat_id = seat_id
-    return max_seat_id
-
-
-def find_first_non_contiguous_gap(nums):
-    """
-    Finds the first non-contiguous gap in a sorted list of integers.
-    Returns the firt value of the gap, or None if all are contiguous.
-    """
-    for i in range(1, len(nums)):
-        prior  = nums[i - 1]
-        next = prior + 1
-        if nums[i] != next:
-            return next
-    return None
-
-def get_sorted_seat_list(lines:str):
+def get_sorted_seat_list_ascending(lines:str) -> list[int]:
     seats = []
     for l in lines:
         seat_id = get_seat_id(l)
@@ -88,10 +65,30 @@ def get_sorted_seat_list(lines:str):
     return seats
 
 
-def solve_part2(filename):
+def solve_part1(filename:str) -> int:    
     lines = fileutils.get_file_lines_from(filename)
 
-    seats = get_sorted_seat_list(lines)
-    vacant_seat_id = find_first_non_contiguous_gap(seats)
+    sorted_seats = get_sorted_seat_list_ascending(lines)
+    return sorted_seats[-1] # Last entry
+
+
+def find_first_non_contiguous_gap(nums_sorted_ascending:list) -> int|None:
+    """
+    Finds the first non-contiguous gap in a (acending order) sorted list of integers.
+    Returns the firt value of the gap, or None if all are contiguous.
+    """
+    for i in range(1, len(nums_sorted_ascending)):
+        prior  = nums_sorted_ascending[i - 1]
+        next = prior + 1
+        if nums_sorted_ascending[i] != next:
+            return next
+    return None
+
+
+def solve_part2(filename:str) -> int:
+    lines = fileutils.get_file_lines_from(filename)
+
+    sorted_seats = get_sorted_seat_list_ascending(lines)
+    vacant_seat_id = find_first_non_contiguous_gap(sorted_seats)
     
-    return vacant_seat_id if vacant_seat_id else Exception(f"Gap not found in seats={seats}")
+    return vacant_seat_id if vacant_seat_id else Exception(f"Gap not found in seats={sorted_seats}")
