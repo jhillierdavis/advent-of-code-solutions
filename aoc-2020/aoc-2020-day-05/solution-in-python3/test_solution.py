@@ -4,16 +4,15 @@ import solution
 
 
 @pytest.mark.parametrize(
-    "boarding_pass, expected_column, expected_row, expected_seat_id",
+    "boarding_pass, expected_row, expected_column, expected_seat_id",
     [
         pytest.param('FBFBBFFRLR', 44, 5, 357),
-        #pytest.param('BFFFBBFRRR', 70, 7, 567),
-        #pytest.param('FBFBBFFRLR', 14, 7, 119),
-        #pytest.param('FBFBBFFRLR', 102, 4, 820),
-        
+        pytest.param('BFFFBBFRRR', 70, 7, 567),
+        pytest.param('FFFBBBFRRR', 14, 7, 119),
+        pytest.param('BBFFBBFRLL', 102, 4, 820),        
     ],    
 )
-def test_get_seat_id(boarding_pass, expected_column, expected_row, expected_seat_id):
+def test_get_seat_id(boarding_pass, expected_row, expected_column, expected_seat_id):
     row = solution.get_row(boarding_pass)
     assert expected_row == row
 
@@ -28,12 +27,12 @@ input_example = "AOC-2020-Day-05_Puzzle-Input-Example.txt"
 input_full = "AOC-2020-Day-05_Puzzle-Input-Full.txt"
 
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, expected",
     [
         pytest.param(input_example, 820),
-        #pytest.param(input_full, -1),
+        pytest.param(input_full, 828),
     ],    
 )
 def test_solve_part1(filename, expected):
