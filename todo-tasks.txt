@@ -1,7 +1,7 @@
 Todo next puzzle(s)
 -------------------
 
-* AOC 2020 Day 06 -> Solve Part 1
+* AOC 2020 Day 07 -> Solve Part 1
 * AOC 2021 Day 19 -> Solve Part 1
 
 
@@ -19,6 +19,7 @@ Todo refactoring etc.
 Done (recently)
 ---------------
 
+* AOC 2020 Day 06 -> Solve Part 1 & 2
 * AOC 2020 Day 05 -> Solve Part 1 & 2
 * AOC 2021 Day 18 -> Solve Part 1 & 2
 * AOC 2023 Day 12 -> Solve Part 2
@@ -28,7 +29,7 @@ Done (recently)
 Ref.: AOC Years Progress
 ------------------------
 
-2020 - In progress -> TODO: >= Day 06: https://adventofcode.com/2020/day/6
+2020 - In progress -> TODO: >= Day 07: https://adventofcode.com/2020/day/7
 2021 - In progress -> TODO: >= Day 19: https://adventofcode.com/2021/day/19
 2022 - In progress -> TODO
 2023 - In progress -> Complete
