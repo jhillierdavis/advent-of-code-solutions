@@ -1,7 +1,7 @@
 Todo next puzzle(s)
 -------------------
 
-* AOC 2020 Day 05 -> Solve Part 1
+* AOC 2020 Day 06 -> Solve Part 1
 * AOC 2021 Day 19 -> Solve Part 1
 
 
@@ -16,9 +16,10 @@ Todo refactoring etc.
 * AOC 2022 -> Add existing solutions to repo.
 * Markdown for puzzle instructions? (e.g. in addition or instead of PDF file)
 
-Done (recenty)
---------------
+Done (recently)
+---------------
 
+* AOC 2020 Day 05 -> Solve Part 1 & 2
 * AOC 2021 Day 18 -> Solve Part 1 & 2
 * AOC 2023 Day 12 -> Solve Part 2
 * AOC 2023 Day 13 -> Refactor
@@ -27,7 +28,7 @@ Done (recenty)
 Ref.: AOC Years Progress
 ------------------------
 
-2020 - In progress -> TODO: >= Day 05: https://adventofcode.com/2020/day/5
+2020 - In progress -> TODO: >= Day 06: https://adventofcode.com/2020/day/6
 2021 - In progress -> TODO: >= Day 19: https://adventofcode.com/2021/day/19
 2022 - In progress -> TODO
 2023 - In progress -> Complete
