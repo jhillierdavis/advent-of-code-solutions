@@ -20,15 +20,15 @@ def test_solve_part1(filename, preamble, expected):
     assert expected == value
 
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
-    "filename, expected",
+    "filename, contiguous_sum, expected",
     [
-        pytest.param(input_example, -1),
-        #pytest.param(input_full, -1),
+        pytest.param(input_example, 127, 62),
+        pytest.param(input_full, 144381670, 20532569),
     ],    
 )
-def test_solve_part2(filename, expected):
-    value = solution.solve_part2(filename)
+def test_solve_part2(filename, contiguous_sum, expected):
+    value = solution.solve_part2(filename, contiguous_sum, )
     
     assert expected == value

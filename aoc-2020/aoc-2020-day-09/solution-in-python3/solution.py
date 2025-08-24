@@ -10,14 +10,18 @@ logging.config.fileConfig('logging.conf')
 logger = logging.getLogger(__name__)
 logger = logging.getLogger('simpleLogger')
 
+def get_input_list(lines):
+    input_list = []
+    for l in lines:
+        input_list.append(int(l))
+    return input_list
+
+
 def solve_part1(filename, preamble:int):
     #logger.debug("TODO: Implement Part 1")
     lines = fileutils.get_file_lines_from(filename)
 
-    input_list = []
-    for l in lines:
-        input_list.append(int(l))
-
+    input_list = get_input_list(lines)
     logger.debug(f"input_list={input_list}")
 
     """
@@ -58,8 +62,36 @@ def solve_part1(filename, preamble:int):
     return -1
 
 
-def solve_part2(filename):
-    logger.debug("TODO: Implement Part 2")
+def get_contiguous_sum_values(input_list, index, contiguous_sum):
+    size = len(input_list)
+    value_set = set()
+
+    current_sum = 0
+    for i in range(index, size):
+        value = input_list[i]
+        value_set.add(value)
+        current_sum += value
+        logger.debug(f"i={i} value={value} current_sum={current_sum} contiguous_sum={contiguous_sum}")
+        if current_sum == contiguous_sum:            
+            return value_set
+        elif current_sum > contiguous_sum:
+            return None
+    return None
+
+def solve_part2(filename, contiguous_sum):
+    #logger.debug("TODO: Implement Part 2")
     lines = fileutils.get_file_lines_from(filename)
 
-    return "TODO"
+    input_list = get_input_list(lines)
+    logger.debug(f"input_list={input_list}")
+
+    for i, e in enumerate(input_list):
+        first = e
+        value_set = get_contiguous_sum_values(input_list, i, contiguous_sum)
+        if value_set:
+            min_value = min(value_set)
+            max_value = max(value_set)
+            logger.debug(f"min_value={min_value} max_value={max_value}")
+            return min_value + max_value
+
+    return -1
