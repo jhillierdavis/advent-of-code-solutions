@@ -10,20 +10,26 @@ logging.config.fileConfig('logging.conf')
 logger = logging.getLogger(__name__)
 logger = logging.getLogger('simpleLogger')
 
+
 def get_sorted_ascending_adaptor_list(filename):
     lines = fileutils.get_file_lines_from(filename)
 
     adaptor_list = []
     for l in lines:
-        adaptor_list.append(int(l))
+        adaptor_list.append(int(l))    
 
-    adaptor_list.sort()
+    # Add the initial charging outlet (with value zero)
+    adaptor_list.append(0)
 
+    # Add the device's built-in adapter 
     max_adaptor = max(adaptor_list)
     adaptor_list.append(max_adaptor + 3)
 
-    logger.debug(f"adaptor_list={adaptor_list}")
+    adaptor_list.sort()
+
+    logger.debug(f"Sorted (asc.) adaptor_list={adaptor_list}")
     return adaptor_list
+
 
 def get_jolt_diffs(adaptor_list:list, increment:int) -> int:
     count = 0
@@ -47,8 +53,37 @@ def solve_part1(filename):
     return jolt_diffs_of_1 * jolt_diffs_of_3
 
 
-def solve_part2(filename):
-    logger.debug("TODO: Implement Part 2")
-    lines = fileutils.get_file_lines_from(filename)
+def get_arrangements(adaptor_list:list, index:int, cache:dict) -> int:
+    
+    size = len(adaptor_list)
+    if index >= size:
+        return 1 # Base case
 
-    return "TODO"
+    value = adaptor_list[index]
+    if value in cache.keys():
+        return cache[value]
+    
+    arrangements = 1
+    for i in range(3):
+        next_index = index + 1 + i        
+        if next_index < size - 1:
+            next_value = adaptor_list[next_index]
+            if (next_value - value) > 3:
+                continue
+
+            if i == 0:
+                arrangements = get_arrangements(adaptor_list, next_index, cache)
+            else:
+                arrangements += get_arrangements(adaptor_list, next_index, cache)    
+
+    cache[value] = arrangements
+    return arrangements
+
+
+def solve_part2(filename):
+    #logger.debug("TODO: Implement Part 2")
+    adaptor_list = get_sorted_ascending_adaptor_list(filename)
+
+    cache = dict()
+    arrangement_count = get_arrangements(adaptor_list, 0, cache)
+    return arrangement_count
