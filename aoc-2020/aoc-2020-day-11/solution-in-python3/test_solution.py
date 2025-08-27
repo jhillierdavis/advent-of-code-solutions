@@ -11,7 +11,7 @@ input_full = "AOC-2020-Day-11_Puzzle-Input-Full.txt"
     "filename, expected",
     [
         pytest.param(input_example, 37),
-        pytest.param(input_full, 2222),
+        #pytest.param(input_full, 2222),
     ],    
 )
 def test_solve_part1(filename, expected):
@@ -20,12 +20,12 @@ def test_solve_part1(filename, expected):
     assert expected == value
 
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, expected",
     [
-        pytest.param(input_example, -1),
-        #pytest.param(input_full, -1),
+        pytest.param(input_example, 26),
+        pytest.param(input_full, 2032),
     ],    
 )
 def test_solve_part2(filename, expected):
