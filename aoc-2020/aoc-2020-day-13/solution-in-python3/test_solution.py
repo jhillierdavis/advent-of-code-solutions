@@ -10,7 +10,7 @@ input_full = "AOC-2020-Day-13_Puzzle-Input-Full.txt"
 @pytest.mark.parametrize(
     "filename, expected",
     [
-        pytest.param(input_example, -1),
+        pytest.param(input_example, 295),
         #pytest.param(input_full, -1),
     ],    
 )
