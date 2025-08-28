@@ -10,16 +10,18 @@ logging.config.fileConfig('logging.conf')
 logger = logging.getLogger(__name__)
 logger = logging.getLogger('simpleLogger')
 
+
 def move(x, y, direction, amount):
     if 'N' == direction:
-        y -= amount 
+        y += amount 
     elif 'S' == direction:
-        y += amount
+        y -= amount
     elif 'E' == direction:
         x += amount
     elif 'W' == direction:
         x -= amount
     return (x,y)
+
 
 def change_direction(direction, amount, is_clockwise):
     if amount == 90:
@@ -64,6 +66,7 @@ def solve_part1(filename):
     direction = 'E'
     x = 0
     y = 0
+
     for l in lines:
         instruction = l[0]
         magnitude = int(l[1:])
@@ -86,8 +89,63 @@ def solve_part1(filename):
     return origin.get_manhatten_distance_to(destination)
 
 
+def rotate_90(x, y, is_clockwise=True):
+    """
+    Rotates a 2D point (x, y) 90 degrees clockwise around the origin.
+    Returns: (new_x, new_y): Tuple of rotated coordinates.
+    """
+    if is_clockwise:
+        new_x = y
+        new_y = -x    
+        return (new_x, new_y)
+    else:
+        new_x = -y
+        new_y = x    
+        return (new_x, new_y)
+
+
+def change_waypoint_direction(wx, wy, amount, is_clockwise):
+    if amount == 90:
+        wx, wy = rotate_90(wx, wy, is_clockwise)
+    elif amount == 180:
+        wx, wy = rotate_90(wx, wy, is_clockwise)
+        wx, wy = rotate_90(wx, wy, is_clockwise)
+    elif amount == 270:
+        wx, wy = change_waypoint_direction(wx, wy, 90, not is_clockwise)
+    return wx, wy
+
+
 def solve_part2(filename):
-    logger.debug("TODO: Implement Part 2")
+    #logger.debug("TODO: Implement Part 2")
     lines = fileutils.get_file_lines_from(filename)
 
-    return "TODO"
+    # Ship coordinates (absolute)
+    sx = 0
+    sy = 0
+
+    # Waypoint coordinates (relative to ship)
+    wx = 10
+    wy = 1
+    
+
+    for l in lines:
+        instruction = l[0]
+        amount = int(l[1:])
+
+        logger.debug(f"instruction={instruction} amount={amount}")
+
+        if 'R' == instruction:
+            wx, wy, = change_waypoint_direction(wx, wy, amount, True)
+        elif 'L' == instruction:
+            wx, wy, = change_waypoint_direction(wx, wy, amount, False)
+        elif 'F' == instruction:            
+            sx += wx * amount
+            sy += wy * amount
+        else:
+            wx, wy = move(wx, wy, instruction, amount)   
+
+        logger.debug(f"sx={sx} sy={sy} wx={wx} wy={wy}")
+
+    origin = point.Point2D(0,0)
+    destination = point.Point2D(sx,sy)
+    return origin.get_manhatten_distance_to(destination)
