@@ -292,7 +292,7 @@ class Grid2D():
             if self.contains(np):
                 neightbours.add(np)
         return neightbours    
-
+    
     def __str__(self):
         return f"Grid2D(id={id(self)} , width: {self.get_width()}, height: {self.get_height()})"
     
