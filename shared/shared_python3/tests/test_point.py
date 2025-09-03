@@ -1,6 +1,6 @@
 import pytest
 
-from helpers.point import Point2D
+from helpers.point import Point2D, Point3D
 
 @pytest.mark.parametrize(
     "x,y",
@@ -25,7 +25,8 @@ def test_point2d_valid_creation():
     assert p.get_x() == 1
     assert p.get_y() == 2
 
-def test_point2d_accessors():
+
+def test_point2d_point2d_accessors():
     # Given: a 2-D point
     p = Point2D(1,2)
 
@@ -33,7 +34,8 @@ def test_point2d_accessors():
     assert p.get_x() == 1
     assert p.get_y() == 2
 
-def test_string_representation():
+
+def test_point2d_string_representation():
     # Given: a 2-D point
     p = Point2D(1,2)
 
@@ -45,7 +47,8 @@ def test_string_representation():
     assert "x: 1" in point_as_str
     assert "y: 2" in point_as_str
 
-def test_equality():
+
+def test_point2d_equality():
     # Given: non-identical, but equal 
     pa = Point2D(1,2)
     pb = Point2D(1,2)
@@ -61,7 +64,7 @@ def test_equality():
 
 import heapq
 
-def test_with_heapq():
+def test_point2d_with_heapq():
     h = []
     heapq.heappush(h, (5, Point2D(0, 1)))
     heapq.heappush(h, (1, Point2D(2,1)))
@@ -87,8 +90,57 @@ def test_with_heapq():
         pytest.param((7,1)),
     ],    
 )
-def test_to_tuple(expected):
+def test_point2d_to_tuple(expected):
     x,y = expected
     p = Point2D(x,y)
 
     assert expected == p.to_tuple()
+
+
+@pytest.mark.parametrize(
+    "point_a, point_b, expected",
+    [
+        pytest.param((0,0), (0,0), 0),        
+        pytest.param((0,0), (2,3), 5),
+        pytest.param((2,3), (7,1), 7),
+    ],    
+)
+def test_point2d_get_manhatten_distance_to(point_a, point_b, expected):
+    # Given 2 (2D) points
+    p2d_a = Point2D(point_a[0], point_a[1])
+    p2d_b = Point2D(point_b[0], point_b[1])
+
+    # Calculate the Manhatten distance between them
+    p2d_a.get_manhatten_distance_to(p2d_b) == expected
+
+
+@pytest.mark.parametrize(
+    "expected",
+    [
+        pytest.param((0,0,0)),        
+        pytest.param((2,3,4)),
+        pytest.param((7,1,-9)),
+    ],    
+)
+def test_point3d_to_tuple(expected):
+    x,y,z = expected
+    p = Point3D(x,y,z)
+
+    assert expected == p.to_tuple()
+
+
+@pytest.mark.parametrize(
+    "point_a, point_b, expected",
+    [
+        pytest.param((0,0,0), (0,0,0), 0),        
+        pytest.param((0,0,0), (2,3,4), 9),
+        pytest.param((2,3,4), (7,1,-9), 20),
+    ],    
+)
+def test_point3d_get_manhatten_distance_to(point_a, point_b, expected):
+    # Given 2 (3D) points
+    p3d_a = Point3D(point_a[0], point_a[1], point_a[2])
+    p3d_b = Point3D(point_b[0], point_b[1], point_b[2])
+
+    # Calculate manhatten distance between them
+    p3d_a.get_manhatten_distance_to(p3d_b) == expected    

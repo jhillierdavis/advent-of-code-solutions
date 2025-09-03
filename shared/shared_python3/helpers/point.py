@@ -76,6 +76,15 @@ class Point3D():
     def get_z(self) -> int:
         return self.z
     
+    
+    def to_tuple(self):
+        return (self.x, self.y, self.z)
+
+    
+    def get_manhatten_distance_to(self, other):
+        return abs(self.get_x() - other.get_x()) + abs(self.get_y() - other.get_y()) + abs(self.get_z() - other.get_z())        
+
+    
     def __str__(self) -> str:
         return f"Point3D(id={id(self)} , x: {self.get_x()}, y: {self.get_y()}, z: {self.get_z()})"
     
