@@ -80,7 +80,7 @@ def get_orientations(x,y,z):
     variants.append((x,-z,y))
 
     # About -x
-    variants.append((-x,-y,-z))
+    variants.append((-x,-y,z))
     variants.append((-x,z,y))
     variants.append((-x,y,-z))
     variants.append((-x,-z,-y))
@@ -98,13 +98,13 @@ def get_orientations(x,y,z):
     variants.append((-y,-x,-z))
 
 
-    # About y
+    # About z
     variants.append((z,x,y))
     variants.append((z,y,-x))
     variants.append((z,-x,-y))
     variants.append((z,-y,x))
 
-    # About -y
+    # About -z
     variants.append((-z,-x,y))
     variants.append((-z,y,x))
     variants.append((-z,x,-y))
@@ -127,7 +127,7 @@ def get_orientation_map(point3d_set:set):
 
 
 def calculate_beacon_overlap_in_3d(scanner_set_0:set, scanner_set_1:set, min_intersection:int):
-    logger.debug(f"scanner_set_0={scanner_set_0} scanner_set_1={scanner_set_1} min_intersection={min_intersection}")
+    #logger.debug(f"scanner_set_0={scanner_set_0} scanner_set_1={scanner_set_1} min_intersection={min_intersection}")
     overlap_count = 0
 
     #variant_map = generate_variant_map(scanner_set_0)
@@ -164,6 +164,8 @@ def calculate_beacon_overlap_in_3d(scanner_set_0:set, scanner_set_1:set, min_int
                     #return 0
                     return overlap_count
     return 0
+
+
 
 import re
 
@@ -218,25 +220,148 @@ def get_scanner_beacon_map(filename):
     return scanner_beacon_map
 
 
+def get_manhatten_distances_between_points(point_set:set):
+    m_set = set()
+    for i,ie in enumerate(point_set):
+        ix, iy, iz = ie
+        point_i = point.Point3D(ix, iy, iz)
+        for j,je in enumerate(point_set):
+            
+            if i <= j:
+                continue
+
+            jx, jy, jz = je
+            point_j = point.Point3D(jx, jy, jz)
+
+            m = point_i.get_manhatten_distance_to(point_j)
+            #logger.debug(f"point_i={point_i} point_i={point_j} m={m}")
+
+            m_set.add(m)
+    return m_set
+
+def get_manhatten_distance_map(scanner_beacon_map):
+    md_map = dict()
+    
+    scanner_beacons_0 = scanner_beacon_map[0]
+    md_0 = get_manhatten_distances_between_points(scanner_beacons_0) 
+    #logger.debug(f"md_0={md_0}")
+    md_map[(0,0)] = md_0
+    
+    for k,v in scanner_beacon_map.items():
+        if k == 0:
+            continue
+
+        o_map = get_orientation_map(v)
+        for i, o in o_map.items():
+            md_1 = get_manhatten_distances_between_points(o) 
+            md_map[(k,i)] = md_1
+
+    return md_map
+
+
+def get_exclusions(index, scanner_beacon_map, md_map, exclusion_set):
+    for i in scanner_beacon_map.keys():
+        if i == 0:
+            continue
+
+        for j in range(24):
+            k = (i,j)
+            if k in exclusion_set:
+                continue
+
+            intersect = md_map[index].intersection(md_map[k])
+            if len(intersect) < 2 * 12:                
+                exclusion_set.add(k)
+    return exclusion_set
+
+
+from collections import defaultdict
+
+def get_point_pairs_diff_map(point_set:set):
+    pair_map = defaultdict(None)
+
+    for i,ie in enumerate(point_set):
+        ix, iy, iz = ie
+        
+        for j,je in enumerate(point_set):
+            
+            if i <= j:
+                continue
+
+            jx, jy, jz = je
+
+            diff = (ix-jx, iy-jy, iz-jz)
+
+            pair_map[diff] = (ie,je)
+    return pair_map
+
+
+def get_offset(intersect, origin_pair_diff_map, pair_diff_map):
+    offsets = set()
+    offset = None
+    for key in intersect:
+        (tx_0, ty_0, tz_0) = origin_pair_diff_map[key][0]
+        tx_1, ty_1, tz_1 = pair_diff_map[key][0]
+        #offset = (tx_1 - tx_0, ty_1 - ty_0, tz_1 - tz_0)
+        offset = (tx_0 - tx_1, ty_0 - ty_1, tz_0 - tz_1)
+        offsets.add(offset)
+
+    assert len(offsets) == 1
+    return offset
+
+
+def get_shared_beacons(scanner_beacons, origin_pair_diff_map):
+    orientation_map = get_orientation_map(scanner_beacons)
+    shared_beacons = set()
+    for k, v in orientation_map.items():
+        #print(f"scanner_1_beacons={scanner_1_beacons}")    
+        pp_info = get_point_pairs_diff_map(v)
+
+        intersect = set(pp_info.keys()).intersection(origin_pair_diff_map.keys())
+        
+        if len(intersect) >= 24:
+            print(f"k={k} len(intersect)={len(intersect)} intersect={intersect}")
+
+            #offset = get_offsets(intersect, origin_pair_diff_map, pp_info)            
+            for key in intersect:
+                shared_beacons.add(origin_pair_diff_map[key][0])
+                shared_beacons.add(origin_pair_diff_map[key][1])
+            break    
+    return shared_beacons
+
+
+def get_transposed_beacons(scanner_beacons, origin_pair_diff_map):
+    orientation_map = get_orientation_map(scanner_beacons)
+    
+    for k, v in orientation_map.items():
+        
+        pp_info = get_point_pairs_diff_map(v)
+        #logger.debug(f"origin_pair_diff_map.keys={sorted(origin_pair_diff_map.keys())}")
+        #logger.debug(f"pp_info.keys={sorted(pp_info.keys())}")
+        #logger.debug("")
+
+        intersect = set(pp_info.keys()).intersection(origin_pair_diff_map.keys())
+        logger.debug(f"k={k} len(intersect)={len(intersect)} intersect={intersect}")
+        logger.debug("")
+        if len(intersect) >= 24:
+            
+
+            offset = get_offset(intersect, origin_pair_diff_map, pp_info)            
+            tranposed_beacons = set()
+            for sb in scanner_beacons:
+                (x,y,z) = sb
+                ox,oy,oz = offset
+                tranposed_beacons.add(((x+ox), (y+oy), (z+oz)))
+            return tranposed_beacons 
+        
+    raise Exception(f"Failed to transpose beacons for scanner_beacons={scanner_beacons}")
+
+
 
 def solve_part1(filename):
-    #logger.debug("TODO: Implement AOC 2021 Part 1")    
-    lines = fileutils.get_file_lines_from(filename)
 
-    lines = remove_blank_lines(lines)
-
-    scanner_beacon_map = defaultdict(list)
-
-    scanner_number = 0
-    for l in lines:
-        if l.startswith('--- scanner '):
-            integers = extract_integers(l)
-            scanner_number = integers[0]
-        else:
-            x,y,z = parse_integer_string(l)
-            scanner_beacon_map[scanner_number].append((x,y,z))
-
-    #logger.debug(f"scanner_beacon_map={scanner_beacon_map}")
+    scanner_beacon_map = get_scanner_beacon_map(filename)
+    logger.debug(f"scanner_beacon_map.keys={scanner_beacon_map.keys()}")
 
     """
     count = 12
@@ -275,9 +400,43 @@ def solve_part1(filename):
 
     # Approach:
     # For scanners > 0: map each 3d point to each scanner 0 point & calculate overlap count.  If less than 12 then repeat with re-oriented coords   
-
+    """
+    md_map = get_manhatten_distance_map(scanner_beacon_map)
+    logger.debug(f"md_map.keys={md_map.keys()}")
     count = 0
-    return count
+
+    exclusion_set = get_exclusions((0,0), scanner_beacon_map, md_map, set())
+
+    for i in scanner_beacon_map.keys():
+        if i == 0:
+            continue
+
+        for j in range(24):
+            k = (i,j)
+            if k in exclusion_set:
+                continue
+
+            exclusion_set = get_exclusions(k, scanner_beacon_map, md_map, exclusion_set)
+
+    logger.debug(f"exclusion_set={exclusion_set}")
+    inclusion_set = set(md_map.keys()).difference(exclusion_set)
+    logger.debug(f"inclusion_set={inclusion_set}")
+    """
+
+    origin_scanner_beacons = scanner_beacon_map[0]
+    origin_pair_diff_map = get_point_pairs_diff_map(origin_scanner_beacons)
+
+    beacons = set()
+    for k, v in scanner_beacon_map.items():
+        logger.debug(f"k={k}")
+        logger.debug(f"v={v}")
+        if k == 0: # Origin
+            beacons.update(origin_scanner_beacons)
+        else:
+            transposed_beacons = get_transposed_beacons(v, origin_pair_diff_map)
+            beacons.update(transposed_beacons)
+
+    return len(beacons)
 
 def solve_part2(filename):
     logger.debug("TODO: Implement AOC 2021 Part 1")
