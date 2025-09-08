@@ -202,3 +202,45 @@ def test_solve_part2(filename, expected):
     value = solution.solve_part2(filename)
     
     assert expected == value
+
+
+from collections import defaultdict
+
+@pytest.mark.parametrize(
+    "filename, expected",
+    [
+        pytest.param(input_example, 12),
+        #pytest.param(input_full, 12),
+    ],    
+)
+def test_find_scanner_pairs(filename, expected):
+    scanner_beacon_map = solution.get_scanner_beacon_map(filename)
+
+    
+    
+    md_map = defaultdict(set)
+
+    for k,v in scanner_beacon_map.items():
+        md_map[k] = sorted(solution.get_manhatten_distances_between_points(v))
+    
+    
+    #print(f"md_map={md_map}")
+
+    """
+    for i in range(4):
+        for j in range(4):
+            if i <= j:
+                continue
+
+            intersect = (set(md_map[i])).intersection(md_map[j])
+            overlap = len(intersect)
+            if overlap >= 24:
+                print(f"Pair i={i} j={j} overlap={overlap}")
+    """
+
+    for i in md_map.keys():
+        overlap_index = solution.get_max_overlapping_scanner_id(i, md_map)
+        print(f"Pair i={i} overlap_index={overlap_index}")
+        
+
+    assert 0 == 1

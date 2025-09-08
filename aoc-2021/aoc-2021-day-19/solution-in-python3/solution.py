@@ -356,6 +356,23 @@ def get_transposed_beacons(scanner_beacons, origin_pair_diff_map):
         
     raise Exception(f"Failed to transpose beacons for scanner_beacons={scanner_beacons}")
 
+from collections import defaultdict
+
+def get_max_overlapping_scanner_id(scanner_id, md_map):
+    overlap_index = None
+    overlap_count = 0
+
+    for i in md_map.keys():
+        if i == scanner_id:
+            continue    
+            
+        intersect = (set(md_map[i])).intersection(md_map[scanner_id])
+        intersect_overlap = len(intersect)
+        if intersect_overlap > overlap_count:
+            overlap_count = intersect_overlap
+            overlap_index = i
+
+    return overlap_index
 
 
 def solve_part1(filename):
