@@ -42,6 +42,7 @@ def calculate_beacon_overlap_in_2d(scanner_set_0:set, scanner_set_1:set, min_int
 def generate_variant_map(scanner_set):
     variant_map = defaultdict(set)
 
+    
     for e in scanner_set:
         index = 0
         x,y,z = e
@@ -51,14 +52,85 @@ def generate_variant_map(scanner_set):
                 for k in [z, -z]:                    
                     variant_map[index].add((i,j,k))
                     index += 1
+                    
+                    # Facing directions
+                    variant_map[index].add((i,k,j))
+                    index += 1
+                    variant_map[index].add((j,i,k))
+                    index += 1
+                    variant_map[index].add((j,k,i))
+                    index += 1
+                    variant_map[index].add((k,i,j))
+                    index += 1
+                    variant_map[index].add((k,j,i))
+                    index += 1
+                    
     
     return variant_map
 
 
+def get_orientations(x,y,z):
+    variants = []
+
+    # About x
+    variants.append((x,y,z))
+    variants.append((x,z,-y))
+    variants.append((x,-y,-z))
+    variants.append((x,-z,y))
+
+    # About -x
+    variants.append((-x,-y,-z))
+    variants.append((-x,z,y))
+    variants.append((-x,y,-z))
+    variants.append((-x,-z,-y))
+
+    # About y
+    variants.append((y,z,x))
+    variants.append((y,x,-z))
+    variants.append((y,-z,-x))
+    variants.append((y,-x,z))
+
+    # About -y
+    variants.append((-y,-z,x))
+    variants.append((-y,x,z))
+    variants.append((-y,z,-x))
+    variants.append((-y,-x,-z))
+
+
+    # About y
+    variants.append((z,x,y))
+    variants.append((z,y,-x))
+    variants.append((z,-x,-y))
+    variants.append((z,-y,x))
+
+    # About -y
+    variants.append((-z,-x,y))
+    variants.append((-z,y,x))
+    variants.append((-z,x,-y))
+    variants.append((-z,-y,-x))
+
+
+    assert len(variants) == 24
+    return variants
+
+
+def get_orientation_map(point3d_set:set):
+    orientation_map = defaultdict(set)
+    for coord in point3d_set:
+        (x,y,z) = coord
+        variants = get_orientations(x,y,z)
+        for i, v in enumerate(variants):
+            orientation_map[i].add(v)
+
+    return orientation_map
+
+
 def calculate_beacon_overlap_in_3d(scanner_set_0:set, scanner_set_1:set, min_intersection:int):
+    logger.debug(f"scanner_set_0={scanner_set_0} scanner_set_1={scanner_set_1} min_intersection={min_intersection}")
     overlap_count = 0
 
-    variant_map = generate_variant_map(scanner_set_1)
+    variant_map = generate_variant_map(scanner_set_0)
+    #logger.debug(f"variant_map={variant_map}")
 
     for b0 in scanner_set_0:
         b0_x, b0_y, b0_z = b0
@@ -85,6 +157,7 @@ def calculate_beacon_overlap_in_3d(scanner_set_0:set, scanner_set_1:set, min_int
                 overlap_count =  len(intersection)
                 if overlap_count >= min_intersection:
                     logger.debug(f"min_intersection={min_intersection} intersection={intersection} scanner_location={offset_x, offset_y, offset_z}")
+                    
                     #return 0
                     return overlap_count
     return 0
