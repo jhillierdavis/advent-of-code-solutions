@@ -39,6 +39,7 @@ def calculate_beacon_overlap_in_2d(scanner_set_0:set, scanner_set_1:set, min_int
                 return overlap_count
     return 0
 
+"""
 def generate_variant_map(scanner_set):
     variant_map = defaultdict(set)
 
@@ -67,7 +68,7 @@ def generate_variant_map(scanner_set):
                     
     
     return variant_map
-
+"""
 
 def get_orientations(x,y,z):
     variants = []
@@ -129,8 +130,10 @@ def calculate_beacon_overlap_in_3d(scanner_set_0:set, scanner_set_1:set, min_int
     logger.debug(f"scanner_set_0={scanner_set_0} scanner_set_1={scanner_set_1} min_intersection={min_intersection}")
     overlap_count = 0
 
-    variant_map = generate_variant_map(scanner_set_0)
+    #variant_map = generate_variant_map(scanner_set_0)
     #logger.debug(f"variant_map={variant_map}")
+
+    variant_map = get_orientation_map(scanner_set_0)
 
     for b0 in scanner_set_0:
         b0_x, b0_y, b0_z = b0
@@ -178,6 +181,7 @@ def parse_integer_string(input_string):
     # Split the string by commas and convert each part to an integer
     return [int(num.strip()) for num in input_string.split(',') if num.strip()]
 
+"""
 def generate_orientation_variants(point3d:point.Point3D):
     variants = []
     x,y,z = point3d.to_tuple()
@@ -191,6 +195,7 @@ def generate_orientation_variants(point3d:point.Point3D):
     
     logger.debug(f"variants={variants}")
     return variants
+"""
 
 from collections import defaultdict
 

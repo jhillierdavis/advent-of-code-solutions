@@ -48,10 +48,10 @@ def test_calculate_beacon_overlap_in_3d(filename, expected):
 
     min_intersection = expected
     for k, v in scanner_beacon_map.items():      
-        print(f"Processing k={k} v={v}")  
+        #print(f"Processing k={k} v={v}")  
         assert solution.calculate_beacon_overlap_in_3d(scanner_beacon_map[0], v, min_intersection) >= expected
 
-
+"""
 def test_generate_orientations():
     point3d = point.Point3D(1,2,3)
 
@@ -60,7 +60,7 @@ def test_generate_orientations():
 
     assert len(actual) == 8
     #assert sorted(actual) == sorted(expected)
-
+"""
 
 @pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
