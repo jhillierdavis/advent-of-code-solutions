@@ -436,7 +436,6 @@ def solve_part1(filename):
         bmd_map[k] = get_manhatten_distances_between_points(v)
     #logger.debug(f"bmd_map={bmd_map}")
 
-
     # Determine overlaps
     overlap_map = get_scanner_overlap_map(bmd_map)
 
@@ -460,9 +459,52 @@ def solve_part1(filename):
 
 
 def solve_part2(filename):
-    logger.debug("TODO: Implement AOC 2021 Part 1")
-    lines = fileutils.get_file_lines_from(filename)
+    input_scanner_beacon_map = get_input_scanner_beacon_map(filename)
+    logger.debug(f"input_scanner_beacon_map.keys={input_scanner_beacon_map.keys()}")
 
-    return "TODO"
+    bmd_map = defaultdict(set) # BMD (Beacon Manhatten Distance)
+    for k,v in input_scanner_beacon_map.items():
+        bmd_map[k] = get_manhatten_distances_between_points(v)
+    #logger.debug(f"bmd_map={bmd_map}")
+
+    # Determine overlaps
+    overlap_map = get_scanner_overlap_map(bmd_map)
+
+    beacons = set()
+    beacons.update(input_scanner_beacon_map[0])
+
+    scanner_locations = set()
+    scanner_locations.add((0,0,0))
+
+    unprocessed_set = set(overlap_map.keys())
+    unprocessed_set.remove(0)
+    while len(unprocessed_set) > 0:
+        for k, v in input_scanner_beacon_map.items():
+            if k not in unprocessed_set:
+                continue
+
+            scanner_beacons, offset = process_scanner_beacons_against_pair(beacons, input_scanner_beacon_map[k])
+            if None != offset and None != scanner_beacons:
+                transposed_beacons = get_transposed_beacons(scanner_beacons, offset)
+                beacons.update(transposed_beacons)
+                unprocessed_set.remove(k)
+                scanner_locations.add(offset)
+
+    logger.debug(f"scanner_locations={scanner_locations}")
+    location_md_set = set()
+
+    for i in scanner_locations:
+        ix, iy, iz = i
+        ip = point.Point3D(ix, iy, iz)
+        for j in scanner_locations:
+            if j <= i:
+                continue
+            jx, jy, jz = j
+            jp = point.Point3D(jx, jy, jz)
+
+            location_md_set.add(ip.get_manhatten_distance_to(jp))
+
+
+    return max(location_md_set)
 
 
