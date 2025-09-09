@@ -141,18 +141,17 @@ def calculate_beacon_overlap_in_3d(scanner_set_0:set, scanner_set_1:set, min_int
     return 0
 
 
-
-
-
 def extract_integers(text):
     # Find all sequences of digits in the string
     numbers = re.findall(r'\d+', text)
     # Convert them to integers
     return [int(num) for num in numbers]
 
+
 def remove_blank_lines(lines):
     # Strip whitespace and filter out empty lines
     return [line for line in lines if line.strip()]
+
 
 def parse_integer_string(input_string):
     # Split the string by commas and convert each part to an integer
@@ -195,6 +194,7 @@ def get_manhatten_distances_between_points(point_set:set):
 
             m_set.add(m)
     return m_set
+
 
 def get_manhatten_distance_map(scanner_beacon_map):
     md_map = dict()
@@ -312,7 +312,6 @@ def get_transposed_beacons(scanner_beacons, origin_pair_diff_map):
     raise Exception(f"Failed to transpose beacons for scanner_beacons={scanner_beacons}")
 
 
-
 def get_max_overlapping_scanner_id(scanner_id, md_map):
     overlap_index = None
     overlap_count = 0
@@ -427,7 +426,7 @@ def get_transposed_beacons(scanner_beacons, offset):
         return transposed_beacons
 
 
-def solve_part1(filename):
+def get_beacons_and_scanner_locations(filename):
     input_scanner_beacon_map = get_input_scanner_beacon_map(filename)
     logger.debug(f"input_scanner_beacon_map.keys={input_scanner_beacon_map.keys()}")
 
@@ -439,39 +438,8 @@ def solve_part1(filename):
     # Determine overlaps
     overlap_map = get_scanner_overlap_map(bmd_map)
 
-    beacons = set()
-    beacons.update(input_scanner_beacon_map[0])
-
-    unprocessed_set = set(overlap_map.keys())
-    unprocessed_set.remove(0)
-    while len(unprocessed_set) > 0:
-        for k, v in input_scanner_beacon_map.items():
-            if k not in unprocessed_set:
-                continue
-
-            scanner_beacons, offset = process_scanner_beacons_against_pair(beacons, input_scanner_beacon_map[k])
-            if None != offset and None != scanner_beacons:
-                transposed_beacons = get_transposed_beacons(scanner_beacons, offset)
-                beacons.update(transposed_beacons)
-                unprocessed_set.remove(k)
-
-    return len(beacons)
-
-
-def solve_part2(filename):
-    input_scanner_beacon_map = get_input_scanner_beacon_map(filename)
-    logger.debug(f"input_scanner_beacon_map.keys={input_scanner_beacon_map.keys()}")
-
-    bmd_map = defaultdict(set) # BMD (Beacon Manhatten Distance)
-    for k,v in input_scanner_beacon_map.items():
-        bmd_map[k] = get_manhatten_distances_between_points(v)
-    #logger.debug(f"bmd_map={bmd_map}")
-
-    # Determine overlaps
-    overlap_map = get_scanner_overlap_map(bmd_map)
-
-    beacons = set()
-    beacons.update(input_scanner_beacon_map[0])
+    beacon_locations = set()
+    beacon_locations.update(input_scanner_beacon_map[0])
 
     scanner_locations = set()
     scanner_locations.add((0,0,0))
@@ -483,16 +451,30 @@ def solve_part2(filename):
             if k not in unprocessed_set:
                 continue
 
-            scanner_beacons, offset = process_scanner_beacons_against_pair(beacons, input_scanner_beacon_map[k])
+            scanner_beacons, offset = process_scanner_beacons_against_pair(beacon_locations, input_scanner_beacon_map[k])
             if None != offset and None != scanner_beacons:
                 transposed_beacons = get_transposed_beacons(scanner_beacons, offset)
-                beacons.update(transposed_beacons)
+                beacon_locations.update(transposed_beacons)
                 unprocessed_set.remove(k)
                 scanner_locations.add(offset)
 
     logger.debug(f"scanner_locations={scanner_locations}")
+    return beacon_locations, scanner_locations
+
+
+
+def solve_part1(filename):
+    beacon_locations, _ = get_beacons_and_scanner_locations(filename)
+    return len(beacon_locations)
+
+
+def solve_part2(filename):
+    _ , scanner_locations = get_beacons_and_scanner_locations(filename)
+
+    logger.debug(f"scanner_locations={scanner_locations}")
     location_md_set = set()
 
+    # Calculate manhatten distance between unique scanner locations
     for i in scanner_locations:
         ix, iy, iz = i
         ip = point.Point3D(ix, iy, iz)
@@ -503,7 +485,6 @@ def solve_part2(filename):
             jp = point.Point3D(jx, jy, jz)
 
             location_md_set.add(ip.get_manhatten_distance_to(jp))
-
 
     return max(location_md_set)
 
