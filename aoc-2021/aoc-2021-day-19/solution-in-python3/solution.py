@@ -487,5 +487,3 @@ def solve_part2(filename):
             location_md_set.add(ip.get_manhatten_distance_to(jp))
 
     return max(location_md_set)
-
-
