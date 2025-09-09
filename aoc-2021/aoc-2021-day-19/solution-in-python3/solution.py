@@ -1,6 +1,7 @@
 # Shared helper libraries
 from helpers import fileutils, point
 
+# Standard libraries
 from collections import defaultdict
 import re
 
@@ -72,7 +73,6 @@ def get_orientations(x,y,z):
     variants.append((-y,z,-x))
     variants.append((-y,-x,-z))
 
-
     # About z
     variants.append((z,x,y))
     variants.append((z,y,-x))
@@ -84,7 +84,6 @@ def get_orientations(x,y,z):
     variants.append((-z,y,x))
     variants.append((-z,x,-y))
     variants.append((-z,-y,-x))
-
 
     assert len(variants) == 24
     return variants
@@ -113,7 +112,7 @@ def calculate_beacon_overlap_in_3d(scanner_set_0:set, scanner_set_1:set, min_int
     for b0 in scanner_set_0:
         b0_x, b0_y, b0_z = b0
 
-        for k, v in variant_map.items():
+        for v in variant_map.values():
             for b1 in v:
                 b1_x, b1_y, b1_z = b1
 
@@ -177,7 +176,8 @@ def get_input_scanner_beacon_map(filename):
 
 
 def get_manhatten_distances_between_points(point_set:set):
-    m_set = set()
+    md_set = set()
+
     for i,ie in enumerate(point_set):
         ix, iy, iz = ie
         point_i = point.Point3D(ix, iy, iz)
@@ -189,47 +189,12 @@ def get_manhatten_distances_between_points(point_set:set):
             jx, jy, jz = je
             point_j = point.Point3D(jx, jy, jz)
 
-            m = point_i.get_manhatten_distance_to(point_j)
+            md = point_i.get_manhatten_distance_to(point_j)
             #logger.debug(f"point_i={point_i} point_i={point_j} m={m}")
 
-            m_set.add(m)
-    return m_set
+            md_set.add(md)
 
-
-def get_manhatten_distance_map(scanner_beacon_map):
-    md_map = dict()
-    
-    scanner_beacons_0 = scanner_beacon_map[0]
-    md_0 = get_manhatten_distances_between_points(scanner_beacons_0) 
-    #logger.debug(f"md_0={md_0}")
-    md_map[(0,0)] = md_0
-    
-    for k,v in scanner_beacon_map.items():
-        if k == 0:
-            continue
-
-        o_map = get_orientation_map(v)
-        for i, o in o_map.items():
-            md_1 = get_manhatten_distances_between_points(o) 
-            md_map[(k,i)] = md_1
-
-    return md_map
-
-
-def get_exclusions(index, scanner_beacon_map, md_map, exclusion_set):
-    for i in scanner_beacon_map.keys():
-        if i == 0:
-            continue
-
-        for j in range(24):
-            k = (i,j)
-            if k in exclusion_set:
-                continue
-
-            intersect = md_map[index].intersection(md_map[k])
-            if len(intersect) < 2 * 12:                
-                exclusion_set.add(k)
-    return exclusion_set
+    return md_set
 
 
 def get_point_pairs_diff_map(point_set:set):
@@ -417,13 +382,13 @@ def get_next_unprocessed_scanner_id(overlap_map, to_process_next_scanner_id, unp
 
 
 def get_transposed_beacons(scanner_beacons, offset):
-        transposed_beacons = set()
-        for sb in scanner_beacons:
-            (x,y,z) = sb
-            ox,oy,oz = offset
-            new_location = ((x+ox), (y+oy), (z+oz))
-            transposed_beacons.add(new_location)        
-        return transposed_beacons
+    transposed_beacons = set()
+    for sb in scanner_beacons:
+        (x,y,z) = sb
+        ox,oy,oz = offset
+        new_location = ((x+ox), (y+oy), (z+oz))
+        transposed_beacons.add(new_location)        
+    return transposed_beacons
 
 
 def get_beacons_and_scanner_locations(filename):
@@ -470,20 +435,7 @@ def solve_part1(filename):
 
 def solve_part2(filename):
     _ , scanner_locations = get_beacons_and_scanner_locations(filename)
-
     logger.debug(f"scanner_locations={scanner_locations}")
-    location_md_set = set()
-
-    # Calculate manhatten distance between unique scanner locations
-    for i in scanner_locations:
-        ix, iy, iz = i
-        ip = point.Point3D(ix, iy, iz)
-        for j in scanner_locations:
-            if j <= i:
-                continue
-            jx, jy, jz = j
-            jp = point.Point3D(jx, jy, jz)
-
-            location_md_set.add(ip.get_manhatten_distance_to(jp))
-
+    
+    location_md_set = get_manhatten_distances_between_points(scanner_locations)
     return max(location_md_set)
