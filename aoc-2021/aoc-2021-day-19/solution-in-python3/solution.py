@@ -503,7 +503,7 @@ def process_scanner_beacons_against_pair(processed_scanner_beacons, unprocessed)
         pp_info = get_point_pairs_diff_map(v)
 
         intersect = set(pp_info.keys()).intersection(origin_pair_diff_map.keys())
-        if len(intersect) >= 24:
+        if len(intersect) >= 12:
             offset = get_offset(intersect, origin_pair_diff_map, pp_info)            
             return v, offset        
     return None, None
@@ -591,7 +591,7 @@ def solve_part1(filename):
         scanner_location_map[current_scanner_id] = offset
         processed_scanner_beacon_map[current_scanner_id] = transposed_beacons
         count = len(beacons)
-        logger.debug(f"count={count}")
+        logger.debug(f"Processed beacon count={count}")
         
 
 
