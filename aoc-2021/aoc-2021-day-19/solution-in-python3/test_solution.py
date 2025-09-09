@@ -181,7 +181,7 @@ def test_get_relative_offset_to_scanner_0(filename, index, expected):
     "filename, expected",
     [
         pytest.param(input_example, 79),
-        pytest.param(input_full, -1), # < 467
+        pytest.param(input_full, 383), # < 467
     ],    
 )
 def test_solve_part1(filename, expected):
