@@ -15,35 +15,6 @@ logger = logging.getLogger(__name__)
 logger = logging.getLogger('simpleLogger')
 
 
-def calculate_beacon_overlap_in_2d(scanner_set_0:set, scanner_set_1:set, min_intersection:int):
-    overlap_count = 0
-
-    for b0 in scanner_set_0:
-        b0_x, b0_y = b0
-
-        for b1 in scanner_set_1:
-            b1_x, b1_y = b1
-
-            offset_x = b0_x - b1_x
-            offset_y = b0_y - b1_y
-            #logger.debug(f"b0={b0} b1={b1} offset_x={offset_x} offset_y={offset_y}")
-
-            offset_scanner_1 = set()            
-            for e in scanner_set_1:
-                x, y = e
-                x += offset_x
-                y += offset_y
-
-                offset_scanner_1.add((x,y))
-
-            intersection = scanner_set_0.intersection(offset_scanner_1)
-            overlap_count =  len(intersection)
-            if overlap_count >= min_intersection:
-                logger.debug(f"min_intersection={min_intersection} intersection={intersection} scanner_location={offset_x, offset_y}")
-                return overlap_count
-    return 0
-
-
 def get_orientations(x,y,z):
     variants = []
 
@@ -255,86 +226,6 @@ def get_shared_beacons(scanner_beacons, origin_pair_diff_map):
     return shared_beacons
 
 
-def get_transposed_beacons(scanner_beacons, origin_pair_diff_map):
-    orientation_map = get_orientation_map(scanner_beacons)
-    
-    for k, v in orientation_map.items():
-        
-        pp_info = get_point_pairs_diff_map(v)
-        #logger.debug(f"origin_pair_diff_map.keys={sorted(origin_pair_diff_map.keys())}")
-        #logger.debug(f"pp_info.keys={sorted(pp_info.keys())}")
-        #logger.debug("")
-
-        intersect = set(pp_info.keys()).intersection(origin_pair_diff_map.keys())
-        logger.debug(f"k={k} len(intersect)={len(intersect)} intersect={intersect}")
-        logger.debug("")
-        if len(intersect) >= 24:
-            
-
-            offset = get_offset(intersect, origin_pair_diff_map, pp_info)            
-            tranposed_beacons = set()
-            for sb in scanner_beacons:
-                (x,y,z) = sb
-                ox,oy,oz = offset
-                tranposed_beacons.add(((x+ox), (y+oy), (z+oz)))
-            return tranposed_beacons 
-        
-    raise Exception(f"Failed to transpose beacons for scanner_beacons={scanner_beacons}")
-
-
-def get_max_overlapping_scanner_id(scanner_id, md_map):
-    overlap_index = None
-    overlap_count = 0
-
-    for i in md_map.keys():
-        if i == scanner_id:
-            continue    
-            
-        intersect = (set(md_map[i])).intersection(md_map[scanner_id])
-        intersect_overlap = len(intersect)
-        if intersect_overlap > overlap_count:
-            overlap_count = intersect_overlap
-            overlap_index = i
-
-    return overlap_index
-
-
-def get_paired_scanner_based_on_overlap(current_scanner_id, md_map, processed_scanner_id_set):
-    overlap_index = None
-    overlap_count = 0
-
-    for i in md_map.keys():
-        if i == current_scanner_id or i in processed_scanner_id_set:
-            continue    
-            
-        intersect = (set(md_map[i])).intersection(md_map[current_scanner_id])
-        intersect_overlap = len(intersect)
-        if intersect_overlap > overlap_count:
-            overlap_count = intersect_overlap
-            overlap_index = i
-
-    return overlap_index   
-
-
-def get_next_scanner_id_to_process(processed_beacons, md_map, processed_scanner_id_set):
-    overlap_index = None
-    overlap_count = 0
-
-    pb_md_set = get_manhatten_distances_between_points(processed_beacons)
-
-    for i in md_map.keys():
-        if i in processed_scanner_id_set:
-            continue    
-            
-        intersect = (set(md_map[i])).intersection(pb_md_set)
-        intersect_overlap = len(intersect)
-        if intersect_overlap > overlap_count:
-            overlap_count = intersect_overlap
-            overlap_index = i
-
-    return overlap_index  
-
-
 def process_scanner_beacons_against_pair(processed_scanner_beacons, unprocessed):
     origin_pair_diff_map = get_point_pairs_diff_map(processed_scanner_beacons)
 
@@ -345,44 +236,10 @@ def process_scanner_beacons_against_pair(processed_scanner_beacons, unprocessed)
         pp_info = get_point_pairs_diff_map(v)
 
         intersect = set(pp_info.keys()).intersection(origin_pair_diff_map.keys())
-        if len(intersect) >= 12:
+        if len(intersect) >= 24:
             offset = get_offset(intersect, origin_pair_diff_map, pp_info)            
             return v, offset        
     return None, None
-
-
-def get_scanner_overlap_map(bmd_map):
-    overlap_map = defaultdict(set)
-    for ik,iv in bmd_map.items():
-        for jk,jv in bmd_map.items():
-            if ik == jk:
-                continue
-
-            overlap = iv.intersection(jv)
-            overlap_size = len(overlap)
-
-            if overlap_size >= 2 * 12:
-                overlap_map[ik].add(((jk, overlap_size)))
-    
-    logger.debug(f"overlap_map={overlap_map}")
-    return overlap_map
-
-
-def get_next_unprocessed_scanner_id(overlap_map, to_process_next_scanner_id, unprocessed_set):
-    overlap_set = overlap_map[to_process_next_scanner_id]
-    next_id = None
-    max_size = 0
-    for e in overlap_set:
-        id, size = e
-        if id not in unprocessed_set:
-            continue
-
-        if size > max_size:
-            next_id = id
-            max_size = size
-
-    logger.debug(f"next_id={next_id} to_process_next_scanner_id={to_process_next_scanner_id}")  
-    return next_id  
 
 
 def get_transposed_beacons(scanner_beacons, offset):

@@ -1,13 +1,10 @@
 import pytest
 
-import solution
+import solution, exploration
+from helpers import point
 
 input_example = "AOC-2021-Day-19_Puzzle-Input-Example.txt"
 input_full = "AOC-2021-Day-19_Puzzle-Input-Full.txt"
-
-#def test_simple_2d_example():
-
-from helpers import point
 
 
 def test_get_orientation_map():
@@ -22,19 +19,12 @@ def test_get_orientation_map():
 
     for expected_set in expected:
         found = False
-        for k,v in orientation_map.items():            
+        for v in orientation_map.values():            
             if v == expected_set:
                 found = True
                 break
         assert found
 
-
-def test_calculate_beacon_overlap_in_2d():
-    scanner_set_0 = {(0,2),(4,1),(3,3)}
-    scanner_set_1 = {(-1,-1),(-5,0),(-2,1)}
-
-    min_intersection = 3
-    assert solution.calculate_beacon_overlap_in_2d(scanner_set_0, scanner_set_1, min_intersection) >= min_intersection 
 
 #@pytest.mark.skip(reason="TODO")
 @pytest.mark.parametrize(
@@ -72,8 +62,6 @@ def test_scanner_1_beacons_overlap_points_in_scanner_0_beacons(filename, expecte
 
     #print(f"len(beancon)={len(shared_beacons)} beasons={shared_beacons}")
     assert shared_beacons == expected
-
-
 
 
 @pytest.mark.parametrize(
