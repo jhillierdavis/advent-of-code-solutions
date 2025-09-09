@@ -175,19 +175,24 @@ def get_input_scanner_beacon_map(filename):
     return scanner_beacon_map
 
 
+def tuple_to_point3D(pt:tuple):
+    px, py, pz = pt
+    p3d = point.Point3D(px, py, pz)
+    return p3d
+
+
 def get_manhatten_distances_between_points(point_set:set):
     md_set = set()
 
     for i,ie in enumerate(point_set):
-        ix, iy, iz = ie
-        point_i = point.Point3D(ix, iy, iz)
+        point_i = tuple_to_point3D(ie)
+
         for j,je in enumerate(point_set):
             
             if i <= j:
                 continue
 
-            jx, jy, jz = je
-            point_j = point.Point3D(jx, jy, jz)
+            point_j = tuple_to_point3D(je)
 
             md = point_i.get_manhatten_distance_to(point_j)
             #logger.debug(f"point_i={point_i} point_i={point_j} m={m}")
@@ -333,10 +338,9 @@ def get_next_scanner_id_to_process(processed_beacons, md_map, processed_scanner_
 def process_scanner_beacons_against_pair(processed_scanner_beacons, unprocessed):
     origin_pair_diff_map = get_point_pairs_diff_map(processed_scanner_beacons)
 
-
     orientation_map = get_orientation_map(unprocessed)
     
-    for k, v in orientation_map.items():
+    for v in orientation_map.values():
         
         pp_info = get_point_pairs_diff_map(v)
 
@@ -395,25 +399,19 @@ def get_beacons_and_scanner_locations(filename):
     input_scanner_beacon_map = get_input_scanner_beacon_map(filename)
     logger.debug(f"input_scanner_beacon_map.keys={input_scanner_beacon_map.keys()}")
 
-    bmd_map = defaultdict(set) # BMD (Beacon Manhatten Distance)
-    for k,v in input_scanner_beacon_map.items():
-        bmd_map[k] = get_manhatten_distances_between_points(v)
-    #logger.debug(f"bmd_map={bmd_map}")
-
-    # Determine overlaps
-    overlap_map = get_scanner_overlap_map(bmd_map)
-
     beacon_locations = set()
     beacon_locations.update(input_scanner_beacon_map[0])
 
     scanner_locations = set()
     scanner_locations.add((0,0,0))
 
-    unprocessed_set = set(overlap_map.keys())
+    #unprocessed_set = set(overlap_map.keys())
+    unprocessed_set = set(input_scanner_beacon_map.keys())
     unprocessed_set.remove(0)
+
     while len(unprocessed_set) > 0:
-        for k, v in input_scanner_beacon_map.items():
-            if k not in unprocessed_set:
+        for k in input_scanner_beacon_map.keys():
+            if not k in unprocessed_set:
                 continue
 
             scanner_beacons, offset = process_scanner_beacons_against_pair(beacon_locations, input_scanner_beacon_map[k])
@@ -425,7 +423,6 @@ def get_beacons_and_scanner_locations(filename):
 
     logger.debug(f"scanner_locations={scanner_locations}")
     return beacon_locations, scanner_locations
-
 
 
 def solve_part1(filename):
