@@ -44,7 +44,7 @@ def test_calculate_beacon_overlap_in_2d():
     ],    
 )
 def test_calculate_beacon_overlap_in_3d(filename, expected):
-    scanner_beacon_map = solution.get_scanner_beacon_map(filename)
+    scanner_beacon_map = solution.get_input_scanner_beacon_map(filename)
 
     min_intersection = expected
     for k, v in scanner_beacon_map.items():      
@@ -72,7 +72,7 @@ def test_generate_orientations():
     ],    
 )
 def test_scanner_1_beacons_overlap_points_in_scanner_0_beacons(filename, expected):
-    scanner_beacon_map = solution.get_scanner_beacon_map(filename)
+    scanner_beacon_map = solution.get_input_scanner_beacon_map(filename)
 
     scanner_0_beacons = scanner_beacon_map[0]
     print(f"scanner_0_beacons={scanner_0_beacons}")
@@ -120,7 +120,7 @@ def test_scanner_1_beacons_overlap_points_in_scanner_0_beacons(filename, expecte
     print(f"len(md_expected)={len(md_expected)}")
     print(f"md_expected={sorted(md_expected)}")
 
-    scanner_beacon_map = solution.get_scanner_beacon_map(filename)
+    scanner_beacon_map = solution.get_input_scanner_beacon_map(filename)
 
     scanner_0_beacons = scanner_beacon_map[0]
     print(f"scanner_0_beacons={scanner_0_beacons}")
@@ -154,8 +154,8 @@ def test_scanner_1_beacons_overlap_points_in_scanner_0_beacons(filename, expecte
     ],    
 )
 
-def test_get_releative_offset_to_scanner_0(filename, index, expected):
-    scanner_beacon_map = solution.get_scanner_beacon_map(filename)
+def test_get_relative_offset_to_scanner_0(filename, index, expected):
+    scanner_beacon_map = solution.get_input_scanner_beacon_map(filename)
     origin_scanner_beacons = scanner_beacon_map[0]
     origin_pair_diff_map = solution.get_point_pairs_diff_map(origin_scanner_beacons)
 
@@ -176,7 +176,7 @@ def test_get_releative_offset_to_scanner_0(filename, index, expected):
 
 
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, expected",
     [
@@ -202,45 +202,3 @@ def test_solve_part2(filename, expected):
     value = solution.solve_part2(filename)
     
     assert expected == value
-
-
-from collections import defaultdict
-
-@pytest.mark.parametrize(
-    "filename, expected",
-    [
-        pytest.param(input_example, 12),
-        #pytest.param(input_full, 12),
-    ],    
-)
-def test_find_scanner_pairs(filename, expected):
-    scanner_beacon_map = solution.get_scanner_beacon_map(filename)
-
-    
-    
-    md_map = defaultdict(set)
-
-    for k,v in scanner_beacon_map.items():
-        md_map[k] = sorted(solution.get_manhatten_distances_between_points(v))
-    
-    
-    #print(f"md_map={md_map}")
-
-    """
-    for i in range(4):
-        for j in range(4):
-            if i <= j:
-                continue
-
-            intersect = (set(md_map[i])).intersection(md_map[j])
-            overlap = len(intersect)
-            if overlap >= 24:
-                print(f"Pair i={i} j={j} overlap={overlap}")
-    """
-
-    for i in md_map.keys():
-        overlap_index = solution.get_max_overlapping_scanner_id(i, md_map)
-        print(f"Pair i={i} overlap_index={overlap_index}")
-        
-
-    assert 0 == 1

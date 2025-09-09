@@ -202,7 +202,7 @@ def generate_orientation_variants(point3d:point.Point3D):
 from collections import defaultdict
 
 
-def get_scanner_beacon_map(filename):
+def get_input_scanner_beacon_map(filename):
     lines = fileutils.get_file_lines_from(filename)
     lines = remove_blank_lines(lines)
 
@@ -375,9 +375,9 @@ def get_max_overlapping_scanner_id(scanner_id, md_map):
     return overlap_index
 
 
-def solve_part1(filename):
+def solve_part1_legacy(filename):
 
-    scanner_beacon_map = get_scanner_beacon_map(filename)
+    scanner_beacon_map = get_input_scanner_beacon_map(filename)
     logger.debug(f"scanner_beacon_map.keys={scanner_beacon_map.keys()}")
 
     """
@@ -455,8 +455,154 @@ def solve_part1(filename):
 
     return len(beacons)
 
+
+
+def get_paired_scanner_based_on_overlap(current_scanner_id, md_map, processed_scanner_id_set):
+    overlap_index = None
+    overlap_count = 0
+
+    for i in md_map.keys():
+        if i == current_scanner_id or i in processed_scanner_id_set:
+            continue    
+            
+        intersect = (set(md_map[i])).intersection(md_map[current_scanner_id])
+        intersect_overlap = len(intersect)
+        if intersect_overlap > overlap_count:
+            overlap_count = intersect_overlap
+            overlap_index = i
+
+    return overlap_index   
+
+
+def get_next_scanner_id_to_process(processed_beacons, md_map, processed_scanner_id_set):
+    overlap_index = None
+    overlap_count = 0
+
+    pb_md_set = get_manhatten_distances_between_points(processed_beacons)
+
+    for i in md_map.keys():
+        if i in processed_scanner_id_set:
+            continue    
+            
+        intersect = (set(md_map[i])).intersection(pb_md_set)
+        intersect_overlap = len(intersect)
+        if intersect_overlap > overlap_count:
+            overlap_count = intersect_overlap
+            overlap_index = i
+
+    return overlap_index  
+
+def process_scanner_beacons_against_pair(processed_scanner_beacons, unprocessed):
+    origin_pair_diff_map = get_point_pairs_diff_map(processed_scanner_beacons)
+
+
+    orientation_map = get_orientation_map(unprocessed)
+    
+    for k, v in orientation_map.items():
+        
+        pp_info = get_point_pairs_diff_map(v)
+
+        intersect = set(pp_info.keys()).intersection(origin_pair_diff_map.keys())
+        if len(intersect) >= 24:
+            offset = get_offset(intersect, origin_pair_diff_map, pp_info)            
+            return v, offset        
+    return None, None
+
+
+def solve_part1(filename):
+    input_scanner_beacon_map = get_input_scanner_beacon_map(filename)
+    logger.debug(f"input_scanner_beacon_map.keys={input_scanner_beacon_map.keys()}")
+
+    count = 0
+    for k,v in input_scanner_beacon_map.items():
+        size = len(v)
+        logger.debug(f"k={k} size={size}")
+        count += len(v)
+    logger.debug(f"Initial count of beacon coords = {count}")
+
+
+    bmd_map = defaultdict(set) # BMD (Beacon Manhatten Distance)
+    for k,v in input_scanner_beacon_map.items():
+        bmd_map[k] = sorted(get_manhatten_distances_between_points(v))
+
+    """
+    for i in range(4):
+        for j in range(4):
+            if i <= j:
+                continue
+
+            intersect = (set(md_map[i])).intersection(md_map[j])
+            overlap = len(intersect)
+            if overlap >= 24:
+                print(f"Pair i={i} j={j} overlap={overlap}")
+    """
+
+    beacons = set()
+    beacons.update(input_scanner_beacon_map[0])
+
+    scanner_location_map = defaultdict()
+    scanner_location_map[0] = (0,0,0)
+
+    processed_scanner_beacon_map = defaultdict(set)
+    processed_scanner_beacon_map[0] = input_scanner_beacon_map[0]
+
+
+
+    current_scanner_id = 0
+
+    
+    processed_scanner_id_set = set()
+
+    count = 0
+    for _ in bmd_map.keys():
+        processed_scanner_id_set.add(current_scanner_id)
+        """
+        overlap_index = get_max_overlapping_scanner_id(i, bmd_map)
+        logger.debug(f"Pair i={i} overlap_index={overlap_index}")
+        """
+        #process_next_scanner_id = get_paired_scanner_based_on_overlap(current_scanner_id, bmd_map, processed_scanner_id_set)
+        process_next_scanner_id = get_next_scanner_id_to_process(beacons, bmd_map, processed_scanner_id_set)
+        if None == process_next_scanner_id:
+            break
+        logger.debug(f"process_next_scanner_id={process_next_scanner_id}")
+        # TODO: Process 
+        scanner_beacons, offset = process_scanner_beacons_against_pair(beacons, input_scanner_beacon_map[process_next_scanner_id])
+        assert scanner_beacons is not None
+        assert offset is not None
+
+        logger.debug(f"offset={offset}")
+
+        transposed_beacons = set()
+        for sb in scanner_beacons:
+            (x,y,z) = sb
+            ox,oy,oz = offset
+            new_location = ((x+ox), (y+oy), (z+oz))
+            transposed_beacons.add(new_location)        
+            beacons.add(new_location)
+        
+        # Overlapping beacons
+        #overlapping_beacons = transposed_beacons.intersection(processed_scanner_beacon_map[current_scanner_id])
+        #overlapping_beacons_count = len(overlapping_beacons)
+        #logger.debug(f"overlapping_beacons_count={overlapping_beacons_count}")
+        #logger.debug(f"overlapping_beacons={overlapping_beacons}")
+
+
+        current_scanner_id = process_next_scanner_id
+        scanner_location_map[current_scanner_id] = offset
+        processed_scanner_beacon_map[current_scanner_id] = transposed_beacons
+        count = len(beacons)
+        logger.debug(f"count={count}")
+        
+
+
+    return count
+
+
+
 def solve_part2(filename):
     logger.debug("TODO: Implement AOC 2021 Part 1")
     lines = fileutils.get_file_lines_from(filename)
+
+    
 
     return "TODO"
