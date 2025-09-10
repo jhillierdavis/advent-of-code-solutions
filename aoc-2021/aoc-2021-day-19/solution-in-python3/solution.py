@@ -71,46 +71,6 @@ def get_orientation_map(point3d_set:set):
     return orientation_map
 
 
-def calculate_beacon_overlap_in_3d(scanner_set_0:set, scanner_set_1:set, min_intersection:int):
-    #logger.debug(f"scanner_set_0={scanner_set_0} scanner_set_1={scanner_set_1} min_intersection={min_intersection}")
-    overlap_count = 0
-
-    #variant_map = generate_variant_map(scanner_set_0)
-    #logger.debug(f"variant_map={variant_map}")
-
-    variant_map = get_orientation_map(scanner_set_0)
-
-    for b0 in scanner_set_0:
-        b0_x, b0_y, b0_z = b0
-
-        for v in variant_map.values():
-            for b1 in v:
-                b1_x, b1_y, b1_z = b1
-
-                offset_x = b0_x - b1_x
-                offset_y = b0_y - b1_y
-                offset_z = b0_z - b1_z
-                #logger.debug(f"b0={b0} b1={b1} offset_x={offset_x} offset_y={offset_y} offset_z={offset_z}")
-
-                offset_scanner_1 = set()            
-                for e in v:
-                    x, y, z = e
-                    x += offset_x
-                    y += offset_y
-                    z += offset_z
-
-                    offset_scanner_1.add((x,y,z))
-
-                intersection = scanner_set_0.intersection(offset_scanner_1)
-                overlap_count =  len(intersection)
-                if overlap_count >= min_intersection:
-                    logger.debug(f"min_intersection={min_intersection} intersection={intersection} scanner_location={offset_x, offset_y, offset_z}")
-                    
-                    #return 0
-                    return overlap_count
-    return 0
-
-
 def extract_integers(text):
     # Find all sequences of digits in the string
     numbers = re.findall(r'\d+', text)

@@ -1,6 +1,6 @@
 import pytest
 
-import solution, exploration
+import solution
 from helpers import point
 
 input_example = "AOC-2021-Day-19_Puzzle-Input-Example.txt"
@@ -24,22 +24,6 @@ def test_get_orientation_map():
                 found = True
                 break
         assert found
-
-
-#@pytest.mark.skip(reason="TODO")
-@pytest.mark.parametrize(
-    "filename, expected",
-    [
-        pytest.param(input_example, 12),
-    ],    
-)
-def test_calculate_beacon_overlap_in_3d(filename, expected):
-    scanner_beacon_map = solution.get_input_scanner_beacon_map(filename)
-
-    min_intersection = expected
-    for k, v in scanner_beacon_map.items():      
-        #print(f"Processing k={k} v={v}")  
-        assert solution.calculate_beacon_overlap_in_3d(scanner_beacon_map[0], v, min_intersection) >= expected
 
 
 @pytest.mark.parametrize(
