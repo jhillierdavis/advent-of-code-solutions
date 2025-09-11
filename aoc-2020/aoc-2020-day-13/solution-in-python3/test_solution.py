@@ -6,12 +6,12 @@ input_example = "AOC-2020-Day-13_Puzzle-Input-Example.txt"
 input_full = "AOC-2020-Day-13_Puzzle-Input-Full.txt"
 
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, expected",
     [
         pytest.param(input_example, 295),
-        #pytest.param(input_full, -1),
+        pytest.param(input_full, 3385),
     ],    
 )
 def test_solve_part1(filename, expected):
