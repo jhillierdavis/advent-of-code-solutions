@@ -63,9 +63,34 @@ def get_earliest_sequence_timestamp(input, offset = 0):
         
     return timestamp
  
+import crt # for CRT (Chinese Remainder Theorem) from modular number theory
+#from sympy.ntheory.modular import crt # Alternately use sympy
+
+def get_earliest_sequence_timestamp_using_crt(input:list):
+    moduli_list = list()
+    remainder_list = list()
+
+    for i,e in enumerate(input):
+        if not e == 'x':
+            v = int(e)
+            moduli_list.append(v)
+            #r = -i % v # TODO: Explain this part!   
+            #logger.debug(f"r={r} v={v} i={i} for input={input}")
+
+            # Determine the remainder at timestamp t (when the 1st value has no remainder) 
+            r = v - (i % v)   
+            #assert v > i, f"r={r} v={v} i={i} for input={input}" 
+            
+            remainder_list.append(r)
+
+    logger.debug(f"remainder_list={remainder_list} moduli_list={moduli_list}")
+    timestamp = crt.chinese_remainder_theorem(remainder_list, moduli_list)
+    #timestamp = crt(remainder_list, moduli_list)
+
+    return timestamp
 
 
-def solve_part2(filename, offset):
+def solve_part2(filename):
     lines = fileutils.get_file_lines_from(filename)
     buses = lines[1].split(',')
-    return get_earliest_sequence_timestamp(buses, offset)
+    return get_earliest_sequence_timestamp_using_crt(buses)

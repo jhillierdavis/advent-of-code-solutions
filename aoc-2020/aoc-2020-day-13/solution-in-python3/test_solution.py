@@ -32,17 +32,18 @@ def test_solve_part1(filename, expected):
 )
 def test_get_earliest_sequence_timestamp(buses, expected):
     assert solution.get_earliest_sequence_timestamp(buses) == expected
+    assert solution.get_earliest_sequence_timestamp_using_crt(buses) == expected
 
 
 #@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
-    "filename, expected, offset",
+    "filename, expected",
     [
-        pytest.param(input_example, 1068781, 0),
-        #pytest.param(input_full, -1, 100000000000000),
+        pytest.param(input_example, 1068781),
+        pytest.param(input_full, 600689120448303),
     ],    
 )
-def test_solve_part2(filename, expected, offset):
-    value = solution.solve_part2(filename, offset)
+def test_solve_part2(filename, expected):
+    value = solution.solve_part2(filename)
     
     assert expected == value
