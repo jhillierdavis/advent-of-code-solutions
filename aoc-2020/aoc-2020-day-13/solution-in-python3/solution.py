@@ -34,8 +34,38 @@ def solve_part1(filename):
 
     return min_wait * bus_to_get
 
-def solve_part2(filename):
-    logger.debug("TODO: Implement Part 2")
-    lines = fileutils.get_file_lines_from(filename)
+import math
 
-    return "TODO"
+
+def get_earliest_sequence_timestamp(input, offset = 0):
+    buses = [-1 if item == 'x' else int(item) for item in input]
+    
+
+    found = False    
+    timestamp = offset//buses[0] * buses[0] if offset > 0 else 0
+    assert buses[0] > 0
+    size = len(buses) -1
+
+    logger.debug(f"buses={buses} size={size} timestamp={timestamp}")
+
+    while not found:
+        timestamp += buses[0]
+
+        for i, e in enumerate(buses):
+            if e < 0:
+                continue
+
+            if (timestamp + i) % e != 0:
+                break
+            
+            if i == size:
+                found = True
+        
+    return timestamp
+ 
+
+
+def solve_part2(filename, offset):
+    lines = fileutils.get_file_lines_from(filename)
+    buses = lines[1].split(',')
+    return get_earliest_sequence_timestamp(buses, offset)
