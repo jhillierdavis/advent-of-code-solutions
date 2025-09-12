@@ -1,5 +1,5 @@
 # Shared helper libraries
-from helpers import fileutils
+from helpers import fileutils, crt # for CRT (Chinese Remainder Theorem) from modular number theory
 
 # Logging libraries
 import logging
@@ -63,8 +63,6 @@ def get_earliest_sequence_timestamp(input, offset = 0):
         
     return timestamp
  
-import crt # for CRT (Chinese Remainder Theorem) from modular number theory
-#from sympy.ntheory.modular import crt # Alternately use sympy
 
 def get_earliest_sequence_timestamp_using_crt(input:list):
     moduli_list = list()
