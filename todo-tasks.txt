@@ -1,13 +1,14 @@
 Todo next puzzle(s)
 -------------------
 
-* AOC 2020 Day 07 -> Solve Part 1
-* AOC 2021 Day 19 -> Solve Part 1
+* AOC 2020 Day 14 -> Solve Part 1
+* AOC 2021 Day 20 -> Solve Part 1
 
 
 Todo refactoring etc.
 --------------------
 
+* AOC 2020 Day 13 -> Move CRT to helpers
 * AOC 2023 Day 21 -> Solve Part 2
 * AOC 2023 Day 22 -> Improve speed of parts 1 & 2
 * AOC 2023 Day 24 -> Solve Part 2 without use of Z3?
@@ -19,18 +20,15 @@ Todo refactoring etc.
 Done (recently)
 ---------------
 
-* AOC 2020 Day 06 -> Solve Part 1 & 2
-* AOC 2020 Day 05 -> Solve Part 1 & 2
-* AOC 2021 Day 18 -> Solve Part 1 & 2
-* AOC 2023 Day 12 -> Solve Part 2
-* AOC 2023 Day 13 -> Refactor
+* AOC 2020 Day 13 -> Solve Part 1 & 2
+* AOC 2021 Day 19 -> Solve Part 1 & 2
 
 
 Ref.: AOC Years Progress
 ------------------------
 
-2020 - In progress -> TODO: >= Day 07: https://adventofcode.com/2020/day/7
-2021 - In progress -> TODO: >= Day 19: https://adventofcode.com/2021/day/19
+2020 - In progress -> TODO: >= Day 14: https://adventofcode.com/2020/day/14
+2021 - In progress -> TODO: >= Day 20: https://adventofcode.com/2021/day/20
 2022 - In progress -> TODO
 2023 - In progress -> Complete
 2024 - In progress -> AOC-2024 Day-24 Part2 Failing
