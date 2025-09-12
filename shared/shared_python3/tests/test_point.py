@@ -113,6 +113,9 @@ def test_point2d_get_manhatten_distance_to(point_a, point_b, expected):
     # Calculate the Manhatten distance between them
     p2d_a.get_manhatten_distance_to(p2d_b) == expected
 
+    # Check that associative 
+    p2d_b.get_manhatten_distance_to(p2d_a) == expected
+
 
 @pytest.mark.parametrize(
     "expected",
@@ -143,4 +146,7 @@ def test_point3d_get_manhatten_distance_to(point_a, point_b, expected):
     p3d_b = Point3D(point_b[0], point_b[1], point_b[2])
 
     # Calculate manhatten distance between them
-    p3d_a.get_manhatten_distance_to(p3d_b) == expected    
+    p3d_a.get_manhatten_distance_to(p3d_b) == expected   
+
+    # Check that associative 
+    p3d_b.get_manhatten_distance_to(p3d_a) == expected
