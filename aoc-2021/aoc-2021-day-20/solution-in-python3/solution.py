@@ -23,7 +23,7 @@ def pixels_to_binary(pixel_str):
 
 
 def get_expanded_image_grid(image_grid):
-    expansion = 2
+    expansion = 10
     expanded_grid = grid.Grid2D(image_grid.get_width() + (2 * expansion), image_grid.get_height() + (2*expansion))
         
     for h in range(image_grid.get_height()):
@@ -33,6 +33,18 @@ def get_expanded_image_grid(image_grid):
                 expanded_grid.set_symbol(point.Point2D(w+expansion, h+expansion), '#')
 
     return expanded_grid
+
+def strip_grid_parimeter(image_grid):
+    parimeter = 2
+    smaller_grid = grid.Grid2D(image_grid.get_width() - (2 * parimeter), image_grid.get_height() - (2* parimeter))
+        
+    for h in range(parimeter, image_grid.get_height()-parimeter):
+        for w in range(parimeter, image_grid.get_width()-parimeter):
+            symbol = image_grid.get_symbol(point.Point2D(w,h))
+            if symbol == '#':
+                smaller_grid.set_symbol(point.Point2D(w-parimeter, h-parimeter), '#')
+
+    return smaller_grid
 
 
 def get_value(image_grid, p:point.Point2D) -> set:
@@ -82,17 +94,21 @@ def solve_part1(filename):
     image_grid = grid.lines_to_grid(grid_lines)
     #grid.display_grid(image_grid)
 
-    for i in range(2):
-        logger.debug(f"Enhancement {i+1}")
-        expanded_grid = get_expanded_image_grid(image_grid)
-        grid.display_grid(expanded_grid)
+    image_grid = get_expanded_image_grid(image_grid)
 
-        enhanced_image_grid = get_enhanced_image_grid(expanded_grid, image_enhancement_algorithm)
-        grid.display_grid(enhanced_image_grid)
+
+
+    for i in range(2):
+
+        enhanced_image_grid = get_enhanced_image_grid(image_grid, image_enhancement_algorithm)
+        #grid.display_grid(enhanced_image_grid)
 
         image_grid = enhanced_image_grid
 
-    return enhanced_image_grid.count_symbol('#')
+    image_grid = strip_grid_parimeter(enhanced_image_grid)
+    grid.display_grid(image_grid)
+
+    return image_grid.count_symbol('#')
 
 def solve_part2(filename):
     logger.debug("TODO: Implement Part 2")

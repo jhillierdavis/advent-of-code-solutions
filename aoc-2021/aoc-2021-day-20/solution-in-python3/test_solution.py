@@ -39,7 +39,7 @@ def test_pixels_to_binary():
     "filename, expected",
     [
         pytest.param(input_example, 35),
-        pytest.param(input_full, -1), #  5708 too high
+        pytest.param(input_full, 5306), #  5708 too high
     ],    
 )
 def test_solve_part1(filename, expected):
