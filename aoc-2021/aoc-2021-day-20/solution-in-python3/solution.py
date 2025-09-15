@@ -80,37 +80,7 @@ def get_enhanced_image_grid(image_grid, image_enhancement_algorithm):
     return enhanced_grid
 
 
-def solve_part1(filename):
-    #logger.debug("TODO: Implement Part 1")
-    lines = fileutils.get_file_lines_from(filename)
-    image_enhancement_algorithm = lines[0]    
-
-    grid_lines = []
-    for i in range(2, len(lines)):        
-        grid_lines.append(lines[i])
-    logger.debug(f"grid_lines={grid_lines}")
-
-    image_grid = grid.lines_to_grid(grid_lines)
-    #grid.display_grid(image_grid)
-
-    image_grid = get_expanded_image_grid(image_grid)
-
-
-
-    for i in range(2):
-
-        enhanced_image_grid = get_enhanced_image_grid(image_grid, image_enhancement_algorithm)
-        #grid.display_grid(enhanced_image_grid)
-
-        image_grid = enhanced_image_grid
-
-    image_grid = strip_grid_parimeter(enhanced_image_grid)
-    grid.display_grid(image_grid)
-
-    return image_grid.count_symbol('#')
-
-
-def solve_part2(filename):
+def solve(filename, iterations=2):
     lines = fileutils.get_file_lines_from(filename)
     image_enhancement_algorithm = lines[0]    
 
@@ -122,18 +92,25 @@ def solve_part2(filename):
     image_grid = grid.lines_to_grid(grid_lines)
     #grid.display_grid(image_grid)
 
-    image_grid = get_expanded_image_grid(image_grid, 200)
+    image_grid = get_expanded_image_grid(image_grid, 2 * iterations)
 
 
-
-    for i in range(50):
+    for i in range(iterations):
 
         enhanced_image_grid = get_enhanced_image_grid(image_grid, image_enhancement_algorithm)
         #grid.display_grid(enhanced_image_grid)
 
         image_grid = enhanced_image_grid
 
-    image_grid = strip_grid_parimeter(enhanced_image_grid, 50)
+    image_grid = strip_grid_parimeter(enhanced_image_grid, iterations)
     #grid.display_grid(image_grid)
 
     return image_grid.count_symbol('#')
+
+
+def solve_part1(filename):
+    return solve(filename, 2)
+
+
+def solve_part2(filename):
+    return solve(filename, 50)
