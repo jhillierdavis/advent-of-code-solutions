@@ -22,8 +22,7 @@ def pixels_to_binary(pixel_str):
     return ''.join('1' if char == '#' else '0' for char in pixel_str)
 
 
-def get_expanded_image_grid(image_grid):
-    expansion = 10
+def get_expanded_image_grid(image_grid, expansion=4):
     expanded_grid = grid.Grid2D(image_grid.get_width() + (2 * expansion), image_grid.get_height() + (2*expansion))
         
     for h in range(image_grid.get_height()):
@@ -34,8 +33,8 @@ def get_expanded_image_grid(image_grid):
 
     return expanded_grid
 
-def strip_grid_parimeter(image_grid):
-    parimeter = 2
+def strip_grid_parimeter(image_grid, parimeter = 2):
+    
     smaller_grid = grid.Grid2D(image_grid.get_width() - (2 * parimeter), image_grid.get_height() - (2* parimeter))
         
     for h in range(parimeter, image_grid.get_height()-parimeter):
@@ -82,7 +81,7 @@ def get_enhanced_image_grid(image_grid, image_enhancement_algorithm):
 
 
 def solve_part1(filename):
-    logger.debug("TODO: Implement Part 1")
+    #logger.debug("TODO: Implement Part 1")
     lines = fileutils.get_file_lines_from(filename)
     image_enhancement_algorithm = lines[0]    
 
@@ -110,8 +109,31 @@ def solve_part1(filename):
 
     return image_grid.count_symbol('#')
 
-def solve_part2(filename):
-    logger.debug("TODO: Implement Part 2")
-    lines = fileutils.get_file_lines_from(filename)
 
-    return "TODO"
+def solve_part2(filename):
+    lines = fileutils.get_file_lines_from(filename)
+    image_enhancement_algorithm = lines[0]    
+
+    grid_lines = []
+    for i in range(2, len(lines)):        
+        grid_lines.append(lines[i])
+    #logger.debug(f"grid_lines={grid_lines}")
+
+    image_grid = grid.lines_to_grid(grid_lines)
+    #grid.display_grid(image_grid)
+
+    image_grid = get_expanded_image_grid(image_grid, 200)
+
+
+
+    for i in range(50):
+
+        enhanced_image_grid = get_enhanced_image_grid(image_grid, image_enhancement_algorithm)
+        #grid.display_grid(enhanced_image_grid)
+
+        image_grid = enhanced_image_grid
+
+    image_grid = strip_grid_parimeter(enhanced_image_grid, 50)
+    #grid.display_grid(image_grid)
+
+    return image_grid.count_symbol('#')

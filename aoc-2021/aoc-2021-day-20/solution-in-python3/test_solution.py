@@ -48,12 +48,12 @@ def test_solve_part1(filename, expected):
     assert expected == value
 
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, expected",
     [
-        pytest.param(input_example, -1),
-        #pytest.param(input_full, -1),
+        pytest.param(input_example, 3351),
+        pytest.param(input_full, 17497), # 39942 too high
     ],    
 )
 def test_solve_part2(filename, expected):
