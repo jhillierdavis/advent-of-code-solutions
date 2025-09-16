@@ -24,8 +24,8 @@ def test_solve_part1(starting_positions, expected):
 @pytest.mark.parametrize(
     "starting_positions, expected",
     [
-        pytest.param([4.8], 444356092776315),
-        #pytest.param([7,9], -1),
+        pytest.param([4,8], 444356092776315),
+        pytest.param([7,9], 433315766324816),
     ],    
 )
 def test_solve_part2(starting_positions, expected):
