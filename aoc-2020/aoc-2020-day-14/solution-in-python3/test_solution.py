@@ -11,7 +11,7 @@ input_full = "AOC-2020-Day-14_Puzzle-Input-Full.txt"
     "filename, expected",
     [
         pytest.param(input_example, 165),
-        #pytest.param(input_full, -1),
+        pytest.param(input_full, 13865835758282),
     ],    
 )
 def test_solve_part1(filename, expected):
