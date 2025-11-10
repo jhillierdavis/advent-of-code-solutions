@@ -14,7 +14,7 @@ def create_subdir_if_not_existing(subdir):
 		print(f"Already existing sub-directory: {subdir}")
 
 
-for x in range(1, 26):
+for x in range(1, 13):
 	subdir = subdir_prefix + str(x).zfill(2)
 	create_subdir_if_not_existing(subdir)
 
