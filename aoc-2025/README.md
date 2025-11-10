@@ -16,19 +16,6 @@ https://adventofcode.com/2025
 * [Day 10]( https://adventofcode.com/2025/day/10 ) -> TODO
 * [Day 11]( https://adventofcode.com/2025/day/11 ) -> TODO
 * [Day 12]( https://adventofcode.com/2025/day/12 ) -> TODO
-* [Day 13]( https://adventofcode.com/2025/day/13 ) -> TODO
-* [Day 14]( https://adventofcode.com/2025/day/14 ) -> TODO
-* [Day 15]( https://adventofcode.com/2025/day/15 ) -> TODO
-* [Day 16]( https://adventofcode.com/2025/day/16 ) -> TODO
-* [Day 17]( https://adventofcode.com/2025/day/17 ) -> TODO
-* [Day 18]( https://adventofcode.com/2025/day/18 ) -> TODO
-* [Day 19]( https://adventofcode.com/2025/day/19 ) -> TODO
-* [Day 20]( https://adventofcode.com/2025/day/20 ) -> TODO
-* [Day 21]( https://adventofcode.com/2025/day/21 ) -> TODO
-* [Day 22]( https://adventofcode.com/2025/day/22 ) -> TODO
-* [Day 23]( https://adventofcode.com/2025/day/23 ) -> TODO
-* [Day 24]( https://adventofcode.com/2025/day/24 ) -> TODO
-* [Day 25]( https://adventofcode.com/2025/day/25 ) -> TODO
 
 ## TODOs
 

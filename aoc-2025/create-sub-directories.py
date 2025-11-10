@@ -4,7 +4,7 @@ import shutil
 cwd = os.getcwd()
 print("Current working directory: " + cwd)
 
-subdir_prefix = "aoc-2024-day-"
+subdir_prefix = "aoc-2025-day-"
 
 def create_subdir_if_not_existing(subdir):
 	if not os.path.exists(subdir): 
