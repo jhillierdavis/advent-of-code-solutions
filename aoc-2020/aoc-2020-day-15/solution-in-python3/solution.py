@@ -52,7 +52,8 @@ def solve_part1(starting_values, nth=2020):
     return current_value
 
 
-def solve_part2(starting_values, nth=2020):
+def solve(starting_values, nth):
+    assert nth >= 0
     age = defaultdict(lambda:-1)
     current_value = 0
     size = len(starting_values)
