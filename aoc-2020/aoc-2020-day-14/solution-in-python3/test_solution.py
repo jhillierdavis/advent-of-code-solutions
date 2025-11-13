@@ -15,11 +15,10 @@ input_full = "AOC-2020-Day-14_Puzzle-Input-Full.txt"
     ],    
 )
 def test_solve_part1(filename, expected):
-    value = solution.solve_part1(filename)
-    
+    value = solution.solve_part1(filename)    
     assert expected == value
 
-
+"""
 @pytest.mark.parametrize(
     "xmask, expected",
     [
@@ -30,17 +29,8 @@ def test_solve_part1(filename, expected):
 def test_generate_floating_value_set(xmask, expected):
     value = solution.generate_floating_value_set(xmask)    
     assert expected == value
+"""
 
-
-@pytest.mark.parametrize(
-    "xmask, expected",
-    [
-        pytest.param("00000000000000000000000000000001X0XX", {16,17,18,19,24,25,26,27}),
-    ],    
-)
-def test_generate_floating_value_set_as_intergers(xmask, expected):
-    value = solution.generate_floating_value_set_as_intergers(xmask)    
-    assert expected == value
 
 
 input_example_part2 = "AOC-2020-Day-14_Puzzle-Input-Example-Part2.txt"
@@ -49,6 +39,9 @@ input_example_part2 = "AOC-2020-Day-14_Puzzle-Input-Example-Part2.txt"
 @pytest.mark.parametrize(
     "xmask, expected",
     [
+        pytest.param("101", ['101']),
+        pytest.param("0X", ['00', '01']),
+        pytest.param("1X1", ['101', '111']),
         pytest.param("X0XX1", ['00001','00011','00101','00111','10001','10011','10101','10111']),        
     ],    
 )
@@ -58,15 +51,25 @@ def test_generate_floating_values(xmask, expected):
     assert expected == values
 
 
+@pytest.mark.parametrize(
+    "xmask, expected",
+    [
+        pytest.param("00000000000000000000000000000001X0XX", {16,17,18,19,24,25,26,27}),
+    ],    
+)
+def test_generate_floating_values_as_intergers(xmask, expected):
+    value = solution.generate_floating_values_as_intergers(xmask)    
+    assert expected == value
+
+
 #@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, expected",
     [
-        #pytest.param(input_example_part2, 208),
-        pytest.param(input_full, 4195339838136), #924192532172 too low! 4195339838136
+        pytest.param(input_example_part2, 208),
+        pytest.param(input_full, 4195339838136), 
     ],    
 )
 def test_solve_part2(filename, expected):
-    value = solution.solve_part2(filename)
-    
+    value = solution.solve_part2(filename)    
     assert expected == value

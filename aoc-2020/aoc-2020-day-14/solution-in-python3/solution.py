@@ -73,7 +73,7 @@ def combine_with_mask_value_part2(value, current_mask):
             new_value += current_mask[i]
     return new_value
 
-
+"""
 def add_values(result, xmask, offset, value):
     size = len(xmask) 
     if offset >= size:
@@ -99,22 +99,9 @@ def generate_floating_value_set(xmask):
     
     add_values(result, xmask, 0, "")
     return result
-
-"""
-def generate_floating_values(s):
-    if 'X' not in s:
-        return s
-
-    addresses = []
-    xi = s.index('X')
-    s0 = s[:xi] + '0' + s[xi+1:]
-    s1 = s[:xi] + '1' + s[xi+1:]
-
-    addresses += generate_floating_values(s0) + ',' + generate_floating_values(s1)
-    return addresses
 """
 
-def generate_floating_values(s, results:list):
+def generate_floating_values(s:str, results:list=[]) -> None:
     if 'X' not in s:
         results.append(s)
         return
@@ -128,7 +115,7 @@ def generate_floating_values(s, results:list):
     return
 
 
-def generate_floating_value_set_as_intergers(xmask):
+def generate_floating_values_as_intergers(xmask):
     #results = sorted(generate_floating_value_set(xmask))
     results = []
     generate_floating_values(xmask, results)
@@ -136,6 +123,7 @@ def generate_floating_value_set_as_intergers(xmask):
     for r in results:
         converted_results.add(int(r,2))
     return converted_results
+
 
 def solve_part2(filename):
     #logger.debug("TODO: Implement Part 2")
@@ -162,14 +150,10 @@ def solve_part2(filename):
             logger.debug(f"l={l} index={index} value={value} current_mask={current_mask}")
             
             xmask = combine_with_mask_value_part2(value, current_mask)
-            values = generate_floating_value_set_as_intergers(xmask)
+            values = generate_floating_values_as_intergers(xmask)
             logger.debug(f"current_mask={current_mask} xmask={xmask}, index={index} values={values}")
             for v in values:                
                 memvalues[v] = nums[1]           
 
     #logger.debug(memvalues)
     return sum(memvalues.values())
-
-#xmask = '1X0XX'
-#print(sorted(generate_floating_value_set(xmask)))
-#print(get_addresses(xmask))
