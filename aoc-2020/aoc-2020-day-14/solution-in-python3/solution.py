@@ -10,7 +10,7 @@ logging.config.fileConfig('logging.conf')
 logger = logging.getLogger(__name__)
 logger = logging.getLogger('simpleLogger')
 
-from collections import defaultdict
+#from collections import defaultdict
 
 import re
 
@@ -31,11 +31,19 @@ def combine_with_mask_value(value, current_mask):
     return new_value
 
 
-def solve_part1(filename):
-    logger.debug("TODO: Implement Part 1")
-    lines = fileutils.get_file_lines_from(filename)
+def assign_memory_values_part1(memvalues, nums, current_mask, mask_length):
+    index = nums[0]
+    value = format(nums[1], '0' + str(mask_length) + 'b')
+    #logger.debug(f"index={index} value={value} current_mask={current_mask}")
+    
+    new_value = combine_with_mask_value(value, current_mask)
+    memvalues[index] = int(new_value,2)
 
-    memvalues = defaultdict(int)
+
+
+def process_data(lines, assign_memory_values):
+    #memvalues = defaultdict(int)
+    memvalues = dict()
     
     current_mask = None
     mask_length = 36
@@ -51,13 +59,15 @@ def solve_part1(filename):
             current_mask = v
         elif k.startswith('mem'):
             nums = extract_numbers(l)
-            index = nums[0]
-            value = format(nums[1], '0' + str(mask_length) + 'b')
-            #logger.debug(f"index={index} value={value} current_mask={current_mask}")
-            
-            new_value = combine_with_mask_value(value, current_mask)
-            memvalues[index] = int(new_value,2)
+            assign_memory_values(memvalues, nums, current_mask, mask_length)
 
+    return memvalues
+
+
+def solve_part1(filename):
+    #logger.debug("TODO: Implement Part 1")
+    lines = fileutils.get_file_lines_from(filename)
+    memvalues = process_data(lines, assign_memory_values_part1)
     total = sum(memvalues.values())
     return total
 
@@ -70,36 +80,10 @@ def combine_with_mask_value_part2(value, current_mask):
         elif current_mask[i] == '1':
             new_value += '1'
         else:
+            assert 'X' == current_mask[i]
             new_value += current_mask[i]
     return new_value
 
-"""
-def add_values(result, xmask, offset, value):
-    size = len(xmask) 
-    if offset >= size:
-        result.add(value)
-        return
-    
-    prefix = value
-    for i in range(offset, size):
-        if xmask[i] == 'X':
-            add_values(result, xmask, i+1, prefix + '0')
-            add_values(result, xmask, i+1, prefix + '1')
-            break
-        else:
-            prefix += xmask[i]
-    return result
-
-
-def generate_floating_value_set(xmask):
-    result = set()
-    if 'X' not in xmask:
-        result.add(xmask)
-        return result
-    
-    add_values(result, xmask, 0, "")
-    return result
-"""
 
 def generate_floating_values(s:str, results:list=[]) -> None:
     if 'X' not in s:
@@ -125,35 +109,20 @@ def generate_floating_values_as_intergers(xmask):
     return converted_results
 
 
+def assign_memory_values_part2(memvalues, nums, current_mask, mask_length):
+    index = nums[0]
+    value = format(index, '0' + str(mask_length) + 'b')
+    #logger.debug(f"l={l} index={index} value={value} current_mask={current_mask}")
+    
+    xmask = combine_with_mask_value_part2(value, current_mask)
+    values = generate_floating_values_as_intergers(xmask)
+    #logger.debug(f"current_mask={current_mask} xmask={xmask}, index={index} values={values}")
+    for v in values:                
+        memvalues[v] = nums[1]           
+
+
 def solve_part2(filename):
     #logger.debug("TODO: Implement Part 2")
     lines = fileutils.get_file_lines_from(filename)
-
-    memvalues = defaultdict(set[int])
-    
-    current_mask = None
-    mask_length = 36
-    for l in lines:
-        if len(l) == 0:
-            continue
-
-        k,v = l.split(" = ")
-        #logger.debug(f"{l} k={k} v={v}")
-        
-        if k.startswith('mask'):            
-            #logger.debug(f"mask = {v}")
-            current_mask = v
-        elif k.startswith('mem'):
-            nums = extract_numbers(l)
-            index = nums[0]
-            value = format(index, '0' + str(mask_length) + 'b')
-            logger.debug(f"l={l} index={index} value={value} current_mask={current_mask}")
-            
-            xmask = combine_with_mask_value_part2(value, current_mask)
-            values = generate_floating_values_as_intergers(xmask)
-            logger.debug(f"current_mask={current_mask} xmask={xmask}, index={index} values={values}")
-            for v in values:                
-                memvalues[v] = nums[1]           
-
-    #logger.debug(memvalues)
+    memvalues = process_data(lines, assign_memory_values_part2)
     return sum(memvalues.values())
