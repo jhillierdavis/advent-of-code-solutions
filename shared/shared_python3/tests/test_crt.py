@@ -1,6 +1,6 @@
 import pytest
 
-import crt
+from helpers import crt
 
 # Ref.: https://en.wikipedia.org/wiki/Chinese_remainder_theorem
 
