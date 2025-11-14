@@ -69,3 +69,15 @@ def test_get_middle_value_from(array_of_integers, expected):
     # Then:
     assert expected == value
 
+
+@pytest.mark.parametrize(
+    "value, min, max, expected",
+    [
+        pytest.param(5, 1, 10, True),
+        pytest.param(0, 1, 10, False),
+        pytest.param(10, 1, 10, True),
+    ],    
+)
+def test_is_within_range(value, min, max, expected):
+    value = numutils.is_within_range(value, min, max)    
+    assert expected == value

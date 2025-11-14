@@ -28,3 +28,18 @@ def get_middle_value_from(array_of_integers:Iterable[int]) -> int:
     if size % 2 == 0: # Even length
         middle_index -= 1
     return array_of_integers[middle_index]
+
+
+def is_within_range(value:int, min_value:int, max_value:int) -> bool:
+    """
+    Check if a numeric value is within a given inclusive range.
+
+    Parameters:
+    value (float or int): The number to check.
+    min_value (float or int): The lower bound of the range.
+    max_value (float or int): The upper bound of the range.
+
+    Returns:
+    bool: True if value is within [min_value, max_value], False otherwise.
+    """
+    return min_value <= value <= max_value
