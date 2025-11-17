@@ -106,8 +106,9 @@ def extract_field_ranges(filename):
     
     for l in lines:
         ranges = list()
-        vals = l.split(' ')
-        field = vals[0][:-1]
+        s = l.split(': ')
+        field = s[0]
+        vals = s[1].split(' or ')
         #logger.debug(f"line={l} vals={vals}")
         for v in vals:
             if '-' in v:
@@ -119,17 +120,34 @@ def extract_field_ranges(filename):
     return field_ranges
 
 
+def get_single_value_keys(d):
+    single_value_keys = set()
+    for k, v in d.items():
+        if len(v) == 1:
+            single_value_keys.add( list(v)[0] )
+    return single_value_keys
+
+
+def are_all_single_valued(d):
+    num = len(d.keys())
+    single_count = 0
+    for v in d.values():
+        if len(v) == 1:
+            single_count += 1
+    return num == single_count
+
+
+
 def get_field_order(filename):    
     field_ranges = extract_field_ranges(filename)
 
-    logger.debug(f"field_ranges={field_ranges}")
+    logger.debug(f"field_ranges={field_ranges}")    
+
     num_fields = len(field_ranges.keys())
 
     d = dict()
     for x in range(num_fields):
         d[x] = set(field_ranges.keys())
-
-    logger.debug(f"d={d}")
 
     valid_nearby = get_valid_nearby_tickets(filename)
 
@@ -148,18 +166,60 @@ def get_field_order(filename):
                     s.remove(kfr)
                     d[i] = s
 
-    logger.debug(f"d={d}")
+    
+    for k, v in d.items():
+        logger.debug(f"{k}={v}")
 
-    return []
+    
+    i = 0
+    while not are_all_single_valued(d) and i < 100:
+        single_value_keys = get_single_value_keys(d)
+        logger.debug(f"single_value_keys={single_value_keys}")
+
+
+        for k, v in d.items():
+            if len(v) > 1:
+                logger.debug(f"Remove at: k={k} v={v}")
+                for svk in single_value_keys:
+                    if svk in v:
+                        v.remove(svk)
+
+        for k, v in d.items():
+            logger.debug(f"{k}={v}")
+        i += 1
+
+    ans = list()
+    for i in range(len(d.keys())):
+        ans.append(list(d[i])[0])    
+    return ans
+
+
+def get_valid_your_ticket_entries(lines):
+    found = False
+    for l in lines:    
+        if l == 'your ticket:':
+            found = True
+            continue
+
+        if found:            
+            vals = l.split(',')
+            return list(map(int, vals))
+    return None
+            
 
 
 def solve_part2(filename):
     #logger.debug("TODO: Implement Part 2")
-    lines = fileutils.get_lines_before_empty_from_file(filename)
-    ranges = extract_anonymous_ranges(lines)
+    fields = get_field_order(filename)
 
     lines = fileutils.get_lines_after_empty_from_file(filename)
-    valid_nearby = get_valid_nearby_ticket_entries(lines, ranges)
+    vals = get_valid_your_ticket_entries(lines)
 
-    logger.debug(f"valid_nearby={valid_nearby}")
-    return "TODO"
+    ans = 1
+    for i, f in enumerate(fields):
+        if f.startswith('departure'):
+            logger.debug(f"f={f} i={i} vals={vals[i]}")
+            ans *= vals[i]
+
+    logger.debug(f"vals={vals}")
+    return ans

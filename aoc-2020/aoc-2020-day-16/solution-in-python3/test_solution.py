@@ -48,8 +48,8 @@ def test_extract_field_ranges(filename, expected):
 @pytest.mark.parametrize(
     "filename, expected",
     [
-        pytest.param(input_example_part2, ['row', 'column', 'seat']),
-        pytest.param(input_full, ['row', 'column', 'seat']),
+        pytest.param(input_example_part2, ['row', 'class', 'seat']),
+        pytest.param(input_full, ['arrival platform', 'seat', 'departure location', 'class', 'departure station','train', 'arrival location', 'route','type', 'arrival track', 'wagon','departure date', 'zone', 'departure time', 'departure platform','price', 'row', 'arrival station','duration', 'departure track']),
     ],    
 )
 def test_get_field_order(filename, expected):
@@ -57,12 +57,12 @@ def test_get_field_order(filename, expected):
     assert expected == value
 
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, expected",
     [
-        pytest.param(input_example, -1),
-        #pytest.param(input_full, -1),
+        #pytest.param(input_example, -1),
+        pytest.param(input_full, 3253972369789),
     ],    
 )
 def test_solve_part2(filename, expected):
