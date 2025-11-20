@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 logger = logging.getLogger('simpleLogger')
 
 
-def extract_anonymous_ranges(lines):
+def extract_anonymous_ranges(lines:list[str]) -> list:
     ranges = list()
     for l in lines:
         vals = l.split(' ')
@@ -26,7 +26,7 @@ def extract_anonymous_ranges(lines):
     return ranges
 
 
-def count_invalid_nearby_ticket_entries(lines, ranges):
+def count_invalid_nearby_ticket_entries(lines:list[str], ranges) -> int:
     found = False
     ans = 0
     for l in lines:
@@ -49,7 +49,7 @@ def count_invalid_nearby_ticket_entries(lines, ranges):
     return ans
 
 
-def solve_part1(filename):
+def solve_part1(filename:str) -> int:
     lines = fileutils.get_lines_before_empty_from_file(filename)
     ranges = extract_anonymous_ranges(lines)
 
@@ -58,7 +58,7 @@ def solve_part1(filename):
     return ans
 
 
-def get_valid_nearby_ticket_entries(lines, ranges):
+def get_valid_nearby_ticket_entries(lines:list[str], ranges) -> list:
     found = False
     valid_lines = list()
     for l in lines:
@@ -91,16 +91,17 @@ def get_valid_nearby_ticket_entries(lines, ranges):
     return valid_lines
 
 
-def get_valid_nearby_tickets(filename):
+def get_valid_nearby_tickets(filename:str) -> list:
     lines = fileutils.get_lines_before_empty_from_file(filename)
     ranges = extract_anonymous_ranges(lines)
+    #ranges = extract_field_ranges(filename)
 
     lines = fileutils.get_lines_after_empty_from_file(filename)
     valid_nearby = get_valid_nearby_ticket_entries(lines, ranges)
     return valid_nearby
 
 
-def extract_field_ranges(filename):
+def extract_field_ranges(filename:str) -> dict[str,list]:
     lines = fileutils.get_lines_before_empty_from_file(filename)
     field_ranges = dict()
     
@@ -109,18 +110,19 @@ def extract_field_ranges(filename):
         s = l.split(': ')
         field = s[0]
         vals = s[1].split(' or ')
-        #logger.debug(f"line={l} vals={vals}")
+        logger.debug(f"line={l} vals={vals}")
         for v in vals:
             if '-' in v:
                 vmin, vmax = v.split("-")
                 #logger.debug(f"vmin={vmin}, vmax={vmax}")
                 ranges.append((int(vmin), int(vmax)))
         field_ranges[field] = ranges
-    #logger.debug(f"ranges={ranges}")
+
+    logger.debug(f"field_ranges={field_ranges}")
     return field_ranges
 
 
-def get_single_value_keys(d):
+def get_single_value_keys(d:dict) -> set:
     single_value_keys = set()
     for k, v in d.items():
         if len(v) == 1:
@@ -128,7 +130,7 @@ def get_single_value_keys(d):
     return single_value_keys
 
 
-def are_all_single_valued(d):
+def are_all_single_valued(d:dict) -> bool:
     num = len(d.keys())
     single_count = 0
     for v in d.values():
@@ -137,8 +139,7 @@ def are_all_single_valued(d):
     return num == single_count
 
 
-
-def get_field_order(filename):    
+def get_field_order(filename:str):    
     field_ranges = extract_field_ranges(filename)
 
     logger.debug(f"field_ranges={field_ranges}")    
@@ -172,7 +173,7 @@ def get_field_order(filename):
 
     
     i = 0
-    while not are_all_single_valued(d) and i < 100:
+    while not are_all_single_valued(d):
         single_value_keys = get_single_value_keys(d)
         logger.debug(f"single_value_keys={single_value_keys}")
 
@@ -186,7 +187,9 @@ def get_field_order(filename):
 
         for k, v in d.items():
             logger.debug(f"{k}={v}")
+
         i += 1
+        assert(i < 100) # Avoid an infinite loop!
 
     ans = list()
     for i in range(len(d.keys())):
@@ -194,7 +197,7 @@ def get_field_order(filename):
     return ans
 
 
-def get_valid_your_ticket_entries(lines):
+def get_valid_your_ticket_entries(lines:list) -> list:
     found = False
     for l in lines:    
         if l == 'your ticket:':
@@ -207,8 +210,7 @@ def get_valid_your_ticket_entries(lines):
     return None
             
 
-
-def solve_part2(filename):
+def solve_part2(filename:str) -> int:
     #logger.debug("TODO: Implement Part 2")
     fields = get_field_order(filename)
 
