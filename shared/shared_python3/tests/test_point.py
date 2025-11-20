@@ -1,6 +1,6 @@
 import pytest
 
-from helpers.point import Point2D, Point3D
+from helpers.point import Point2D, Point3D, Point4D
 
 @pytest.mark.parametrize(
     "x,y",
@@ -150,3 +150,15 @@ def test_point3d_get_manhatten_distance_to(point_a, point_b, expected):
 
     # Check that associative 
     p3d_b.get_manhatten_distance_to(p3d_a) == expected
+
+
+def test_point3d_get_closest_neigbours():
+    p3d = Point3D(1,1,1)
+    neighbour_set = p3d.get_closest_neighbours()
+    assert len(neighbour_set) == 26
+
+
+def test_point4d_get_closest_neigbours():
+    p4d = Point4D(1,1,1,1)
+    neighbour_set = p4d.get_closest_neighbours()
+    assert len(neighbour_set) == 80
