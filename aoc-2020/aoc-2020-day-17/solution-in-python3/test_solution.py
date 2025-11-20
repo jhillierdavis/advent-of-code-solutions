@@ -8,11 +8,6 @@ input_full = "AOC-2020-Day-17_Puzzle-Input-Full.txt"
 from helpers import point
 
 
-def test_neigbours():
-    neighbour_set = solution.get_neighbours(point.Point3D(1,1,1))
-    assert len(neighbour_set) == 26
-
-
 #@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, cycles, expected",
@@ -30,15 +25,16 @@ def test_solve_part1(filename, cycles, expected):
     assert expected == value
 
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
-    "filename, expected",
+    "filename, cycles, expected",
     [
-        pytest.param(input_example, -1),
-        #pytest.param(input_full, -1),
+        pytest.param(input_example, 0, 5),
+        pytest.param(input_example, 1, 29),
+        pytest.param(input_example, 6, 848),
+        pytest.param(input_full, 6, 2400),
     ],    
 )
-def test_solve_part2(filename, expected):
-    value = solution.solve_part2(filename)
-    
+def test_solve_part2(filename, cycles, expected):
+    value = solution.solve_part2(filename, cycles)    
     assert expected == value

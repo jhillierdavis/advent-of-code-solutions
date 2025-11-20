@@ -10,6 +10,7 @@ logging.config.fileConfig('logging.conf')
 logger = logging.getLogger(__name__)
 logger = logging.getLogger('simpleLogger')
 
+
 def get_initial_active_set_from_file(filename):
     lines = fileutils.get_file_lines_from(filename)
 
@@ -28,28 +29,13 @@ def get_initial_active_set_from_file(filename):
     return active_set
 
 
-def get_neighbours(p3d:point.Point3D):
-
-    neighbour_set = set()
-    for x in range(-1,2):
-        for y in range(-1,2):
-            for z in range(-1,2):
-                np = point.Point3D(p3d.get_x()+x, p3d.get_y() + y, p3d.get_z() + z)
-                neighbour_set.add(np)
-
-    neighbour_set.remove(p3d)
-    assert len(neighbour_set) == 26 # 9 + 9 + 8
-    #logger.debug(f"p3d={p3d} neighbour_set={neighbour_set}")
-    return neighbour_set
-
-
 def get_active_neighbours(a, active_set):
-    neighbours = get_neighbours(a)    
+    neighbours = a.get_closest_neighbours()    
     return neighbours.intersection(active_set)
 
 
 def get_inactive_neighbours(a, active_neighbour_set):
-    neighbours = get_neighbours(a)   
+    neighbours = a.get_closest_neighbours()   
     return neighbours.difference(active_neighbour_set)
 
 
@@ -86,8 +72,20 @@ def solve_part1(filename:str, cycles:int) -> int:
     return active_count
 
 
-def solve_part2(filename):
-    logger.debug("TODO: Implement Part 2")
-    lines = fileutils.get_file_lines_from(filename)
 
-    return "TODO"
+def solve_part2(filename, cycles):
+    #logger.debug("TODO: Implement Part 2")
+    active_set = get_initial_active_set_from_file(filename)
+
+    active_4d_set = set()
+    for a in active_set:
+        p4d = point.Point4D(a.get_x(), a.get_y(), a.get_z(), 0)
+        active_4d_set.add(p4d)
+    
+    active_set = active_4d_set
+
+    for _ in range(cycles):
+        active_set = evolve_active_set(active_set)
+
+    active_count = len(active_set)
+    return active_count
