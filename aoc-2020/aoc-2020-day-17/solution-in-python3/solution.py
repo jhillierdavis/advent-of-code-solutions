@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 logger = logging.getLogger('simpleLogger')
 
 
-def get_initial_active_set_from_file(filename):
+def get_initial_active_set_from_file(filename:str) -> set[point.Point3D]:
     lines = fileutils.get_file_lines_from(filename)
 
     initial_grid_at_z0 = grid.lines_to_grid(lines)
@@ -72,9 +72,7 @@ def solve_part1(filename:str, cycles:int) -> int:
     return active_count
 
 
-
-def solve_part2(filename, cycles):
-    #logger.debug("TODO: Implement Part 2")
+def get_initial_active_hypercube_set_from_file(filename:str) -> set[point.Point4D]:
     active_set = get_initial_active_set_from_file(filename)
 
     active_4d_set = set()
@@ -82,7 +80,11 @@ def solve_part2(filename, cycles):
         p4d = point.Point4D(a.get_x(), a.get_y(), a.get_z(), 0)
         active_4d_set.add(p4d)
     
-    active_set = active_4d_set
+    return active_4d_set
+
+
+def solve_part2(filename:str, cycles:int) -> int:
+    active_set = get_initial_active_hypercube_set_from_file(filename)
 
     for _ in range(cycles):
         active_set = evolve_active_set(active_set)
