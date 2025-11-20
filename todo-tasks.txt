@@ -1,7 +1,7 @@
 Todo next puzzle(s)
 -------------------
 
-* AOC 2020 Day 14 : Docking Data -> Solve Part 1
+* AOC 2020 Day 17 : Conway Cubes -> Solve Part 1
 * AOC 2021 Day 22 : Reactor Reboot -> Solve Part 2
 
 
@@ -20,13 +20,14 @@ Todo refactoring etc.
 Done (recently)
 ---------------
 
-
+* AOC 2020 Day 16
+* AOC 2020 Day 15
 
 Ref.: AOC Years Progress
 ------------------------
 
 2025 - Pending / prep. -> https://adventofcode.com/2025
-2020 - In progress -> TODO: >= https://adventofcode.com/2020/day/14
+2020 - In progress -> TODO: >= https://adventofcode.com/2020/day/17
 2021 - In progress -> TODO: >= https://adventofcode.com/2021/day/22
 2022 - In progress -> TODO
 2023 - In progress -> Complete
