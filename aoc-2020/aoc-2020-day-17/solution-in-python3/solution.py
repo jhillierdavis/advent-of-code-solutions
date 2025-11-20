@@ -10,8 +10,7 @@ logging.config.fileConfig('logging.conf')
 logger = logging.getLogger(__name__)
 logger = logging.getLogger('simpleLogger')
 
-def solve_part1(filename):
-    #logger.debug("TODO: Implement Part 1")
+def get_initial_active_set_from_file(filename):
     lines = fileutils.get_file_lines_from(filename)
 
     initial_grid_at_z0 = grid.lines_to_grid(lines)
@@ -26,9 +25,65 @@ def solve_part1(filename):
             if s == '#':
                 p3d = point.Point3D(w, h, 0)
                 active_set.add(p3d)
-            
-    logger.debug(f"active_set={active_set}")
-    return len(active_set)
+    return active_set
+
+
+def get_neighbours(p3d:point.Point3D):
+
+    neighbour_set = set()
+    for x in range(-1,2):
+        for y in range(-1,2):
+            for z in range(-1,2):
+                np = point.Point3D(p3d.get_x()+x, p3d.get_y() + y, p3d.get_z() + z)
+                neighbour_set.add(np)
+
+    neighbour_set.remove(p3d)
+    assert len(neighbour_set) == 26 # 9 + 9 + 8
+    #logger.debug(f"p3d={p3d} neighbour_set={neighbour_set}")
+    return neighbour_set
+
+
+def get_active_neighbours(a, active_set):
+    neighbours = get_neighbours(a)    
+    return neighbours.intersection(active_set)
+
+
+def get_inactive_neighbours(a, active_neighbour_set):
+    neighbours = get_neighbours(a)   
+    return neighbours.difference(active_neighbour_set)
+
+
+def evolve_active_set(active_set:set) -> set:
+    next_active_set = set()
+
+    for a in active_set:
+        active_neighbours = get_active_neighbours(a, active_set)
+
+        if a not in next_active_set:            
+            active_neighbour_count = len(active_neighbours)
+            if active_neighbour_count == 2 or active_neighbour_count == 3:
+                # Remains active
+                next_active_set.add(a)
+        
+        inactive_neighbours = get_inactive_neighbours(a, active_neighbours)
+        for i in inactive_neighbours:
+            active_neighbours = get_active_neighbours(i, active_set)
+            active_neighbour_count = len(active_neighbours)
+            if active_neighbour_count == 3:
+                # Becomes active
+                next_active_set.add(i)
+    
+    return next_active_set
+
+
+def solve_part1(filename:str, cycles:int) -> int:
+    active_set = get_initial_active_set_from_file(filename)            
+
+    for _ in range(cycles):
+        active_set = evolve_active_set(active_set)
+
+    active_count = len(active_set)
+    return active_count
 
 
 def solve_part2(filename):
