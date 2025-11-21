@@ -38,12 +38,28 @@ def test_solve_part1(filename, expected):
     assert expected == value
 
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
+@pytest.mark.parametrize(
+    "expression, expected",
+    [
+        pytest.param("1 + 2 * 3 + 4 * 5 + 6", 231),
+        pytest.param("1 + (2 * 3) + (4 * (5 + 6))", 51),
+        pytest.param("2 * 3 + (4 * 5)", 46),
+        pytest.param("5 + (8 * 3 + 9 + 3 * 4 * 3)", 1445),
+        pytest.param("5 * 9 * (7 * 3 * 3 + 9 * 3 + (8 + 6 * 4))", 669060),
+        pytest.param("((2 + 4 * 9) * (6 + 9 * 8 + 6) + 6) + 2 + 4 * 2", 23340),
+    ],    
+)
+def test_compute_advanced_expression(expression, expected):
+    value = solution.compute_advanced_expression(expression)    
+    assert expected == value
+
+
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, expected",
     [
-        pytest.param(input_example, -1),
-        #pytest.param(input_full, -1),
+        pytest.param(input_example, 231 + 51 + 46 + 1445 + 669060 + 23340), # 694173
+        pytest.param(input_full, 129770152447927),
     ],    
 )
 def test_solve_part2(filename, expected):
