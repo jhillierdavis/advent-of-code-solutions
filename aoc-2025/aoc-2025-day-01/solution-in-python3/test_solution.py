@@ -28,5 +28,10 @@ def test_solve_part1(filename, expected):
     ],    
 )
 def test_solve_part2(filename, expected):
-    value = solution.solve_part2(filename)    
+    # Simple (brute force type) approach using single unit value increments
+    value = solution.solve_part2_using_unit_increments(filename)    
+    assert expected == value
+
+    # Alternative approach using calculated offset
+    value = solution.solve_part2_using_modular_arithemtic_offset(filename)    
     assert expected == value
