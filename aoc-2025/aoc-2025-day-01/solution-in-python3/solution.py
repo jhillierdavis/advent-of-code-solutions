@@ -82,10 +82,11 @@ def is_passing_zero_by_rotating_right(value:int, offset:int) -> bool:
 
 
 def determine_new_dial_value_and_count_all_zero_clicks_via_offset(value:int, direction:str, amount:int) -> Tuple[str, int]:
-    ans = 0
-    circuits = amount // 100        
-    ans += circuits
-    offset = amount % 100
+    
+    # circuits = amount // 100  
+    # offset = amount % 100
+    circuits, offset = divmod(amount, 100)      
+    ans = circuits    
 
     if 'L' == direction:
         if is_passing_zero_by_rotating_left(value, offset):            
