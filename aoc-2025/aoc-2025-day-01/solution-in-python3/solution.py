@@ -67,7 +67,7 @@ def determine_new_dial_value_and_count_all_zero_clicks_via_unit_increments(value
     return value, zero_clicks
 
 
-def solve_part2_using_single_unit_increments(filename):
+def solve_part2_using_single_unit_increments(filename:str) -> int:
     return execute_algorithm_for_input_file_entries(filename, determine_new_dial_value_and_count_all_zero_clicks_via_unit_increments)
 
 
