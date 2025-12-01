@@ -32,7 +32,6 @@ def determine_value_and_count_zeros(value, direction, amount):
 
 
 def solve_part1(filename):
-    #logger.debug("TODO: Implement Part 1")
     lines = fileutils.get_file_lines_from(filename)
 
     ans = 0
@@ -41,22 +40,6 @@ def solve_part1(filename):
         direction = l[0]
         amount = int(l[1:])
 
-        """
-        if 'L' == direction:
-            value -= amount            
-        elif 'R' == direction:
-            value += amount
-        else:
-            raise Exception(f"Unknown direction={direction}")
-
-        value = (value % 100)
-        if value == 100:
-            value = 0
-        
-        if value == 0:
-            zero_count += 1
-        logger.debug(f"direction={direction} amount={amount} value={value}")
-        """
         value, zero_count = determine_value_and_count_zeros(value, direction, amount)
         ans += zero_count
 
@@ -64,10 +47,8 @@ def solve_part1(filename):
 
 
 def solve_part2(filename):
-    #logger.debug("TODO: Implement Part 2")
     lines = fileutils.get_file_lines_from(filename)
     
-    #zero_count = 0
     ans = 0
     value = 50
     for l in lines:
@@ -75,22 +56,6 @@ def solve_part2(filename):
         amount = int(l[1:])
 
         for i in range(amount):
-            """
-            if 'L' == direction:
-                value -=1
-            elif 'R' == direction:
-                value +=1
-            else:
-                raise Exception(f"Unknown direction={direction}")
-            
-            value = (value % 100)
-            if value == 100:
-                value = 0
-
-            if value == 0:
-                zero_count += 1
-            """
-
             value, zero_count = determine_value_and_count_zeros(value, direction, 1)
             ans += zero_count
         
