@@ -19,24 +19,25 @@ def get_rotation_direction_and_amount(rotation:str) -> Tuple[str, int]:
     return direction, amount
 
 
-def determine_value_and_count_zero_values(value:int, direction:str, amount:int) -> Tuple[str, int]:
-    zero_count = 0
+def determine_new_dial_value_and_count_zero_values(dial_value:int, direction:str, amount:int) -> Tuple[str, int]:
+    zero_value_count = 0
+    new_dial_value = dial_value
 
     if 'L' == direction:
-        value -= amount            
+        new_dial_value -= amount            
     elif 'R' == direction:
-        value += amount
+        new_dial_value += amount
     else:
         raise Exception(f"Unknown direction={direction}")
 
-    value = (value % 100)
-    if value == 100:
-        value = 0
+    new_dial_value = (new_dial_value % 100)
+    if new_dial_value == 100:
+        zero_value_count = 0
     
-    if value == 0:
-        zero_count += 1
-    #logger.debug(f"direction={direction} amount={amount} value={value}")    
-    return value, zero_count
+    if new_dial_value == 0:
+        zero_value_count += 1
+
+    return new_dial_value, zero_value_count
 
 
 def execute_algorithm_for_input_file_entries(filename:str, alg:callable) -> int:
@@ -44,29 +45,30 @@ def execute_algorithm_for_input_file_entries(filename:str, alg:callable) -> int:
 
     ans = 0
     dial_value = 50 # Initial dial value
+
     for l in lines:
         direction, amount = get_rotation_direction_and_amount(l)        
 
-        dial_value, zero_count = alg(dial_value, direction, amount)
-        ans += zero_count
+        dial_value, zero_value_count = alg(dial_value, direction, amount)
+        ans += zero_value_count
 
     return ans
 
 
 def solve_part1(filename:str) -> int:
-    return execute_algorithm_for_input_file_entries(filename, determine_value_and_count_zero_values)
+    return execute_algorithm_for_input_file_entries(filename, determine_new_dial_value_and_count_zero_values)
 
 
-def determine_value_and_count_all_zero_clicks_via_unit_increments(value:int, direction:str, amount:int) -> Tuple[str, int]:
+def determine_new_dial_value_and_count_all_zero_clicks_via_unit_increments(value:int, direction:str, amount:int) -> Tuple[str, int]:
     zero_clicks = 0    
     for i in range(amount):
-        value, zero_count = determine_value_and_count_zero_values(value, direction, 1)
-        zero_clicks += zero_count
+        value, zero_value_count = determine_new_dial_value_and_count_zero_values(value, direction, 1)
+        zero_clicks += zero_value_count
     return value, zero_clicks
 
 
-def solve_part2_using_unit_increments(filename):
-    return execute_algorithm_for_input_file_entries(filename, determine_value_and_count_all_zero_clicks_via_unit_increments)
+def solve_part2_using_single_unit_increments(filename):
+    return execute_algorithm_for_input_file_entries(filename, determine_new_dial_value_and_count_all_zero_clicks_via_unit_increments)
 
 
 def is_passing_zero_by_rotating_left(value:int, offset:int) -> bool:
@@ -79,7 +81,7 @@ def is_passing_zero_by_rotating_right(value:int, offset:int) -> bool:
     return value > 0 and diff > 100
 
 
-def determine_value_and_count_all_zero_clicks_via_offset(value:int, direction:str, amount:int) -> Tuple[str, int]:
+def determine_new_dial_value_and_count_all_zero_clicks_via_offset(value:int, direction:str, amount:int) -> Tuple[str, int]:
     ans = 0
     circuits = amount // 100        
     ans += circuits
@@ -107,36 +109,4 @@ def determine_value_and_count_all_zero_clicks_via_offset(value:int, direction:st
 
 
 def solve_part2_using_modular_arithemtic_offset(filename:str) -> int:
-    """
-    lines = fileutils.get_file_lines_from(filename)
-    
-    ans = 0
-    value = 50 # Initial dial value
-    for l in lines:
-        direction, amount = get_rotation_direction_and_amount(l)
-        
-        circuits = amount // 100        
-        ans += circuits
-        offset = amount % 100
-
-        if 'L' == direction:
-            if is_passing_zero_by_rotating_left(value, offset):            
-                ans += 1
-            value -= offset      
-        elif 'R' == direction:
-            if is_passing_zero_by_rotating_right(value, offset):
-                ans += 1
-            value += offset
-        else:
-            raise Exception(f"Unknown direction={direction}")
-
-        value = (value % 100)
-        if value == 100:
-            value = 0
-            
-        if value == 0:
-            ans += 1
-        
-    return ans
-    """
-    return execute_algorithm_for_input_file_entries(filename, determine_value_and_count_all_zero_clicks_via_offset)
+    return execute_algorithm_for_input_file_entries(filename, determine_new_dial_value_and_count_all_zero_clicks_via_offset)

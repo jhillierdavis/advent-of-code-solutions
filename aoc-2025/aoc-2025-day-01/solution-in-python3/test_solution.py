@@ -28,8 +28,8 @@ def test_solve_part1(filename, expected):
     ],    
 )
 def test_solve_part2(filename, expected):
-    # Simple (brute force type) approach using single unit value increments
-    value = solution.solve_part2_using_unit_increments(filename)    
+    # Simple (brute force type) approach 
+    value = solution.solve_part2_using_single_unit_increments(filename)    
     assert expected == value
 
     # Alternative approach using calculated offset
