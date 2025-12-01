@@ -30,7 +30,7 @@ def determine_new_dial_value_and_count_zero_values(dial_value:int, direction:str
     else:
         raise Exception(f"Unknown direction={direction}")
 
-    new_dial_value = (new_dial_value % 100)
+    new_dial_value %= 100
     if new_dial_value == 100:
         zero_value_count = 0
     
@@ -61,7 +61,7 @@ def solve_part1(filename:str) -> int:
 
 def determine_new_dial_value_and_count_all_zero_clicks_via_unit_increments(value:int, direction:str, amount:int) -> Tuple[str, int]:
     zero_clicks = 0    
-    for i in range(amount):
+    for _ in range(amount):
         value, zero_value_count = determine_new_dial_value_and_count_zero_values(value, direction, 1)
         zero_clicks += zero_value_count
     return value, zero_clicks
@@ -98,7 +98,7 @@ def determine_new_dial_value_and_count_all_zero_clicks_via_offset(value:int, dir
     else:
         raise Exception(f"Unknown direction={direction}")
 
-    value = (value % 100)
+    value %= 100
     if value == 100:
         value = 0
         
