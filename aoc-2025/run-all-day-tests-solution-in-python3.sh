@@ -2,11 +2,8 @@
 dir=$PWD
 #echo "$dir"
 
-#cd $dir/aoc-2024-day-01
-#./run-tests-solution-in-python3.sh
-
 # Loop through sub-directories of each puzzle day & execute unit tests for each
-for i in {01..12}; do
+for i in {01..01}; do
     # Pad value (if required) to 2 digits (e.g. 07)
     x=$i
     while [ ${#x} -ne 2 ];
