@@ -10,14 +10,88 @@ logging.config.fileConfig('logging.conf')
 logger = logging.getLogger(__name__)
 logger = logging.getLogger('simpleLogger')
 
+
+def determine_value_and_count_zeros(value, direction, amount):
+    zero_count = 0
+
+    if 'L' == direction:
+        value -= amount            
+    elif 'R' == direction:
+        value += amount
+    else:
+        raise Exception(f"Unknown direction={direction}")
+
+    value = (value % 100)
+    if value == 100:
+        value = 0
+    
+    if value == 0:
+        zero_count += 1
+    #logger.debug(f"direction={direction} amount={amount} value={value}")    
+    return value, zero_count
+
+
 def solve_part1(filename):
-    logger.debug("TODO: Implement Part 1")
+    #logger.debug("TODO: Implement Part 1")
     lines = fileutils.get_file_lines_from(filename)
 
-    return "TODO"
+    ans = 0
+    value = 50
+    for l in lines:
+        direction = l[0]
+        amount = int(l[1:])
+
+        """
+        if 'L' == direction:
+            value -= amount            
+        elif 'R' == direction:
+            value += amount
+        else:
+            raise Exception(f"Unknown direction={direction}")
+
+        value = (value % 100)
+        if value == 100:
+            value = 0
+        
+        if value == 0:
+            zero_count += 1
+        logger.debug(f"direction={direction} amount={amount} value={value}")
+        """
+        value, zero_count = determine_value_and_count_zeros(value, direction, amount)
+        ans += zero_count
+
+    return ans
+
 
 def solve_part2(filename):
-    logger.debug("TODO: Implement Part 2")
+    #logger.debug("TODO: Implement Part 2")
     lines = fileutils.get_file_lines_from(filename)
+    
+    #zero_count = 0
+    ans = 0
+    value = 50
+    for l in lines:
+        direction = l[0]
+        amount = int(l[1:])
 
-    return "TODO"
+        for i in range(amount):
+            """
+            if 'L' == direction:
+                value -=1
+            elif 'R' == direction:
+                value +=1
+            else:
+                raise Exception(f"Unknown direction={direction}")
+            
+            value = (value % 100)
+            if value == 100:
+                value = 0
+
+            if value == 0:
+                zero_count += 1
+            """
+
+            value, zero_count = determine_value_and_count_zeros(value, direction, 1)
+            ans += zero_count
+        
+    return ans
