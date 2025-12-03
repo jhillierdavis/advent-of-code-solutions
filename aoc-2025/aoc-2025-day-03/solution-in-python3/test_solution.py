@@ -1,24 +1,10 @@
 import pytest
 
-import solution, ai_solution
+import solution, ai_solution # Manual & (subsequently created) AI (CoPilot) generated (core algorithm) solutions
 
 input_example = "AOC-2025-Day-03_Puzzle-Input-Example.txt"
 input_full = "AOC-2025-Day-03_Puzzle-Input-Full.txt"
 
-"""
-@pytest.mark.parametrize(
-    "value, expected",
-    [
-        pytest.param('987654321111111', 98),
-        pytest.param('811111111111119', 89),
-        pytest.param('234234234234278', 78),
-        pytest.param('818181911112111', 92),
-    ],    
-)
-def test_get_max_joltage(value, expected):
-    value = solution.get_largest_joltage(value, 2)
-    assert expected == value
-"""
 
 @pytest.mark.parametrize(
     "value, size, expected",
