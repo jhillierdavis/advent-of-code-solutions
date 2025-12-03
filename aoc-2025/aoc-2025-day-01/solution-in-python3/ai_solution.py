@@ -81,7 +81,7 @@ def solve_part1(filename):
 
 
 """
-Prompt:
+AI Prompt:
 
 Write a Python function called `calculate_dial_value_with_zero_clicks(current, direction, amount)` that simulates a dial numbered 0–99 (modulo 100). The function should:
 
@@ -156,14 +156,12 @@ def calculate_dial_value_with_zero_clicks(current: int, direction: str, amount: 
         return new_value, zero_clicks
 
 
-
-import solution
-
 def solve_part2(filename):
     ans = 0
+    
+    dial_value = 50 # Initial value
 
     # Iterate over each line in the file
-    dial_value = 50
     with open(filename, "r") as f:
         for line in f:
             line = line.strip()  # remove leading/trailing whitespace
