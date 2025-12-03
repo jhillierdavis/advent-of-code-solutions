@@ -1,6 +1,6 @@
 import pytest
 
-import solution
+import solution, ai_solution
 
 input_example = "AOC-2025-Day-03_Puzzle-Input-Example.txt"
 input_full = "AOC-2025-Day-03_Puzzle-Input-Full.txt"
@@ -20,19 +20,6 @@ def test_get_max_joltage(value, expected):
     assert expected == value
 """
 
-#@pytest.mark.skip(reason="TODO: Ignore until implemented")
-@pytest.mark.parametrize(
-    "filename, expected",
-    [
-        pytest.param(input_example, 357),
-        pytest.param(input_full, 17445),
-    ],    
-)
-def test_solve_part1(filename, expected):
-    value = solution.solve_part1(filename)    
-    assert expected == value
-
-
 @pytest.mark.parametrize(
     "value, size, expected",
     [
@@ -46,8 +33,29 @@ def test_solve_part1(filename, expected):
         pytest.param('818181911112111', 12, 888911112111),
     ],    
 )
-def test_get_largest_joltage(value, size, expected):
-    value = solution.get_largest_joltage(value, size)    
+def test_max_digits_subsequence(value, size, expected):
+    value = solution.max_digits_subsequence(value, size)    
+    assert expected == value
+
+    # Repeat for AI generated algorithm
+    value = ai_solution.max_digits_subsequence(value, size)    
+    assert expected == value
+
+
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
+@pytest.mark.parametrize(
+    "filename, expected",
+    [
+        pytest.param(input_example, 357),
+        pytest.param(input_full, 17445),
+    ],    
+)
+def test_solve_part1(filename, expected):
+    value = solution.solve_part1(filename)    
+    assert expected == value
+
+    # Repeat for AI generated algorithm
+    value = ai_solution.solve_part1(filename)    
     assert expected == value
 
 
@@ -61,4 +69,8 @@ def test_get_largest_joltage(value, size, expected):
 )
 def test_solve_part2(filename, expected):
     value = solution.solve_part2(filename)    
+    assert expected == value
+
+    # Repeat for AI generated algorithm
+    value = ai_solution.solve_part2(filename)    
     assert expected == value
