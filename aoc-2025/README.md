@@ -52,3 +52,9 @@ Chris Biscardi (solutions in Rust):
 
 
 Reddit: ( https://www.reddit.com/r/adventofcode/ ) r/adventofcode
+
+## AI Generated Solutions (once solved manually first)
+
+AI Prompt (e.g. at https://copilot.microsoft.com/chats ) e.g. for Day 1:
+
+*Write python code to solve the programming puzzle outlined at: https://adventofcode.com/2025/day/1 capturing example data in unit tests using Pytest.
