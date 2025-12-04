@@ -7,7 +7,7 @@ https://adventofcode.com/2025
 * [Day 01]( https://adventofcode.com/2025/day/1 )  -> 'Secret Entrance' -> [Modular arithmetic](https://en.wikipedia.org/wiki/Modular_arithmetic) (NB: Part 2: ASCII 43 4C 49 43 4B -> 'CLICK' )
 * [Day 02]( https://adventofcode.com/2025/day/2 )  -> 'Gift Shop' -> Repeating number / string sub-sequences
 * [Day 03]( https://adventofcode.com/2025/day/3 )  -> 'Lobby' -> Max digits in number
-* [Day 04]( https://adventofcode.com/2025/day/4 )  -> TODO
+* [Day 04]( https://adventofcode.com/2025/day/4 )  -> 'Printing Departments' -> 2D Grid symbol matching & neighbour counting
 * [Day 05]( https://adventofcode.com/2025/day/5 )  -> TODO
 * [Day 06]( https://adventofcode.com/2025/day/6 )  -> TODO
 * [Day 07]( https://adventofcode.com/2025/day/7 )  -> TODO
