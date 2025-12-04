@@ -11,11 +11,11 @@ logger = logging.getLogger(__name__)
 logger = logging.getLogger('simpleLogger')
 
 
-def is_roll_symbol(s):
-    return s == '@'
+def is_roll_symbol(s:str) -> bool:
+    return s == '@' # Indicates a roll of paper
 
 
-def count_neighbours_with_roll_symbol(g, p) -> int:
+def count_neighbours_with_roll_symbol(g:grid.Grid2D, p:point.Point2D) -> int:
     count = 0
     neighbours = p.get_closest_neighbours()
     for np in neighbours:
@@ -44,7 +44,7 @@ def get_matching_rolls(g:grid.Grid2D) -> set[point.Point2D]:
     return match_set
 
 
-def solve_part1(filename):
+def solve_part1(filename:str) -> int:
     lines = fileutils.get_file_lines_from(filename)
 
     g = grid.lines_to_grid(lines)
@@ -54,16 +54,16 @@ def solve_part1(filename):
     return len(match_set)
 
 
-def solve_part2(filename):
-    #logger.debug("TODO: Implement Part 2")
+def solve_part2(filename:str) -> int:
     lines = fileutils.get_file_lines_from(filename)
 
     ans = 0
     g = grid.lines_to_grid(lines)
-    
+
     while(True):
         match_set = get_matching_rolls(g)
         count = len(match_set)
+        
         if count == 0:
             break
 
