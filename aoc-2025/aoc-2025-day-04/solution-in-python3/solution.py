@@ -10,7 +10,7 @@ logging.config.fileConfig('logging.conf')
 logger = logging.getLogger(__name__)
 logger = logging.getLogger('simpleLogger')
 
-
+"""
 def get_closest_neighbours(p):
     neighbour_set = set()
     for x in range(-1,2):
@@ -22,9 +22,12 @@ def get_closest_neighbours(p):
     #assert len(neighbour_set) == 26 # 9 + 9 + 8
     #logger.debug(f"p3d={p3d} neighbour_set={neighbour_set}")
     return neighbour_set  
+"""
 
 def is_roll_symbol(s):
-    return not (s == '.' or s == 'x')
+    #return not (s == '.' or s == 'x')
+    return s == '@'
+
 
 def get_matching_rolls(g):
     match_set = set()
@@ -36,7 +39,7 @@ def get_matching_rolls(g):
                 continue
 
             count = 0
-            neighbours = get_closest_neighbours(p)
+            neighbours = p.get_closest_neighbours()
             for np in neighbours:
                 if g.contains(np):
                     ns = g.get_symbol(np)
@@ -67,7 +70,7 @@ def solve_part2(filename):
 
     ans = 0
     g = grid.lines_to_grid(lines)
-    for i in range(100):
+    while(True):
         match_set = get_matching_rolls(g)
         count = len(match_set)
         if count == 0:
