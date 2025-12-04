@@ -27,7 +27,19 @@ class Point2D():
         return (self.x, self.y)
     
     def get_manhatten_distance_to(self, other):
-        return abs(self.get_x() - other.get_x()) + abs(self.get_y() - other.get_y())        
+        return abs(self.get_x() - other.get_x()) + abs(self.get_y() - other.get_y())    
+
+    
+    def get_closest_neighbours(self):
+        neighbour_set = set()
+        for x in range(-1,2):
+            for y in range(-1,2):
+                np = Point2D(self.get_x() + x, self.get_y() + y)
+                neighbour_set.add(np)
+
+        neighbour_set.remove(self)
+        return neighbour_set
+
     
     def __str__(self) -> str:
         return f"Point2D(id={id(self)} , x: {self.get_x()}, y: {self.get_y()})"

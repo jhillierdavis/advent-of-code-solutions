@@ -48,6 +48,27 @@ def test_point2d_string_representation():
     assert "y: 2" in point_as_str
 
 
+def test_point2d_get_closest_neigbours():
+    p2d = Point2D(1,1)
+    neighbour_set = p2d.get_closest_neighbours()
+    
+    """
+    assert len(neighbour_set) == 8
+    assert Point2D(0,0) in neighbour_set
+    assert Point2D(1,0) in neighbour_set
+    assert Point2D(2,0) in neighbour_set
+    assert Point2D(0,1) in neighbour_set
+    assert Point2D(2,1) in neighbour_set
+    assert Point2D(0,2) in neighbour_set
+    assert Point2D(1,2) in neighbour_set
+    assert Point2D(2,2) in neighbour_set
+    """
+    expected_set = ((0,0),(1,0),(2,0),(0,1),(2,1),(0,2),(1,2),(2,2))
+    assert len(neighbour_set) == len(expected_set)
+    for e in expected_set:
+        assert Point2D(e[0], e[1]) in neighbour_set
+
+
 def test_point2d_equality():
     # Given: non-identical, but equal 
     pa = Point2D(1,2)
