@@ -15,29 +15,31 @@ def is_roll_symbol(s):
     return s == '@'
 
 
-def get_matching_rolls(g):
+def count_neighbours_with_roll_symbol(g, p) -> int:
+    count = 0
+    neighbours = p.get_closest_neighbours()
+    for np in neighbours:
+        if g.contains(np):
+            ns = g.get_symbol(np)
+            if is_roll_symbol(ns):
+                count += 1
+    return count
+
+
+def get_matching_rolls(g:grid.Grid2D) -> set[point.Point2D]:
     match_set = set()
 
     for h in range(g.get_height()):
         for w in range(g.get_width()):
             p = point.Point2D(w,h)
             s = g.get_symbol(p)
-            if not is_roll_symbol(s):
-                continue
 
-            count = 0
-            neighbours = p.get_closest_neighbours()
-            for np in neighbours:
-                if g.contains(np):
-                    ns = g.get_symbol(np)
-                    if not is_roll_symbol(ns):
-                        continue
-                    else:
-                        count += 1
+            if is_roll_symbol(s):
+                count = count_neighbours_with_roll_symbol(g, p)
 
-            if count < 4:
-                #logger.debug(f"s={s} p={p} count={count}")            
-                match_set.add(p)
+                if count < 4:
+                    #logger.debug(f"s={s} p={p} count={count}")            
+                    match_set.add(p)
 
     return match_set
 
@@ -58,6 +60,7 @@ def solve_part2(filename):
 
     ans = 0
     g = grid.lines_to_grid(lines)
+    
     while(True):
         match_set = get_matching_rolls(g)
         count = len(match_set)
