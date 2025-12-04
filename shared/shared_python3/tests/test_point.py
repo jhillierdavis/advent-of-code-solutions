@@ -49,21 +49,17 @@ def test_point2d_string_representation():
 
 
 def test_point2d_get_closest_neigbours():
-    p2d = Point2D(1,1)
-    neighbour_set = p2d.get_closest_neighbours()
-    
-    """
-    assert len(neighbour_set) == 8
-    assert Point2D(0,0) in neighbour_set
-    assert Point2D(1,0) in neighbour_set
-    assert Point2D(2,0) in neighbour_set
-    assert Point2D(0,1) in neighbour_set
-    assert Point2D(2,1) in neighbour_set
-    assert Point2D(0,2) in neighbour_set
-    assert Point2D(1,2) in neighbour_set
-    assert Point2D(2,2) in neighbour_set
-    """
+    # Set: expected resulting neigbouring 2D point locations (8 in total)
     expected_set = ((0,0),(1,0),(2,0),(0,1),(2,1),(0,2),(1,2),(2,2))
+    assert len(expected_set) == 8
+
+    # Given: A specific 2D point
+    p2d = Point2D(1,1)
+
+    # When: neighbours are retrieved (as a set)
+    neighbour_set = p2d.get_closest_neighbours()
+
+    # Then: the neignouring points meet the expected locations
     assert len(neighbour_set) == len(expected_set)
     for e in expected_set:
         assert Point2D(e[0], e[1]) in neighbour_set

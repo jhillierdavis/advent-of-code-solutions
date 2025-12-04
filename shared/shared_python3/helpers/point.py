@@ -37,7 +37,7 @@ class Point2D():
                 np = Point2D(self.get_x() + x, self.get_y() + y)
                 neighbour_set.add(np)
 
-        neighbour_set.remove(self)
+        neighbour_set.remove(self) # Don't include the point provided (just the 8 direct neighbouring points)
         return neighbour_set
 
     
