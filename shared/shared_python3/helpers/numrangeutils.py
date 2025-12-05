@@ -28,6 +28,16 @@ def merge_overlapping_ranges(range_list:list[tuple[int,int]]) -> set[tuple[int,i
 """
 
 def merge_overlapping_ranges(range_list:list[tuple[int,int]]) -> set[tuple[int,int]]:
+    """
+    Merge overlapping range intervals in an input list and return a non-overlapping set.
+    
+    Args:
+        range of intervals (list of tuples): Each tuple is (min, max) with integer values representing a range.
+        
+    Returns:
+        set of tuples: Non-overlapping merged range intervals (each as a tuple).
+    """
+
     # Guard against empty input list
     size = len(range_list)    
     if size == 0:
