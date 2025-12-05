@@ -1,5 +1,5 @@
 # Shared helper libraries
-from helpers import fileutils
+from helpers import fileutils, numrangeutils
 
 # Logging libraries
 import logging
@@ -58,7 +58,7 @@ def solve_part1(filename):
 
     return fresh_count
 
-
+"""
 def merge_overlapping_ranges(range_list:list[tuple[int,int]]) -> set[tuple[int,int]]:
     range_list.sort(key=lambda r: r[0]) # Sort by min value in each range(min,max) in list
     
@@ -82,13 +82,13 @@ def merge_overlapping_ranges(range_list:list[tuple[int,int]]) -> set[tuple[int,i
     merged_range_set.add((rpmin, rpmax))
 
     return merged_range_set
-
+"""
 
 def solve_part2(filename):
     range_list = get_ranges_from_input_file(filename)
     #logger.debug(f"Original: range_list={range_list}")
     
-    unique_range_set = merge_overlapping_ranges(range_list)
+    unique_range_set = numrangeutils.merge_overlapping_ranges(range_list)
     #logger.debug(f"Merged: unique_range_set={unique_range_set}")
 
     ans = 0

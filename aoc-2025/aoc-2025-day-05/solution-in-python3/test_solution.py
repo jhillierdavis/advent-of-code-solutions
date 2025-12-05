@@ -26,7 +26,7 @@ def test_solve_part1(filename, expected):
     value = ai_solution_part_1.solve_part1(filename)    
     assert expected == value
     
-
+"""
 @pytest.mark.parametrize(
     "input, expected",
     [
@@ -42,7 +42,7 @@ def test_solve_part1(filename, expected):
 def test_merge_overlapping_ranges(input, expected):
     actual = solution.merge_overlapping_ranges(input)
     assert actual == expected
-
+"""
 
 #@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
