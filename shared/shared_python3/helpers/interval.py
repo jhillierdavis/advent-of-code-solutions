@@ -82,7 +82,7 @@ class Interval():
             self_subtraction = Interval(intersection.get_end()+1, self.get_offset() - intersection.get_offset())
             other_subtraction = Interval(other_interval.get_begin(), other_interval.get_offset() - intersection.get_offset())            
         else:
-            print(f"DEBUG: intersection <= self")
+            #print(f"DEBUG: intersection <= self")
             self_subtraction = Interval(self.get_begin(), self.get_offset() - intersection.get_offset())
             other_subtraction = Interval(intersection.get_end()+1, other_interval.get_offset() - intersection.get_offset())            
 
@@ -106,7 +106,7 @@ class Interval():
             union = [self, other_interval]
             return sorted(union, reverse=True)
 
-        print(f"DEBUG: intersection={intersection}")
+        #print(f"DEBUG: intersection={intersection}")
         
     
         return None
