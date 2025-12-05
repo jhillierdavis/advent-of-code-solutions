@@ -11,18 +11,11 @@ logger = logging.getLogger(__name__)
 logger = logging.getLogger('simpleLogger')
 
 
-def is_fresh(i_id, range_list):
-    for r in range_list:
-        r_min = r[0]
-        r_max = r[1]
-
-        if i_id >= r_min and i_id <= r_max:
-            #logger.debug(f"Fresh: i_id={i_id} in range r={r}")
-            return True
-    return False
+def is_fresh(id:int, range_list:list[tuple[int,int]]) -> bool:
+    return numrangeutils.is_number_in_range_list(id, range_list)
 
 
-def get_ranges_from_input_file(filename):
+def get_ranges_from_input_file(filename:str) -> list[tuple[int,int]]:
     range_lines = fileutils.get_lines_before_empty_from_file(filename)
 
     range_list = []
@@ -34,7 +27,7 @@ def get_ranges_from_input_file(filename):
     return range_list
 
 
-def get_ingredient_ids_from_input_file(filename):
+def get_ingredient_ids_from_input_file(filename:str) -> list[int]:
     ids = list()
     ingredient_lines = fileutils.get_lines_after_empty_from_file(filename)    
     for il in ingredient_lines:
@@ -42,7 +35,7 @@ def get_ingredient_ids_from_input_file(filename):
     return ids
 
 
-def solve_part1(filename):
+def solve_part1(filename:str) -> int:
     range_list = get_ranges_from_input_file(filename)
     ids = get_ingredient_ids_from_input_file(filename)
 
@@ -57,7 +50,7 @@ def solve_part1(filename):
     return fresh_count
 
 
-def solve_part2(filename):
+def solve_part2(filename:str) -> int:
     range_list = get_ranges_from_input_file(filename)
     #logger.debug(f"Original: range_list={range_list}")
     
