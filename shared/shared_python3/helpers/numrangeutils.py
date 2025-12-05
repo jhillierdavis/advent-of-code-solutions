@@ -1,31 +1,32 @@
 """
-def merge_overlapping_ranges(range_list:list[tuple[int,int]]) -> set[tuple[int,int]]:
-    merged_range_set = set()
-
-    size = len(range_list)    
-    if size == 0:
-        return merged_range_set
-    
-    range_list.sort(key=lambda r: r[0]) # Sort by min value in each range(min,max) in list
-    
-    rpmin = range_list[0][0] # First range min
-    rpmax = range_list[0][1] # First range max
-
-    for i in range(1,size):
-        r = range_list[i]
-        if rpmax < r[0]:
-            # Add range
-            merged_range_set.add((rpmin, rpmax))
-            rpmin = r[0] # Range min
-            rpmax = r[1] # Range max
-        else:
-            rpmax = max(rpmax, r[1]) 
-    
-    # Add last merged range (if not already)
-    merged_range_set.add((rpmin, rpmax))
-
-    return merged_range_set
+Utility functions for range of intervals (list of tuples)
+Each list entry is a tuple.
+Each tuple consists of (min, max) with integer values representing an inclusive range e.g. (3,5) represents the values: 3,4,5 .
 """
+
+
+def is_number_in_range_list(num:int, range_list:list[tuple[int,int]]) -> bool:
+    for r in range_list:
+        r_min = r[0]
+        r_max = r[1]
+
+        if num >= r_min and num <= r_max:
+            return True
+    return False    
+
+
+def get_range_list_sorted_ascending(range_list:list[tuple[int,int]]) -> list[tuple[int,int]]:
+    """
+    Return a sorted (ascending) copy of the input range list without modifying the original.
+    
+    Args:
+        range_list (list): The range list to sort.
+    
+    Returns:
+        list: A new sorted (asc) list.
+    """    
+    return sorted(range_list, key=lambda r: r[0]) 
+
 
 def merge_overlapping_ranges(range_list:list[tuple[int,int]]) -> set[tuple[int,int]]:
     """
@@ -43,8 +44,8 @@ def merge_overlapping_ranges(range_list:list[tuple[int,int]]) -> set[tuple[int,i
     if size == 0:
         return set()
 
-    # Sort by min value in each range(min,max) in list
-    range_list.sort(key=lambda r: r[0]) 
+    # Sort (ascending) by min value in each range(min,max) in list (without changing the input range)
+    range_list = get_range_list_sorted_ascending(range_list)
     
     merged_range_list = [range_list[0]]
     
