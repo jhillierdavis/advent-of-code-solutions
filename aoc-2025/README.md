@@ -8,7 +8,7 @@ https://adventofcode.com/2025
 * [Day 02]( https://adventofcode.com/2025/day/2 )  -> 'Gift Shop' -> Repeating number / string sub-sequences
 * [Day 03]( https://adventofcode.com/2025/day/3 )  -> 'Lobby' -> Max digits in number
 * [Day 04]( https://adventofcode.com/2025/day/4 )  -> 'Printing Departments' -> 2D Grid symbol matching & neighbour counting
-* [Day 05]( https://adventofcode.com/2025/day/5 )  -> TODO
+* [Day 05]( https://adventofcode.com/2025/day/5 )  -> 'Cafeteria' -> Positive integer number ranges / intervals
 * [Day 06]( https://adventofcode.com/2025/day/6 )  -> TODO
 * [Day 07]( https://adventofcode.com/2025/day/7 )  -> TODO
 * [Day 08]( https://adventofcode.com/2025/day/8 )  -> TODO
