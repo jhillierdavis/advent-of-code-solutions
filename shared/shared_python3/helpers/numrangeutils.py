@@ -1,3 +1,4 @@
+"""
 def merge_overlapping_ranges(range_list:list[tuple[int,int]]) -> set[tuple[int,int]]:
     merged_range_set = set()
 
@@ -24,3 +25,27 @@ def merge_overlapping_ranges(range_list:list[tuple[int,int]]) -> set[tuple[int,i
     merged_range_set.add((rpmin, rpmax))
 
     return merged_range_set
+"""
+
+def merge_overlapping_ranges(range_list:list[tuple[int,int]]) -> set[tuple[int,int]]:
+    # Guard against empty input list
+    size = len(range_list)    
+    if size == 0:
+        return set()
+
+    # Sort by min value in each range(min,max) in list
+    range_list.sort(key=lambda r: r[0]) 
+    
+    merged_range_list = [range_list[0]]
+    
+    for current in range_list[1:]:
+        previous = merged_range_list[-1]
+        
+        # Check for overlap of values (merge range if so)
+        if current[0] <= previous[1]:
+            merged_max = max(previous[1], current[1]) # Account for partial or full overlaps
+            merged_range_list[-1] = (previous[0], merged_max)
+        else: # No overlap
+            merged_range_list.append(current)
+    
+    return set(merged_range_list) # TODO: Decide: Preserve order via leaving as a list?
