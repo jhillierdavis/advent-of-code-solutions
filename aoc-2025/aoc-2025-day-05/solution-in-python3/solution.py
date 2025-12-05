@@ -43,46 +43,19 @@ def get_ingredient_ids_from_input_file(filename):
 
 
 def solve_part1(filename):
-    #logger.debug("TODO: Implement Part 1")
-    #lines = fileutils.get_file_lines_from(filename)
-    
     range_list = get_ranges_from_input_file(filename)
     ids = get_ingredient_ids_from_input_file(filename)
 
     #logger.debug(f"range_list={range_list}")
 
+    # Count the number of ingredient IDs in any of input ranges provided
     fresh_count = 0
     for id in ids:
-        if is_fresh(id, range_list): # Increment count if ingredient ID in a range provided
+        if is_fresh(id, range_list): 
             fresh_count += 1
 
     return fresh_count
 
-"""
-def merge_overlapping_ranges(range_list:list[tuple[int,int]]) -> set[tuple[int,int]]:
-    range_list.sort(key=lambda r: r[0]) # Sort by min value in each range(min,max) in list
-    
-    merged_range_set = set()
-
-    size = len(range_list)
-    rpmin = range_list[0][0] # First range min
-    rpmax = range_list[0][1] # First range max
-
-    for i in range(1,size):
-        r = range_list[i]
-        if rpmax < r[0]:
-            # Add range
-            merged_range_set.add((rpmin, rpmax))
-            rpmin = r[0] # Range min
-            rpmax = r[1] # Range max
-        else:
-            rpmax = max(rpmax, r[1]) 
-    
-    # Add last merged range (if not already)
-    merged_range_set.add((rpmin, rpmax))
-
-    return merged_range_set
-"""
 
 def solve_part2(filename):
     range_list = get_ranges_from_input_file(filename)
@@ -91,6 +64,7 @@ def solve_part2(filename):
     unique_range_set = numrangeutils.merge_overlapping_ranges(range_list)
     #logger.debug(f"Merged: unique_range_set={unique_range_set}")
 
+    # Determine the total number of potential valid IDs (the count of unique numbers in the ranges provided)
     ans = 0
     for r in unique_range_set:
         r_size = (r[1] - r[0]) + 1
