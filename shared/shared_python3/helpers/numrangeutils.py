@@ -1,9 +1,12 @@
 def merge_overlapping_ranges(range_list:list[tuple[int,int]]) -> set[tuple[int,int]]:
-    range_list.sort(key=lambda r: r[0]) # Sort by min value in each range(min,max) in list
-    
     merged_range_set = set()
 
-    size = len(range_list)
+    size = len(range_list)    
+    if size == 0:
+        return merged_range_set
+    
+    range_list.sort(key=lambda r: r[0]) # Sort by min value in each range(min,max) in list
+    
     rpmin = range_list[0][0] # First range min
     rpmax = range_list[0][1] # First range max
 
