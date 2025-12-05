@@ -22,7 +22,7 @@ def is_fresh(i_id, range_list):
     return False
 
 
-def get_ranges(filename):
+def get_ranges_from_input_file(filename):
     range_lines = fileutils.get_lines_before_empty_from_file(filename)
 
     range_list = []
@@ -34,19 +34,26 @@ def get_ranges(filename):
     return range_list
 
 
+def get_ingredient_ids_from_input_file(filename):
+    ids = list()
+    ingredient_lines = fileutils.get_lines_after_empty_from_file(filename)    
+    for il in ingredient_lines:
+        ids.append(int(il))
+    return ids
+
+
 def solve_part1(filename):
     #logger.debug("TODO: Implement Part 1")
     #lines = fileutils.get_file_lines_from(filename)
     
-    range_list = get_ranges(filename)
+    range_list = get_ranges_from_input_file(filename)
+    ids = get_ingredient_ids_from_input_file(filename)
 
     #logger.debug(f"range_list={range_list}")
 
-    ingredient_lines = fileutils.get_lines_after_empty_from_file(filename)
     fresh_count = 0
-    for il in ingredient_lines:
-        i_id = int(il)
-        if is_fresh(i_id, range_list):
+    for id in ids:
+        if is_fresh(id, range_list): # Increment count if ingredient ID in a range provided
             fresh_count += 1
 
     return fresh_count
@@ -78,7 +85,7 @@ def merge_overlapping_ranges(range_list:list[tuple[int,int]]) -> set[tuple[int,i
 
 
 def solve_part2(filename):
-    range_list = get_ranges(filename)
+    range_list = get_ranges_from_input_file(filename)
     #logger.debug(f"Original: range_list={range_list}")
     
     unique_range_set = merge_overlapping_ranges(range_list)
