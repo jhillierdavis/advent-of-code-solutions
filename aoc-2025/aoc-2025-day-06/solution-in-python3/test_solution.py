@@ -10,13 +10,12 @@ input_full = "AOC-2025-Day-06_Puzzle-Input-Full.txt"
 @pytest.mark.parametrize(
     "filename, expected",
     [
-        pytest.param(input_example, -1),
-        #pytest.param(input_full, -1),
+        pytest.param(input_example, 4277556),
+        pytest.param(input_full, 6169101504608),
     ],    
 )
 def test_solve_part1(filename, expected):
-    value = solution.solve_part1(filename)
-    
+    value = solution.solve_part1(filename)    
     assert expected == value
 
 
@@ -29,6 +28,5 @@ def test_solve_part1(filename, expected):
     ],    
 )
 def test_solve_part2(filename, expected):
-    value = solution.solve_part2(filename)
-    
+    value = solution.solve_part2(filename)    
     assert expected == value
