@@ -41,14 +41,12 @@ def solve_part1(filename):
     #logger.debug(f"eq_map={eq_map}")
 
     size = len(eq_map)
-
     op_idx = size - 1
     operators = eq_map[op_idx]
     #logger.debug(f"operators={operators}")
-    #for i in range(size-2):
-
-    ans = 0
     
+
+    ans = 0    
     for i, op in enumerate(operators):
         result = 0
         if op == '*':
@@ -75,7 +73,120 @@ def solve_part1(filename):
     return ans
 
 
+def split_by_tens(n:int) -> list[int]:
+    result = [int(digit) for digit in str(n)]
+    #logger.debug(f"n={n} result={result}")
+    return result
+
+
+def get_column_widths(lines):
+    op_line = lines[-1]
+    #logger.debug(f"op_line={op_line}")
+
+    # Determine columns size
+    c_size = 0
+    column_widths = list()
+    for i, c in enumerate(op_line):
+        #logger.debug(f"i={i} c={c}")
+        if c in ['+', '*'] or i >= len(op_line) -1:
+            if i >= len(op_line) -1:
+                c_size += 1
+            if c_size > 0:
+                #logger.debug(f"i={i} c_size={c_size}")
+                column_widths.append(c_size)
+                c_size = 0
+        c_size += 1
+
+    logger.debug(f"op_line={op_line}")
+    logger.debug(f"column_widths={column_widths}")
+    return column_widths
+
+
+def to_num(nums, idx):
+    result = 0
+    multiplier = 1
+    for i, n in enumerate(nums):
+        if n[idx] == ' ':
+            continue
+        val = int(n[idx])        
+        result += (val * multiplier)
+        #logger.debug(f"idx={idx} val={val} multiplier={multiplier} result={result}")
+        multiplier *=10
+    result = int((str(result)[::-1]))
+    logger.debug(f"nums={nums} idx={idx} result={result}")
+    return result
+
+
+
+def calculate(nums, op):
+    #logger.debug(f"nums={nums} op={op}")
+
+    result = 0
+    if op == '*':
+        result = 1
+    elif op == '+':
+        result = 0
+    else:
+        raise Exception(f"Unknown operator={op}")
+    
+    size = len(nums[0])
+    for i in range(size):
+        v = to_num(nums, i)
+        if op == '*':
+            result *= v
+        elif op == '+':
+            result += v
+
+    return result
+
+
 def solve_part2(filename):
-    logger.debug("TODO: Implement Part 2")
-    lines = fileutils.get_file_lines_from(filename)
-    return "TODO"
+
+    lines = list()
+    with open(filename, "r") as f:
+        for line in f:
+            lines.append(line + ' ')
+
+    op_idx = len(lines) - 1            
+        
+    column_widths = get_column_widths(lines)
+
+    entry_map = dict()
+    for i, l in enumerate(lines):
+        vals = list()
+        idx = 0
+        for j, cw in enumerate(column_widths):
+            if j >= len(column_widths):
+                entry = l[idx:idx+cw]
+            else:
+                entry = l[idx:idx+cw-1]
+            
+            if i < op_idx:
+                vals.append(entry)
+            else:
+                vals.append(entry.strip())
+
+            idx += cw
+        #logger.debug(f"i={i} vals={vals}")
+
+        entry_map[i] = vals
+
+    #logger.debug(f"entry_map={entry_map}")
+
+    operators = entry_map[op_idx]
+    #logger.debug(f"operators={operators}")
+
+    ans = 0    
+    
+    for i, op in enumerate(operators):
+        nums = list()
+
+        for x in range(op_idx):
+            vals = entry_map[x]
+            nums.append(vals[i])
+
+        result = calculate(nums, op)
+        #logger.debug(f"i={i} op={op} nums={nums} result={result}")
+        ans += result
+    
+    return ans
