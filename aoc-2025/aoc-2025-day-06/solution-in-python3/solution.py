@@ -13,6 +13,16 @@ logger = logging.getLogger(__name__)
 logger = logging.getLogger('simpleLogger')
 
 
+def get_initial_operator_value(op:str):
+    if op == '*':
+        return 1
+    
+    if op == '+':
+        return 0
+    
+    raise Exception(f"Unknown operator={op}")
+
+
 def get_equation_map_from_lines(lines):
     eq_map = dict()
 
@@ -20,7 +30,7 @@ def get_equation_map_from_lines(lines):
         values = re.split(" +",l)
         #logger.debug(f"values={values}")
 
-        if not (values[0] == '*' or  values[0] == '+'):
+        if not (values[0] == '*' or values[0] == '+'):
             int_vals = list()
             for v in values:
                 int_vals.append(int(v))
@@ -33,7 +43,6 @@ def get_equation_map_from_lines(lines):
 
 
 def solve_part1(filename):
-    #logger.debug("TODO: Implement Part 1")
     lines = fileutils.get_file_lines_from(filename)
 
     eq_map = get_equation_map_from_lines(lines)
@@ -48,14 +57,7 @@ def solve_part1(filename):
 
     ans = 0    
     for i, op in enumerate(operators):
-        result = 0
-        if op == '*':
-            result = 1
-        elif op == '+':
-            result = 0
-        else:
-            raise Exception(f"Unknown operator={op}")
-
+        result = get_initial_operator_value(op)
 
         for x in range(op_idx):
             vals = eq_map[x]
@@ -72,11 +74,6 @@ def solve_part1(filename):
 
     return ans
 
-
-def split_by_tens(n:int) -> list[int]:
-    result = [int(digit) for digit in str(n)]
-    #logger.debug(f"n={n} result={result}")
-    return result
 
 
 def get_column_widths(lines):
@@ -97,8 +94,8 @@ def get_column_widths(lines):
                 c_size = 0
         c_size += 1
 
-    logger.debug(f"op_line={op_line}")
-    logger.debug(f"column_widths={column_widths}")
+    #logger.debug(f"op_line={op_line}")
+    #logger.debug(f"column_widths={column_widths}")
     return column_widths
 
 
@@ -113,21 +110,14 @@ def to_num(nums, idx):
         #logger.debug(f"idx={idx} val={val} multiplier={multiplier} result={result}")
         multiplier *=10
     result = int((str(result)[::-1]))
-    logger.debug(f"nums={nums} idx={idx} result={result}")
+    #logger.debug(f"nums={nums} idx={idx} result={result}")
     return result
-
 
 
 def calculate(nums, op):
     #logger.debug(f"nums={nums} op={op}")
 
-    result = 0
-    if op == '*':
-        result = 1
-    elif op == '+':
-        result = 0
-    else:
-        raise Exception(f"Unknown operator={op}")
+    result = get_initial_operator_value(op)
     
     size = len(nums[0])
     for i in range(size):
