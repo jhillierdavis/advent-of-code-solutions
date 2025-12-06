@@ -23,6 +23,17 @@ def get_initial_operator_value(op:str):
     raise Exception(f"Unknown operator={op}")
 
 
+def apply_operation_to_value(op:str, value:int, amendment:int) -> int:
+    result = value
+    if op == '*':
+        result *= amendment
+    elif op == '+':
+        result += amendment
+    else:
+        raise Exception(f"Unknown operator={op}")    
+    return result
+
+
 def get_equation_map_from_lines(lines):
     eq_map = dict()
 
@@ -53,7 +64,6 @@ def solve_part1(filename):
     op_idx = size - 1
     operators = eq_map[op_idx]
     #logger.debug(f"operators={operators}")
-    
 
     ans = 0    
     for i, op in enumerate(operators):
@@ -61,14 +71,8 @@ def solve_part1(filename):
 
         for x in range(op_idx):
             vals = eq_map[x]
+            result = apply_operation_to_value(op, result, vals[i])        
 
-            if op == '*':
-                result *= vals[i]
-            elif op == '+':
-                result += vals[i]
-            else:
-                raise Exception(f"Unknown operator={op}")
-        
         #logger.debug(f"i={i} op={op} result={result} ans={ans}")
         ans += result
 
@@ -122,24 +126,21 @@ def calculate(nums, op):
     size = len(nums[0])
     for i in range(size):
         v = to_num(nums, i)
-        if op == '*':
-            result *= v
-        elif op == '+':
-            result += v
+        result = apply_operation_to_value(op, result, v)
 
     return result
 
-
-def solve_part2(filename):
-
+def get_adjusted_lines_from_file(filename):
     lines = list()
     with open(filename, "r") as f:
         for line in f:
             lines.append(line + ' ')
+    return lines
 
-    op_idx = len(lines) - 1            
-        
+
+def get_entry_map(lines):
     column_widths = get_column_widths(lines)
+    op_idx = len(lines) - 1
 
     entry_map = dict()
     for i, l in enumerate(lines):
@@ -160,9 +161,15 @@ def solve_part2(filename):
         #logger.debug(f"i={i} vals={vals}")
 
         entry_map[i] = vals
+    return entry_map
 
-    #logger.debug(f"entry_map={entry_map}")
 
+def solve_part2(filename):
+    lines = get_adjusted_lines_from_file(filename)
+
+    entry_map = get_entry_map(lines)
+
+    op_idx = len(lines) - 1            
     operators = entry_map[op_idx]
     #logger.debug(f"operators={operators}")
 
