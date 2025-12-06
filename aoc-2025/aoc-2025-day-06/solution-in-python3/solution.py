@@ -1,4 +1,4 @@
-import re
+#import re
 
 # Shared helper libraries
 from helpers import fileutils
@@ -38,17 +38,18 @@ def get_equation_map_from_lines(lines):
     eq_map = dict()
 
     for i, l in enumerate(lines):
-        values = re.split(" +",l)
+        #values = re.split(" +",l)
+        values = l.split()
         #logger.debug(f"values={values}")
 
-        if not (values[0] == '*' or values[0] == '+'):
+        if values[0] in ['*', '+']:
+            eq_map[i] = values
+        else:
             int_vals = list()
             for v in values:
                 int_vals.append(int(v))
             #logger.debug(f"int_val={int_vals}")
             eq_map[i] = int_vals
-        else:
-            eq_map[i] = values
 
     return eq_map
 
@@ -105,7 +106,7 @@ def get_column_widths(lines):
 def to_num(nums, idx):
     result = 0
     multiplier = 1
-    for i, n in enumerate(nums):
+    for n in nums:
         if n[idx] == ' ':
             continue
         val = int(n[idx])        
