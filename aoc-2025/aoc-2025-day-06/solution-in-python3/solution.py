@@ -79,7 +79,6 @@ def solve_part1(filename):
     return ans
 
 
-
 def get_column_widths(lines):
     op_line = lines[-1]
     #logger.debug(f"op_line={op_line}")
@@ -129,6 +128,7 @@ def calculate(nums, op):
         result = apply_operation_to_value(op, result, v)
 
     return result
+
 
 def get_adjusted_lines_from_file(filename):
     lines = list()
