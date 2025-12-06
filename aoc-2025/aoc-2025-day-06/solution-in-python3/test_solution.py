@@ -1,6 +1,6 @@
 import pytest
 
-import solution
+import solution, hyperneutrino_solution
 
 input_example = "AOC-2025-Day-06_Puzzle-Input-Example.txt"
 input_full = "AOC-2025-Day-06_Puzzle-Input-Full.txt"
@@ -21,7 +21,11 @@ def test_get_column_widths():
     ],    
 )
 def test_solve_part1(filename, expected):
-    value = solution.solve_part1(filename)    
+    value = solution.solve_part1(filename)
+    assert expected == value
+
+    # Solutions from others (for comparison, learning etc.)
+    value = hyperneutrino_solution.solve_part1(filename)
     assert expected == value
 
 
@@ -52,9 +56,14 @@ def test_column_number_value_at_index(nums, idx, expected):
     "filename, expected",
     [
         pytest.param(input_example, 3263827),
-        #pytest.param(input_full, 10442199710797),
+        pytest.param(input_full, 10442199710797),
     ],    
 )
 def test_solve_part2(filename, expected):
     value = solution.solve_part2(filename)    
     assert expected == value
+
+    # Solutions from others (for comparison, learning etc.)
+    value = hyperneutrino_solution.solve_part2(filename)
+    assert expected == value
+
