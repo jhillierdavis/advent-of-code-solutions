@@ -1,5 +1,3 @@
-#import re
-
 # Shared helper libraries
 from helpers import fileutils
 
@@ -34,32 +32,6 @@ def apply_operation_to_value(op:str, value:int, amendment:int) -> int:
     return result
 
 
-def solve_part1(filename):
-    lines = get_adjusted_lines_from_file(filename)
-
-    row_entries_map, operator_row_index = get_row_entries_map_and_operator_row_index_from_input_data(lines)
-    
-    # Last row in input data provides operators to apply (+ or *)
-    column_operators = row_entries_map[operator_row_index] 
-    #logger.debug(f"column_operators={column_operators}")
-
-    total_sum = 0    
-    
-    for col_idx, op in enumerate(column_operators):
-        result = get_initial_operator_value(op)
-
-        # Process the column entry across all rows (excluding last operator row)
-        for row_idx in range(operator_row_index):
-            entry = row_entries_map[row_idx]
-            #logger.debug(f"col_idx={col_idx} row_idx={row_idx} entry={entry}")
-            num_value = int(entry[col_idx])
-            result = apply_operation_to_value(op, result, num_value)        
-        
-        total_sum += result
-    
-    return total_sum
-
-
 def get_column_widths(lines):
     op_line = lines[-1]
     #logger.debug(f"op_line={op_line}")
@@ -83,35 +55,6 @@ def get_column_widths(lines):
     return column_widths
 
 
-def column_number_value_at_index(column_entry_list:list[str], idx:int) -> int:
-    result = 0
-    multiplier = 1
-    
-    reversed_column_entry_list = reversed(column_entry_list)
-    for n in reversed_column_entry_list:
-        if n[idx] == ' ':
-            continue
-
-        val = int(n[idx])        
-        result += (val * multiplier)
-        #logger.debug(f"idx={idx} val={val} multiplier={multiplier} result={result}")
-        multiplier *=10
-    return result
-
-
-def apply_cephalopod_math_to_column_entry_values(nums, op):
-    #logger.debug(f"nums={nums} op={op}")
-
-    result = get_initial_operator_value(op)
-    
-    size = len(nums[0])
-    for i in range(size):
-        v = column_number_value_at_index(nums, i)
-        result = apply_operation_to_value(op, result, v)
-
-    return result
-
-
 def get_adjusted_lines_from_file(filename):
     lines = list()
     with open(filename, "r") as f:
@@ -126,7 +69,7 @@ def get_operator_row_index_from_input_data(lines):
     return op_row_idx  
 
 
-def get_row_entries_map_and_operator_row_index_from_input_data(lines):
+def get_row_entries_map_from_input_data(lines):
     column_widths = get_column_widths(lines)
     op_row_idx = get_operator_row_index_from_input_data(lines)
 
@@ -149,7 +92,7 @@ def get_row_entries_map_and_operator_row_index_from_input_data(lines):
         #logger.debug(f"i={i} vals={vals}")
 
         entry_map[i] = vals
-    return entry_map, op_row_idx
+    return entry_map
 
 
 def get_column_operator_list(lines, column_entry_map):
@@ -158,28 +101,82 @@ def get_column_operator_list(lines, column_entry_map):
     return column_operator_list
 
 
+def get_column_entries_at_index(row_entries_map, column_index:int):
+    column_entry_list = list()
+
+    size = len(row_entries_map.keys()) -1 # Subtract 1 for the last operator row
+
+    # Iterate through each row of input data (up to, but not including, the last operator row)             
+    for row_idx in range(size):
+        row_entry = row_entries_map[row_idx]
+        column_entry_list.append(row_entry[column_index])
+
+    return column_entry_list
+
+
+def solve_part1(filename):
+    lines = get_adjusted_lines_from_file(filename)
+    row_entries_map = get_row_entries_map_from_input_data(lines)    
+    total_sum = sum_column_values(row_entries_map, apply_part1_cephalopod_math_to_column_entry_values)
+    return total_sum
+
+
 def solve_part2(filename):
     lines = get_adjusted_lines_from_file(filename)
+    row_entries_map = get_row_entries_map_from_input_data(lines)    
+    total_sum = sum_column_values(row_entries_map, apply_part2_cephalopod_math_to_column_entry_values)
+    return total_sum
 
-    row_entries_map, operator_row_index = get_row_entries_map_and_operator_row_index_from_input_data(lines)
-    
-    # Last row in input data provides operators to apply (+ or *)
-    column_operators = row_entries_map[operator_row_index] 
-    #logger.debug(f"column_operators={column_operators}")
-    
-    # Iterate through each column and apply the relevent operator (+ or *) to the column values, summing the total
-    # NB: Direction (right to left, or left to right does not actually matter to result - the latter used here)
+
+def sum_column_values(row_entries_map:dict[int, list[str]], func:callable) -> int:
+    last_row_index = len(row_entries_map.keys()) -1
+    column_operators = row_entries_map[last_row_index] 
+
     total_sum = 0
     for col_idx, op in enumerate(column_operators):
-        entry_list = list()
+        column_entry_list = get_column_entries_at_index(row_entries_map, col_idx)
 
-        # Iterate through each row of input data (up to, but not including, the last operator row) to gather column entries
-        for row_idx in range(operator_row_index):
-            row_entry = row_entries_map[row_idx]
-            entry_list.append(row_entry[col_idx])
-
-        result = apply_cephalopod_math_to_column_entry_values(entry_list, op)
-        #logger.debug(f"i={i} op={op} nums={nums} result={result}")
+        result = func(column_entry_list, op)
         total_sum += result
     
     return total_sum
+
+
+def apply_part1_cephalopod_math_to_column_entry_values(nums, op):
+    result = get_initial_operator_value(op)
+    
+    for entry in nums:
+        num = int(entry)
+        result = apply_operation_to_value(op, result, num)    
+
+    return result
+
+
+def apply_part2_cephalopod_math_to_column_entry_values(nums, op):
+    result = get_initial_operator_value(op)
+    
+    size = len(nums[0])
+    for i in range(size):
+        v = column_number_value_at_index(nums, i)
+        result = apply_operation_to_value(op, result, v)
+
+    return result
+
+
+def column_number_value_at_index(column_entry_list:list[str], idx:int) -> int:
+    result = 0
+    multiplier = 1
+    
+    # Work row data from bottom to top
+    reversed_column_entry_list = reversed(column_entry_list) 
+
+    for n in reversed_column_entry_list:
+        if n[idx] == ' ':
+            continue
+
+        val = int(n[idx])        
+        result += (val * multiplier)
+        #logger.debug(f"idx={idx} val={val} multiplier={multiplier} result={result}")
+        multiplier *=10
+
+    return result
