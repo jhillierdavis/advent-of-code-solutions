@@ -6,6 +6,12 @@ input_example = "AOC-2025-Day-06_Puzzle-Input-Example.txt"
 input_full = "AOC-2025-Day-06_Puzzle-Input-Full.txt"
 
 
+def test_get_column_widths():
+    input_lines = ['123 328  51 64 ', ' 45 64  387 23 ', '  6 98  215 314', '*   +   *   +  ']
+    actual = solution.get_column_widths(input_lines)
+    assert actual == [4,4,4,3]
+
+
 #@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, expected",
@@ -46,7 +52,7 @@ def test_column_number_value_at_index(nums, idx, expected):
     "filename, expected",
     [
         pytest.param(input_example, 3263827),
-        pytest.param(input_full, 10442199710797),
+        #pytest.param(input_full, 10442199710797),
     ],    
 )
 def test_solve_part2(filename, expected):

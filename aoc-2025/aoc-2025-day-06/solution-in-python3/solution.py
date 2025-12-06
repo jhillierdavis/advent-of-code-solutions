@@ -55,13 +55,19 @@ def get_column_widths(lines):
     return column_widths
 
 
-def get_adjusted_lines_from_file(filename):
+def get_unchanged_lines_as_list_from_file(filename:str) -> list[str]:    
     lines = list()
     with open(filename, "r") as f:
         for line in f:
-            # Add space character to end-of-line to aid processing by space stripping per (space separated) entry
-            lines.append(line + ' ') 
+            lines.append(line.strip('\n'))
+    f.close() 
+    logger.debug(f"lines={lines}")
     return lines
+
+
+def get_adjusted_lines_from_file(filename):
+    lines = get_unchanged_lines_as_list_from_file(filename)
+    return [l + ' ' for l in lines]
 
 
 def get_operator_row_index_from_input_data(lines):
@@ -78,7 +84,7 @@ def get_row_entries_map_from_input_data(lines):
         vals = list()
         idx = 0
         for j, cw in enumerate(column_widths):
-            if j >= len(column_widths):
+            if j >= len(column_widths): # Last entry (has no trailing space)
                 entry = l[idx:idx+cw]
             else:
                 entry = l[idx:idx+cw-1]
