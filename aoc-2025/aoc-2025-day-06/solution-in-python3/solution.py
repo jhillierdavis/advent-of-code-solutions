@@ -34,50 +34,30 @@ def apply_operation_to_value(op:str, value:int, amendment:int) -> int:
     return result
 
 
-def get_equation_map_from_lines(lines):
-    eq_map = dict()
-
-    for i, l in enumerate(lines):
-        #values = re.split(" +",l)
-        values = l.split()
-        #logger.debug(f"values={values}")
-
-        if values[0] in ['*', '+']:
-            eq_map[i] = values
-        else:
-            int_vals = list()
-            for v in values:
-                int_vals.append(int(v))
-            #logger.debug(f"int_val={int_vals}")
-            eq_map[i] = int_vals
-
-    return eq_map
-
-
 def solve_part1(filename):
-    lines = fileutils.get_file_lines_from(filename)
+    lines = get_adjusted_lines_from_file(filename)
 
-    eq_map = get_equation_map_from_lines(lines)
+    row_entries_map, operator_row_index = get_row_entries_map_and_operator_row_index_from_input_data(lines)
     
-    #logger.debug(f"eq_map={eq_map}")
+    # Last row in input data provides operators to apply (+ or *)
+    column_operators = row_entries_map[operator_row_index] 
+    #logger.debug(f"column_operators={column_operators}")
 
-    size = len(eq_map)
-    op_idx = size - 1
-    operators = eq_map[op_idx]
-    #logger.debug(f"operators={operators}")
-
-    ans = 0    
-    for i, op in enumerate(operators):
+    total_sum = 0    
+    
+    for col_idx, op in enumerate(column_operators):
         result = get_initial_operator_value(op)
 
-        for x in range(op_idx):
-            vals = eq_map[x]
-            result = apply_operation_to_value(op, result, vals[i])        
-
-        #logger.debug(f"i={i} op={op} result={result} ans={ans}")
-        ans += result
-
-    return ans
+        # Process the column entry across all rows (excluding last operator row)
+        for row_idx in range(operator_row_index):
+            entry = row_entries_map[row_idx]
+            #logger.debug(f"col_idx={col_idx} row_idx={row_idx} entry={entry}")
+            num_value = int(entry[col_idx])
+            result = apply_operation_to_value(op, result, num_value)        
+        
+        total_sum += result
+    
+    return total_sum
 
 
 def get_column_widths(lines):
@@ -103,29 +83,30 @@ def get_column_widths(lines):
     return column_widths
 
 
-def to_num(nums, idx):
+def column_number_value_at_index(column_entry_list:list[str], idx:int) -> int:
     result = 0
     multiplier = 1
-    for n in nums:
+    
+    reversed_column_entry_list = reversed(column_entry_list)
+    for n in reversed_column_entry_list:
         if n[idx] == ' ':
             continue
+
         val = int(n[idx])        
         result += (val * multiplier)
         #logger.debug(f"idx={idx} val={val} multiplier={multiplier} result={result}")
         multiplier *=10
-    result = int((str(result)[::-1]))
-    #logger.debug(f"nums={nums} idx={idx} result={result}")
     return result
 
 
-def calculate(nums, op):
+def apply_cephalopod_math_to_column_entry_values(nums, op):
     #logger.debug(f"nums={nums} op={op}")
 
     result = get_initial_operator_value(op)
     
     size = len(nums[0])
     for i in range(size):
-        v = to_num(nums, i)
+        v = column_number_value_at_index(nums, i)
         result = apply_operation_to_value(op, result, v)
 
     return result
@@ -135,13 +116,19 @@ def get_adjusted_lines_from_file(filename):
     lines = list()
     with open(filename, "r") as f:
         for line in f:
-            lines.append(line + ' ')
+            # Add space character to end-of-line to aid processing by space stripping per (space separated) entry
+            lines.append(line + ' ') 
     return lines
 
 
-def get_entry_map(lines):
+def get_operator_row_index_from_input_data(lines):
+    op_row_idx = len(lines) - 1  
+    return op_row_idx  
+
+
+def get_row_entries_map_and_operator_row_index_from_input_data(lines):
     column_widths = get_column_widths(lines)
-    op_idx = len(lines) - 1
+    op_row_idx = get_operator_row_index_from_input_data(lines)
 
     entry_map = dict()
     for i, l in enumerate(lines):
@@ -153,7 +140,7 @@ def get_entry_map(lines):
             else:
                 entry = l[idx:idx+cw-1]
             
-            if i < op_idx:
+            if i < op_row_idx:
                 vals.append(entry)
             else:
                 vals.append(entry.strip())
@@ -162,29 +149,37 @@ def get_entry_map(lines):
         #logger.debug(f"i={i} vals={vals}")
 
         entry_map[i] = vals
-    return entry_map
+    return entry_map, op_row_idx
+
+
+def get_column_operator_list(lines, column_entry_map):
+    op_idx = len(lines) - 1            
+    column_operator_list = column_entry_map[op_idx]
+    return column_operator_list
 
 
 def solve_part2(filename):
     lines = get_adjusted_lines_from_file(filename)
 
-    entry_map = get_entry_map(lines)
-
-    op_idx = len(lines) - 1            
-    operators = entry_map[op_idx]
-    #logger.debug(f"operators={operators}")
-
-    ans = 0    
+    row_entries_map, operator_row_index = get_row_entries_map_and_operator_row_index_from_input_data(lines)
     
-    for i, op in enumerate(operators):
-        nums = list()
+    # Last row in input data provides operators to apply (+ or *)
+    column_operators = row_entries_map[operator_row_index] 
+    #logger.debug(f"column_operators={column_operators}")
+    
+    # Iterate through each column and apply the relevent operator (+ or *) to the column values, summing the total
+    # NB: Direction (right to left, or left to right does not actually matter to result - the latter used here)
+    total_sum = 0
+    for col_idx, op in enumerate(column_operators):
+        entry_list = list()
 
-        for x in range(op_idx):
-            vals = entry_map[x]
-            nums.append(vals[i])
+        # Iterate through each row of input data (up to, but not including, the last operator row) to gather column entries
+        for row_idx in range(operator_row_index):
+            row_entry = row_entries_map[row_idx]
+            entry_list.append(row_entry[col_idx])
 
-        result = calculate(nums, op)
+        result = apply_cephalopod_math_to_column_entry_values(entry_list, op)
         #logger.debug(f"i={i} op={op} nums={nums} result={result}")
-        ans += result
+        total_sum += result
     
-    return ans
+    return total_sum

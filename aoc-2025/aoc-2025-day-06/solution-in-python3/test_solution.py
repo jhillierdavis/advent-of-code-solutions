@@ -19,6 +19,28 @@ def test_solve_part1(filename, expected):
     assert expected == value
 
 
+@pytest.mark.parametrize(
+    "nums, idx, expected",
+    [
+        pytest.param(['123', ' 45', '  6'], 0, 1),
+        pytest.param(['123', ' 45', '  6'], 1, 24),
+        pytest.param(['123', ' 45', '  6'], 2, 356),
+        pytest.param(['328', '64 ', '98 '], 0, 369),
+        pytest.param(['328', '64 ', '98 '], 1, 248),
+        pytest.param(['328', '64 ', '98 '], 2, 8),
+        pytest.param([' 51', '387', '215'], 0, 32),
+        pytest.param([' 51', '387', '215'], 1, 581),
+        pytest.param([' 51', '387', '215'], 2, 175),
+        pytest.param(['64 ', '23 ', '314'], 0, 623),
+        pytest.param(['64 ', '23 ', '314'], 1, 431),
+        pytest.param(['64 ', '23 ', '314'], 2, 4),
+    ],    
+)
+def test_column_number_value_at_index(nums, idx, expected):
+    value = solution.column_number_value_at_index(nums, idx)
+    assert value == expected
+
+
 #@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, expected",
