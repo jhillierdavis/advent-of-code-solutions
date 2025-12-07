@@ -35,10 +35,16 @@ def test_solve_part1(filename, expected):
     "filename, expected",
     [
         pytest.param(input_example, 40),
-        pytest.param(input_full, 5921061943075), # 3130 too low
+        pytest.param(input_full, 5921061943075),
     ],    
 )
 def test_solve_part2(filename, expected):
     # Count all possible paths a beam could take accounting for (binary) beam splits
-    value = solution.solve_part2(filename)    
+
+    # Initial solution
+    value = solution.solve_part2_using_wave_front_approach(filename)
+    assert expected == value
+
+    # Re-solve using a different approach
+    value = solution.solve_part2_using_recursive_approach(filename)
     assert expected == value

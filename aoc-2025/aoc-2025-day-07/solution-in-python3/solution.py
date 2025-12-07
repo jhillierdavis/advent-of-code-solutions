@@ -11,13 +11,13 @@ logger = logging.getLogger(__name__)
 logger = logging.getLogger('simpleLogger')
 
 
-def get_all_beam_paths_as_display_lines_from_file(filename):
+def get_all_beam_paths_as_display_lines_from_file(filename:str) -> list[str]:
     g = create_grid_from_file(filename)
     calculate_beam_split_count(g)
     return grid.grid_to_lines(g)
 
 
-def create_grid_from_file(filename):
+def create_grid_from_file(filename:str) -> grid.Grid2D:
     lines = fileutils.get_file_lines_from(filename)
 
     g = grid.lines_to_grid(lines)
@@ -26,14 +26,14 @@ def create_grid_from_file(filename):
     return g
 
 
-def get_starting_point(g):
+def get_starting_point(g:grid.Grid2D) -> point.Point2D:
     start_points = g.get_points_matching('S')
-    assert len(start_points) == 1
+    assert len(start_points) == 1,f"Unexpected starting points: {start_points}"
 
     return start_points.pop()
 
 
-def get_splitter_points(g):
+def get_splitter_points(g:grid.Grid2D) -> set[point.Point2D]:
     sps = g.get_points_matching('^')
     assert len(sps) > 0
     #logger.debug(f"Splitter points: sps={sps}")
@@ -41,7 +41,7 @@ def get_splitter_points(g):
     return sps   
 
 
-def calculate_beam_split_count(g):
+def calculate_beam_split_count(g:grid.Grid2D) -> int:
     sp = get_starting_point(g)
 
     splitters = get_splitter_points(g)
@@ -80,17 +80,17 @@ def calculate_beam_split_count(g):
     return split_count
 
 
-def solve_part1(filename):
+def solve_part1(filename:str) -> int:
     g = create_grid_from_file(filename)
     return calculate_beam_split_count(g)
 
 
-def is_splitter_point(g, p):    
+def is_splitter_point(g:grid.Grid2D, p:point.Point2D) -> bool:
     s = g.get_symbol(p)
     return True if s == '^' else False
 
 
-def solve_part2(filename):
+def solve_part2_using_wave_front_approach(filename:str) -> int:
     """
     # Approach: 
     # 
@@ -137,3 +137,36 @@ def solve_part2(filename):
     logger.debug(f"total_particles_at_last_row={total_particles_at_last_row} ordered_particle_x_location_map={ordered_particle_x_location_map}")
     
     return total_particles_at_last_row # Equals number of timelines (of possible paths)
+
+
+def solve_part2_using_recursive_approach(filename:str) -> int:
+    """
+    # Approach: Based on nice (succinct & efficient) solution approach from others (Jonathan Paulson, Hyperneutrino etc.)
+    #
+    # E.g. see: 
+    #
+    # https://github.com/jonathanpaulson/AdventOfCode/blob/master/2025/7.py
+    # https://github.com/hyperneutrino/advent-of-code/blob/main/2025/day-07/part-2.py
+    #
+    """
+
+    g = create_grid_from_file(filename)
+
+    from functools import cache
+    @cache
+    def score(current_point:point.Point2D) -> int:        
+        if not current_point: # Guard against off-grid point (albeit seemingly not needed for current input data)
+            return 0
+
+        p = point.Point2D(current_point.get_x(), current_point.get_y()+1)
+
+        if p.get_y() >= g.get_height():
+            return 1
+
+        if is_splitter_point(g,p):
+            return score(g.get_neighbour_east(p)) + score(g.get_neighbour_west(p))
+        else:
+            return score(p)
+
+    sp = get_starting_point(g)
+    return score(sp)
