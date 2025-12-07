@@ -43,6 +43,9 @@ William Y. Feng (solutions in Python):
 * [YouTube videos]( https://www.youtube.com/@womogenes ) @womogenes
 * [GitLab code]( https://github.com/womogenes/ ) womogenes
 
+Bradley Sward (solutions in Python)
+* [YouTube videos]( https://www.youtube.com/watch?v=0mqd1acHC6A&list=PL0Weiym0lCDIW7XhWV_OriOoJhFiNkCP ) [@bradleysward]( https://www.youtube.com/@bradleysward )
+
 Daniel Persson (solutions in Java):
 * [YouTube videos]( https://www.youtube.com/@DanielPersson ) @DanielPersson
 
