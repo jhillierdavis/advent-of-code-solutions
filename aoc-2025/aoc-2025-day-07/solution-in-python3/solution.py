@@ -95,8 +95,8 @@ def solve_part2(filename):
     # Approach: 
     # 
     # Use a dictionary to keep track of number of distinct particles (or beam tips) moving downwards (like a propogating wave crest)
-    # Dictionary keys are a the columns (x coordinates) as move downward in rows (increasing y) to end of grid
-    # Dictionary values are counts of distinct particles (including those following duplicate paths) at each x position (column)
+    # Dictionary keys are columns (x values) 
+    # Dictionary values are (column specific) counts of number of distinct particles (including those following duplicate paths) as move downward in rows (increasing y) to end of grid
     """
     
     from collections import defaultdict
