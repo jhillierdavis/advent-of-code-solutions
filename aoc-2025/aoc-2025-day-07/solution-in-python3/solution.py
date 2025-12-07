@@ -43,8 +43,6 @@ def get_splitter_points(g):
 
 def calculate_beam_split_count(g):
     sp = get_starting_point(g)
-    #logger.debug(f"Current point: cp={cp}")
-    #g.set_symbol(sp, '|')
 
     splitters = get_splitter_points(g)
 
@@ -74,7 +72,7 @@ def calculate_beam_split_count(g):
                 next_beams.add(np)
         
         beams = next_beams     
-        #logger.debug(f"h={h} beams={beams}")       
+        logger.debug(f"h={h} beams={beams}")       
 
     #print()
     #grid.display_grid(g)
@@ -93,14 +91,22 @@ def is_splitter_point(g, p):
 
 
 def solve_part2(filename):
+    """
+    # Approach: 
+    # 
+    # Use a dictionary to keep track of number of distinct particles (or beam tips) moving downwards (like a propogating wave crest)
+    # Dictionary keys are a the columns (x coordinates) as move downward in rows (increasing y) to end of grid
+    # Dictionary values are counts of distinct particles (including those following duplicate paths) at each x position (column)
+    """
+    
     from collections import defaultdict
 
     g = create_grid_from_file(filename)
 
     sp = get_starting_point(g)
 
-    particle_row_map = dict()
-    particle_row_map[sp.get_x()] = 1 # Single initial particle (& timeline)
+    particle_row_map = defaultdict(int)
+    particle_row_map[sp.get_x()] = 1 # Single initial particle (& timeline) at row zero (position 'S')
 
     for y in range(1, g.get_height()):
         next_row_particles_map = defaultdict(int)
