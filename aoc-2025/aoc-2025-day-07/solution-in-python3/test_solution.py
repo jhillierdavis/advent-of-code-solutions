@@ -25,6 +25,7 @@ def test_get_all_beam_paths_as_display_lines_from_file():
     ],    
 )
 def test_solve_part1(filename, expected):
+    # Count the number of times a beam (travelling downwards from symbol 'S') is split (left & right) at each point with symbol '^'
     value = solution.solve_part1(filename)    
     assert expected == value
 
@@ -38,5 +39,6 @@ def test_solve_part1(filename, expected):
     ],    
 )
 def test_solve_part2(filename, expected):
+    # Count all possible paths a beam could take accounting for (binary) beam splits
     value = solution.solve_part2(filename)    
     assert expected == value
