@@ -104,6 +104,13 @@ def multiply_first_n_largest_values(value_list:list[int], n:int=3) -> int:
 
 
 def solve_part1(filename:str, max_connections:int) -> int:
+    """
+    A list of comma-separated 3D points (x,y,z coords e.g. '162,817,812') is expected as input from file 'filename' provided (one 3D point per line).
+    Create 'circuits' (groupings) from pairs of 3D points (x,y,z coords listed in an input file), ordered by the lowest Euclidean distance between them (ascending order).
+    Continue creating circuits until 'max_connections', the maximum number of pairs to use, is reached.
+    Returns the muliple of the (unique) sizes of the top 3 circuit sizes
+    """
+
     lines = fileutils.get_file_lines_from(filename)
 
     points = get_3d_points_from_lines(lines)
@@ -117,6 +124,13 @@ def solve_part1(filename:str, max_connections:int) -> int:
 
 
 def solve_part2(filename:str) -> int:
+    """
+    A list of comma-separated 3D points (x,y,z coords e.g. '162,817,812') is expected as input from file 'filename' provided (one 3D point per line).
+    Create 'circuits' (groupings) from pairs of 3D points (x,y,z coords listed in an input file), ordered by the lowest Euclidean distance between them (ascending order).
+    Continue creating circuits until a circuit is formed composed of all the 3D points.
+    Return the muliple of the x coords of the last 3D point pair used to create this target circuit (which comprises all 3D points)
+    """
+
     lines = fileutils.get_file_lines_from(filename)
 
     points = get_3d_points_from_lines(lines)
