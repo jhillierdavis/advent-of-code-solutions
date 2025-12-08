@@ -11,7 +11,7 @@ https://adventofcode.com/2025
 * [Day 05]( https://adventofcode.com/2025/day/5 )  -> 'Cafeteria' -> Positive integer number ranges / intervals
 * [Day 06]( https://adventofcode.com/2025/day/6 )  -> 'Trash Compactor' -> Column based parsing of data input
 * [Day 07]( https://adventofcode.com/2025/day/7 )  -> 'Laboratories' -> Paths through 2D Grid
-* [Day 08]( https://adventofcode.com/2025/day/8 )  -> 'Playground' -> Grouping 3D points
+* [Day 08]( https://adventofcode.com/2025/day/8 )  -> 'Playground' -> Ordering (by Euclidian distance) & grouping 3D point pairs.  [Union Fnd-Algorithm](https://en.wikipedia.org/wiki/Disjoint-set_data_structure)
 * [Day 09]( https://adventofcode.com/2025/day/9 )  -> TODO
 * [Day 10]( https://adventofcode.com/2025/day/10 ) -> TODO
 * [Day 11]( https://adventofcode.com/2025/day/11 ) -> TODO
