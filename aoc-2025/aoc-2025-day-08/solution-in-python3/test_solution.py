@@ -11,7 +11,7 @@ input_full = "AOC-2025-Day-08_Puzzle-Input-Full.txt"
     "filename, connections, expected",
     [
         pytest.param(input_example, 10, 40),
-        pytest.param(input_full, 1000, 103488), # 302978000 too high , 26572
+        pytest.param(input_full, 1000, 103488),
     ],    
 )
 def test_solve_part1(filename, connections, expected):

@@ -14,16 +14,7 @@ logger = logging.getLogger('simpleLogger')
 
 
 def get_3d_points_from_lines(lines):
-    points = list()
-    for l in lines:
-        x,y,z = l.split(',')
-        p = (int(x), int(y), int(z))
-        points.append(p)
-
-    #size = len(points)
-    #logger.debug(f"points={points}")
-    #logger.debug(f"size={size}")
-
+    points = [tuple(map(int, l.split(','))) for l in lines]
     return points
 
 
