@@ -1,7 +1,7 @@
 import math
 
 # Shared helper libraries
-from helpers import fileutils, point
+from helpers import fileutils
 
 # Logging libraries
 import logging
@@ -13,7 +13,7 @@ logger = logging.getLogger(__name__)
 logger = logging.getLogger('simpleLogger')
 
 
-def get_points_from_lines(lines):
+def get_3d_points_from_lines(lines):
     points = list()
     for l in lines:
         x,y,z = l.split(',')
@@ -26,36 +26,35 @@ def get_points_from_lines(lines):
 
     return points
 
-def get_sorted_distance_pair_id_list(points):
+
+def get_straight_line_distance(p:tuple[int,int,int], q:tuple[int,int,int]) -> float:
+    # Calculate Euclidean distance between two points p and q 
+    # see https://docs.python.org/3/library/math.html#math.dist
+    distance = math.dist(p, q) 
+    return distance
+
+
+def get_sort_asc_distance_with_3d_point_pair_ids_as_list(points:list[tuple[int,int,int]]):
     size = len(points)
     
-    distances = list()
+    distance_with_3d_point_pair_ids = list()
 
-    for i, pi in enumerate(points):
+    for i, p in enumerate(points):
         for j in range(i+1, size):      
-            pj = points[j]      
-            distance = math.dist( pi, pj) # Euclidean distance between two points p and q (see https://docs.python.org/3/library/math.html#math.dist )
-            distances.append((distance, i, j))
+            q = points[j]    
+            distance = get_straight_line_distance(p, q)  
+            distance_with_3d_point_pair_ids.append((distance, i, j))
 
-    # Sort ascending (shortest first)
-    sorted_distances = sorted(distances) 
+    sorted_asc_distance_with_3d_point_pair_ids = sorted(distance_with_3d_point_pair_ids) 
 
-    #logger.debug(f"Min. dist: {sorted_distances[0]} max. dist: {sorted_distances[-1]}")
-    return sorted_distances
+    return sorted_asc_distance_with_3d_point_pair_ids
 
 
-def get_matching_cicuit(circuits, idx):
+def get_matching_circuit(circuits, idx):
     for c in circuits:
         if idx in c:
             return c
     return None
-
-
-def count_cirects_connections(circuits):
-    connections = 0
-    for c in circuits:
-        connections += len(c) - 1
-    return connections
 
 
 def get_circuits_lengths_sorted_decending(circuits):
@@ -66,104 +65,82 @@ def get_circuits_lengths_sorted_decending(circuits):
     return lengths
 
 
-def solve_part1(filename:str, connections:int):
-    lines = fileutils.get_file_lines_from(filename)
+def connect_points_to_circuits(circuits, i, j):
+    ci = get_matching_circuit(circuits, i)
+    cj = get_matching_circuit(circuits, j)
 
-    # Gather 3D points
-    points = get_points_from_lines(lines)
-    sorted_distance_pairs = get_sorted_distance_pair_id_list(points)
+    if len(circuits) == 0 or (ci == None and cj == None):            
+        circuits.append({i,j})
+    elif ci and not cj:
+        ci.add(j) 
+    elif cj and not ci:
+        cj.add(i)
+    elif ci != cj: # Arg! - do NOT forget to handle this case!
+
+        #raise Exception(f"ci != cj: ci={ci} cj={cj} d={d}")
+        #circuits.append({i,j})
+        new_circuits = list()
+        merged_c = ci.union(cj)
+        new_circuits.append(merged_c)
+        for c in circuits:
+            if c != ci and c != cj:
+                new_circuits.append(c)
+        circuits = new_circuits
+    # elif ci == cj: # Ignore
+    
+    return circuits
+
+
+def create_circuits(points:list, max_conntection_pairs:int):
+    sorted_asc_distance_with_3d_point_pair_ids_list = get_sort_asc_distance_with_3d_point_pair_ids_as_list(points)
 
     circuits = list()
-    #remaining = [i for i in range(len(points))]
+    for _, i, j in sorted_asc_distance_with_3d_point_pair_ids_list[:max_conntection_pairs]: # NB: Ignore distance value (via underscore)
+        circuits = connect_points_to_circuits(circuits, i, j)
 
-    for d in sorted_distance_pairs[:connections]:
-        #logger.debug(f"d={d}")
-        i = d[1]
-        j = d[2]
+    return circuits
 
-        ci = get_matching_cicuit(circuits, i)
-        cj = get_matching_cicuit(circuits, j)
 
-        if len(circuits) == 0 or (ci == None and cj == None):            
-            circuits.append({i,j})
-        elif ci and not cj:
-            ci.add(j) 
-        elif cj and not ci:
-            cj.add(i)
-        elif ci == cj:
-            continue
-        elif ci != cj:
-            #raise Exception(f"ci != cj: ci={ci} cj={cj} d={d}")
-            #circuits.append({i,j})
-            new_circuits = list()
-            merged_c = ci.union(cj)
-            new_circuits.append(merged_c)
-            for c in circuits:
-                if c != ci and c != cj:
-                    new_circuits.append(c)
-            circuits = new_circuits
+def multiply_first_n_largest_values(value_list:list, n:int=3):
+    ans = 1
+    for v in value_list[:n]:
+        #logger.debug(f"v={v}")
+        ans *= v
+    return ans
 
-        """
-        if i in remaining:
-            remaining.remove(i)
-        
-        if j in remaining:
-            remaining.remove(j)
-        """
+
+def solve_part1(filename:str, max_connections:int):
+    lines = fileutils.get_file_lines_from(filename)
+
+    points = get_3d_points_from_lines(lines)
+ 
+    circuits = create_circuits(points, max_connections)
 
     lengths = get_circuits_lengths_sorted_decending(circuits)
 
-    ans = 1
-    for v in lengths[:3]:
-        #logger.debug(f"v={v}")
-        ans *= v
+    ans = multiply_first_n_largest_values(lengths, 3)
     return ans
 
 
 def solve_part2(filename:str):
     lines = fileutils.get_file_lines_from(filename)
 
-    # Gather 3D points
-    points = get_points_from_lines(lines)
-    size = len(points)    
-    sorted_distance_pairs = get_sorted_distance_pair_id_list(points)
+    points = get_3d_points_from_lines(lines)
 
+    size = len(points)    
+    sorted_asc_distance_with_3d_point_pair_ids_list = get_sort_asc_distance_with_3d_point_pair_ids_as_list(points)
 
     circuits = list()
-    
-    ans = 0
-    for d in sorted_distance_pairs:
-        #logger.debug(f"d={d}")
-        i = d[1]
-        j = d[2]
-
-        ci = get_matching_cicuit(circuits, i)
-        cj = get_matching_cicuit(circuits, j)
-
-        if len(circuits) == 0 or (ci == None and cj == None):            
-            circuits.append({i,j})
-        elif ci and not cj:
-            ci.add(j) 
-        elif cj and not ci:
-            cj.add(i)
-        elif ci == cj:
-            continue
-        elif ci != cj:
-            #raise Exception(f"ci != cj: ci={ci} cj={cj} d={d}")
-            #circuits.append({i,j})
-            new_circuits = list()
-            merged_c = ci.union(cj)
-            new_circuits.append(merged_c)
-            for c in circuits:
-                if c != ci and c != cj:
-                    new_circuits.append(c)
-            circuits = new_circuits
+        
+    for _, pi, qi in sorted_asc_distance_with_3d_point_pair_ids_list: # NB: Ignore distance value (via underscore)
+        circuits = connect_points_to_circuits(circuits, pi, qi)
 
         lengths = get_circuits_lengths_sorted_decending(circuits)
-        if lengths[0] == size:
-            pi = points[i]
-            pj = points[j]
-            ans = pi[0] * pj[0] # Multiple x coord values of last pair
-            break        
 
-    return ans
+        # Check whether all points have been used to form a circuit
+        if lengths[0] == size:
+            # Multiple x coord values of last 3d point pair used
+            ans = points[pi][0] * points[qi][0] 
+            return ans        
+
+    return 0
