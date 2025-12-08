@@ -65,6 +65,7 @@ def connect_points_to_circuits(circuits:list[set[int]], i:int, j:int) -> list[se
         cj.add(i)
     elif ci != cj: # Arg! - do NOT forget to handle this case!
 
+        # Both points are in already in different circuits, so join them into a single circuit
         new_circuits = list()
         merged_c = ci.union(cj)
         new_circuits.append(merged_c)
@@ -119,8 +120,8 @@ def solve_part2(filename:str) -> int:
     lines = fileutils.get_file_lines_from(filename)
 
     points = get_3d_points_from_lines(lines)
+    points_size = len(points)    
 
-    size = len(points)    
     sorted_asc_distance_with_3d_point_pair_ids_list = get_sort_asc_distance_with_3d_point_pair_ids_as_list(points)
 
     circuits = list()
@@ -128,10 +129,11 @@ def solve_part2(filename:str) -> int:
     for _, pi, qi in sorted_asc_distance_with_3d_point_pair_ids_list: # NB: Ignore distance value (via underscore)
         circuits = connect_points_to_circuits(circuits, pi, qi)
 
-        lengths = get_circuits_lengths(circuits)
+        circuits_size_list = get_circuits_lengths(circuits)
+        largest_circuit_size = max(circuits_size_list)
 
         # Check whether all points have been used to form a circuit
-        if max(lengths) == size:
+        if largest_circuit_size == points_size:
             # Multiple x coord values of last 3d point pair used
             ans = points[pi][0] * points[qi][0] 
             return ans        
