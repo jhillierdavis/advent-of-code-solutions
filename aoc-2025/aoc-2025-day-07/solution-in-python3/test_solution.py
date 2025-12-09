@@ -48,3 +48,8 @@ def test_solve_part2(filename, expected):
     # Re-solve using a different approach
     value = solution.solve_part2_using_recursive_approach(filename)
     assert expected == value
+
+    # Re-solve using solutions from others
+    import bradley_sward_solution
+    value = bradley_sward_solution.solve_part2(filename)
+    assert expected == value
