@@ -1,12 +1,12 @@
-###
-# Efficent / succint solution example from HyperNeutrino (with my own comments)
-# 
-# See:
-# 
-# https://www.youtube.com/watch?v=JVCTxubqLqE
-# https://github.com/hyperneutrino/advent-of-code/blob/main/2025/day-06
-#
-###
+"""
+ Efficent / succinct solution example from HyperNeutrino (with my own comments)
+ 
+ See:
+ 
+ https://www.youtube.com/watch?v=JVCTxubqLqE
+ https://github.com/hyperneutrino/advent-of-code/blob/main/2025/day-06
+
+"""
 
 def solve_part1(filename):
     # reads a file, transposes its contents, treats each column as an arithmetic expression (numbers followed by an operator), evaluates it, and sums the results.
