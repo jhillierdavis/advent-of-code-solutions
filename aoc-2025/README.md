@@ -13,13 +13,14 @@ https://adventofcode.com/2025
 * [Day 07]( https://adventofcode.com/2025/day/7 )  -> 'Laboratories' -> Paths through 2D Grid
 * [Day 08]( https://adventofcode.com/2025/day/8 )  -> 'Playground' -> Ordering (by Euclidian distance) & grouping 3D point pairs.  [Union Fnd-Algorithm](https://en.wikipedia.org/wiki/Disjoint-set_data_structure)
 * [Day 09]( https://adventofcode.com/2025/day/9 )  -> Movie Theater -> 2D points, rectangles sizes & [ray-casting](https://en.wikipedia.org/wiki/Point_in_polygon#Ray_casting_algorithm)
-* [Day 10]( https://adventofcode.com/2025/day/10 ) -> TODO
-* [Day 11]( https://adventofcode.com/2025/day/11 ) -> TODO
+* [Day 10]( https://adventofcode.com/2025/day/10 ) -> Factory -> Minimal solutions to sets of linear equations
+* [Day 11]( https://adventofcode.com/2025/day/11 ) -> Reactor -> Graph paths + caching
 * [Day 12]( https://adventofcode.com/2025/day/12 ) -> TODO
 
 ## TODOs
 
-TODO
+* Day 10: Revisit for performance issues.  Plus tidy, refactor etc.
+* Day 11: Extract graph path methods into helpers (for potential reuse) & generalise approach for path with waypoints
 
 ## Solutions from others
 
