@@ -76,6 +76,8 @@ def get_path_map_from_from_file(filename:str) -> dict:
 
 
 def solve_part1(filename:str) -> int:
+    # Obtain all unique paths (as a list of lists), between the specified nodes, from a graph (generated from input data)
+    
     path_map = get_path_map_from_from_file(filename)
 
     start, stop = 'you', 'out'
@@ -88,6 +90,10 @@ def solve_part1(filename:str) -> int:
 
 
 def solve_part2(filename:str) -> int:
+    # Larger graph than Part 1, so performance an issue (as a very high number of paths to count)
+    # Count unique paths, but without storing the actual path nodes traversed, plus use caching to avoid re-traversing the same sub-paths
+    # Break paths into routes to/from required waypoints and calculate the overall answer
+
     path_map = get_path_map_from_from_file(filename)
 
     svr_to_dac = find_path_count(path_map, 'svr', 'dac')
