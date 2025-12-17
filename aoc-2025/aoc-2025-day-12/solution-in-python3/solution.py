@@ -10,14 +10,6 @@ logging.config.fileConfig('logging.conf')
 logger = logging.getLogger(__name__)
 logger = logging.getLogger('simpleLogger')
 
-"""
-def count_remaining_shapes_to_fit(r_map):
-    return sum(r_map.values())
-
-
-def has_remaining_shapes_to_fit(r_map):
-    return count_remaining_shapes_to_fit(r_map) > 0
-"""
 
 def get_fit_region_dimensions(fit_requirements):
     vals = fit_requirements.split(':')
@@ -90,40 +82,6 @@ def can_fit_required_shapes_using_estimation(shapes_map, fit_requirements):
     logger.debug(f"est_size_all_shapes={est_size_all_shapes} region_size={region_size} fudge_factor={fudge_factor}")
     return est_size_all_shapes <= region_size
 
-"""
-def process_lines(lines:list[str]) -> int:
-    v_blocks = list()
-    block = list()
-
-    l_size = len(lines)
-    for i, l  in enumerate(lines):        
-        if not l:
-            v_blocks.append(block)
-            block = list()
-        elif i == (l_size - 1):
-            block.append(l)
-            v_blocks.append(block)
-        else:
-            block.append(l)
-
-    logger.debug(f"v_blocks={v_blocks}")
-
-    # Process shapes
-    shape_map = dict()
-    for s in v_blocks[:-1]:
-        shape_index = int(s[0][0])
-        shape_map[shape_index] = s[1:]
-
-    logger.debug(f"shape_map={shape_map}")
-
-    # Process regions with shape fit requirements
-    ans = 0
-    for i, r in enumerate(v_blocks[-1]):
-        logger.debug(f"i={i} r={r}")
-        if can_fit_required_shapes_using_estimation(shape_map, r):
-            ans += 1
-    return ans    
-"""
 
 def get_block_list_from_file_input_data(filename:str) -> list[str]:
     lines = fileutils.get_file_lines_from(filename)
@@ -159,18 +117,23 @@ def get_shape_map(input_list:list[str]) -> dict:
 
 
 def solve_part1(filename):
-    #lines = fileutils.get_file_lines_from(filename)
+    # Process a list of requirements for whether a quantity of different shapes fit in a provided region.
+    # Count the number that do, & return this as the answer
 
-    #ans = process_lines(lines)
-
+    # Obtain input blocks (groups of lines separated by newline, or end of input file)
     block_list = get_block_list_from_file_input_data(filename)
+    shape_list = block_list[:-1] # All except last input block (of grouped non-empty lines)
+    fit_requirements_list = block_list[-1] # Last input block only
 
-    shape_map = get_shape_map(block_list[:-1])
+    # Obtain shapes to match (from all but last input block)
 
-    # Process regions with shape fit requirements
+    shape_map = get_shape_map(shape_list) 
+
+    # Process each specified empty regions (specified width & height) against its shape fit requirements
     ans = 0
-    for i, fit_requirement in enumerate(block_list[-1]):
+    for i, fit_requirement in enumerate(fit_requirements_list):
         logger.debug(f"i={i} fit_requirement={fit_requirement}")
         if can_fit_required_shapes_using_estimation(shape_map, fit_requirement):
             ans += 1
+
     return ans
