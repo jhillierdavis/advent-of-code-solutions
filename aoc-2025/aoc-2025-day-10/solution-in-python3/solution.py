@@ -171,6 +171,8 @@ def press_joltage_buttons(button_press_idx, button_map, current_state, target_st
 
 
 def calculate_fewest_button_presses_for_joltages(cfg):
+    #from collections import defaultdict
+
     _, wirings, joltages = process_config(cfg)
     
     current_joltages = list()
@@ -183,6 +185,7 @@ def calculate_fewest_button_presses_for_joltages(cfg):
     logger.debug(f"current_joltages={current_joltages}")
 
     button_map = dict()
+    #button_map = defaultdict(int)
     press_map = dict()
 
     for i, w in enumerate(wirings):
@@ -199,17 +202,29 @@ def calculate_fewest_button_presses_for_joltages(cfg):
     logger.debug(f"press_map={press_map}")
 
     """
-    totals = set()
+    pm_to_str = str(press_map)
+    logger.debug(f"pm_str={pm_to_str}")
 
+    str_to_pm = eval(pm_to_str)
+    assert type(str_to_pm) is dict
+
+    return -1
+
+    """
+    #totals = set()
+
+    """
     for bk in button_map.keys():
         press_joltage_buttons(bk, button_map, current_joltages, target_joltages, press_map, totals)
     """
 
-    totals = bfs(button_map, target_joltages, current_joltages, press_map)
-    logger.debug(f"totals={totals}")
+    #totals = bfs(button_map, target_joltages, current_joltages, press_map)
+    # logger.debug(f"totals={totals}")
 
 
-    return min(totals)
+    total = get_z3_solution(target_joltages, button_map)
+
+    return total
 
 
 def solve_part2(filename):
@@ -218,20 +233,31 @@ def solve_part2(filename):
     lines = fileutils.get_file_lines_from(filename)
     ans = 0
     for i, l in enumerate(lines):
-        if i > 3:
-            break
-
         ans += calculate_fewest_button_presses_for_joltages(l)
     return ans
 
 
 from collections import deque
 
+from functools import cache
+
+@cache
+def cachable_determine_new_joltage_state(button_press_idx, str_button_map, str_new_state):
+    button_map = eval(str_button_map)
+    new_state = eval(str_new_state)
+
+    wiring = button_map[button_press_idx]
+    for wi in wiring:
+        new_state[wi] += 1
+    return new_state
+
+
 def process(button_press_idx, button_map, current_state, target_state, press_map, totals):
     new_state = current_state.copy()
     press_map = press_map.copy()
 
-    new_state = determine_new_joltage_state(button_press_idx, button_map, new_state)
+    #new_state = determine_new_joltage_state(button_press_idx, button_map, new_state)
+    new_state = cachable_determine_new_joltage_state(button_press_idx, str(button_map), str(new_state))
 
     press_map[button_press_idx] += 1
 
@@ -240,28 +266,29 @@ def process(button_press_idx, button_map, current_state, target_state, press_map
     if len(totals) > 0:
         for t in totals:
             if total_count >= t:
-                return None, None
+                return None, None, None
 
     if new_state == target_state:        
         logger.debug(f"Matched: total_count={total_count} press_map={press_map} new_state={new_state} target_state={target_state}")   
         totals.add(total_count)
-        return None, None
+        return None, None, total_count
     
     # Exceeded target
     for i, nv in enumerate(new_state):
         if nv > target_state[i]:
-            return None, None
+            return None, None, None
     
     #for bk in button_map.keys():
     #    press_joltage_buttons(bk, button_map, new_state, target_state, press_map, totals)
 
-    return new_state, press_map
+    return new_state, press_map, None
 
 
 def bfs(button_map, target_joltages, current_joltages, press_map):
     totals = set()
 
     # Step 1: Initialize queue and visited set
+    visited = set()
     queue = deque()
     for bk in button_map.keys():
         node = (bk, current_joltages, press_map)
@@ -272,11 +299,66 @@ def bfs(button_map, target_joltages, current_joltages, press_map):
         # Step 3: Dequeue a node
         node = queue.pop()    
         button_press_idx, current_joltages, press_map = node
-        
-        current_joltages, press_map = process(button_press_idx, button_map, current_joltages, target_joltages, press_map, totals)
-        if current_joltages:
-            for bk in button_map.keys():
-                node = (bk, current_joltages, press_map)
-                queue.append(node)
+
+        cache_id = (button_press_idx, str(current_joltages))
+
+        if cache_id not in visited:
+
+            """
+            # Abort if already found solution with same or fewer presses
+            total_count = get_pressed_count(press_map)
+            if len(totals) > 0:
+                for t in totals:
+                    if total_count >= t:       
+                        continue
+            """
+
+            current_joltages, press_map, press_count = process(button_press_idx, button_map, current_joltages, target_joltages, press_map, totals)
+            visited.add(cache_id)
+            if current_joltages:
+                for bk in button_map.keys():
+                    node = (bk, current_joltages, press_map)
+                    queue.appendleft(node)
             
     return totals
+
+
+from z3 import *
+
+def get_z3_solution(target_joltages, button_map):
+    # Use Z3, see: https://microsoft.github.io/z3guide/docs/logic/intro/ , https://github.com/Z3Prover/z3
+
+    b_size = len(button_map.keys())
+    tj_size = len(target_joltages)
+
+    X = IntVector('x', b_size)
+
+    s3_optimizer = Optimize()
+    for _ in range(b_size):
+        s3_optimizer.add([x >= 0 for x in X]) 
+
+    B = []
+    for v in button_map.values():
+        row = [0 for _ in range(tj_size)]
+        for w in v:
+            row[w] = 1
+        B.append(row)
+         
+    # E.g. 
+    #
+    # X = [x__0, x__1, x__2, x__3, x__4, x__5]
+    # B = [[0, 0, 0, 1], [0, 1, 0, 1], [0, 0, 1, 0], [0, 0, 1, 1], [1, 0, 1, 0], [1, 1, 0, 0]]
+    # target_joltages = [3, 5, 4, 7]
+
+    logger.debug(f"button_map={button_map}")
+
+    for i in range(tj_size):
+        s3_optimizer.add(Sum(X[k] * B[k][i] for k in range(b_size)) == target_joltages[i])
+    s3_optimizer.minimize(Sum(X))
+
+    # Check optimizer/solver satisfied
+    if s3_optimizer.check() != sat:
+        raise Exception("No satsfactory solution found using S3!")
+    
+    model = s3_optimizer.model()
+    return sum(model[k].as_long() for k in model)

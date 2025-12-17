@@ -40,19 +40,19 @@ def test_solve_part1(filename, expected):
         pytest.param("[...#.] (0,2,3,4) (2,3) (0,4) (0,1,2) (1,2,3,4) {7,5,12,7,2}", 12),
         pytest.param("[.###.#] (0,1,2,3,4) (0,3,4) (0,1,2,4,5) (1,2) {10,11,11,5,10,5}", 11),
         # From full data set
-        #pytest.param("[##..#.] (2) (4,5) (3,5) (0,5) (1,5) (1,2,4,5) {4,135,127,8,135,155}", -1),
+        pytest.param("[##..#.] (2) (4,5) (3,5) (0,5) (1,5) (1,2,4,5) {4,135,127,8,135,155}", 155),
     ],    
 )
 def test_calculate_fewest_button_presses_for_joltages(input, expected):
     value = solution.calculate_fewest_button_presses_for_joltages(input)    
     assert expected == value
 
-@pytest.mark.skip(reason="TODO: Ignore until implemented")
+#@pytest.mark.skip(reason="TODO: Ignore until implemented")
 @pytest.mark.parametrize(
     "filename, expected",
     [
         pytest.param(input_example, 33),
-        pytest.param(input_full, -1),
+        pytest.param(input_full, 18681),
     ],    
 )
 def test_solve_part2(filename, expected):
