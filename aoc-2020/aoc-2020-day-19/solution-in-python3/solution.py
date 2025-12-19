@@ -94,8 +94,7 @@ def get_rule_values(rule_map, idx):
     return rule_values
 
 
-def solve_part1(filename):
-    #logger.debug("TODO: Implement Part 1")
+def determine_valid_message_count_from_file(filename:str, apply_looping_rules:bool=False) -> int:
     rule_lines = fileutils.get_lines_before_empty_from_file(filename)
     rule_map = create_rule_map_from_lines(rule_lines)
 
@@ -109,10 +108,12 @@ def solve_part1(filename):
     for msg in message_lines:
         if msg in valid_set:
             ans += 1
-    return ans
+    return ans    
+
+
+def solve_part1(filename):
+    return determine_valid_message_count_from_file(filename)
 
 
 def solve_part2(filename):
-    logger.debug("TODO: Implement Part 2")
-    lines = fileutils.get_file_lines_from(filename)
-    return "TODO"
+    return determine_valid_message_count_from_file(filename)
